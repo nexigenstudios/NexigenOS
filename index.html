@@ -1270,6 +1270,32 @@ function calcPropTotal(){
   const total=items.reduce((a,i)=>a+(+i.qty||0)*(+i.price||0),0);
   $('prm-total').textContent=fmtM(total);
 }
+async function editInv(id){
+  try{
+    const snap=await db.collection('invoices').doc(id).get();
+    if(!snap.exists){toast('Invoice not found','error');return;}
+    const iv=snap.data();
+    // reset modal
+    invSections=[];
+    $('inv-sections-wrap').innerHTML='';
+    $('im-client').value=iv.clientName||'';
+    $('im-due').value=iv.dueDate||'';
+    $('im-notes').value=iv.notes||'';
+    $('im-discount').value=iv.discount||'';
+    $('im-edit-id').value=id;
+    $('inv-modal-title').textContent='Edit Invoice';
+    // restore sections (support both old lineItems and new sections format)
+    const sections=iv.sections||(iv.lineItems?[{projectName:'Services',items:iv.lineItems}]:[]);
+    if(sections.length){
+      sections.forEach(sec=>addInvSection(sec.projectName||'',sec.items||[]));
+    } else {
+      addInvSection();
+    }
+    calcInvTotal();
+    showM('inv-modal');
+  }catch(e){toast(e.message,'error');}
+}
+
 async function saveInvoice(){
   const clientName=$('im-client').value.trim(),dueDate=$('im-due').value,notes=$('im-notes').value.trim(),discount=+$('im-discount').value||0;
   if(!clientName){toast('Enter client name','error');return;}
@@ -1323,6 +1349,7 @@ async function loadInvoices(){
         <td style="color:var(--text3)">${iv.dueDate||'—'}</td>
         <td><span class="tag ${statusCls}">${iv.status||'unpaid'}</span></td>
         <td style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">
+          <button class="mini-btn" onclick="editInv('${iid}')">✏ Edit</button>
           <button class="mini-btn" onclick="openPayModal('${iid}')">💰 Pay</button>
           <button class="mini-btn" onclick="printInv('${iid}')">🖨</button>
           <button class="mini-btn" onclick="emailInv('${iid}')">✉</button>
