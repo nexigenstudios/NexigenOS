@@ -438,7 +438,17 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
       <!-- SETTINGS -->
       <div class="page" id="page-settings">
         <div class="g2">
-          <div class="card"><div class="card-hdr"><span class="card-title">Profile</span></div><div class="card-body" style="display:flex;flex-direction:column;gap:12px"><div class="fg"><label>Display Name</label><input id="set-name" type="text" placeholder="Your name"/></div><button class="btn btn-primary" style="align-self:flex-start" onclick="saveProfile()">Save Changes</button></div></div>
+          <div class="card"><div class="card-hdr"><span class="card-title">Profile</span></div><div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+            <div class="fg"><label>Display Name</label><input id="set-name" type="text" placeholder="Your name"/></div>
+            <button class="btn btn-primary" style="align-self:flex-start" onclick="saveProfile()">Save Changes</button>
+          </div></div>
+          <div class="card"><div class="card-hdr"><span class="card-title">Change Password</span></div><div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+            <div class="fg"><label>Current Password</label><input id="set-cur-pass" type="password" placeholder="••••••••"/></div>
+            <div class="fg"><label>New Password</label><input id="set-new-pass" type="password" placeholder="Min 6 characters"/></div>
+            <div class="fg"><label>Confirm New Password</label><input id="set-conf-pass" type="password" placeholder="Re-enter new password"/></div>
+            <div id="pass-msg" style="display:none;font-size:12px;padding:8px 12px;border-radius:8px"></div>
+            <button class="btn btn-primary" style="align-self:flex-start" onclick="changePassword()">Update Password</button>
+          </div></div>
           <div class="card"><div class="card-hdr"><span class="card-title">Appearance</span></div><div class="card-body" style="display:flex;flex-direction:column;gap:12px">
             <div style="display:flex;align-items:center;justify-content:space-between">
               <div><div style="font-size:13px;font-weight:600;color:var(--text)">Dark Mode</div><div style="font-size:11px;color:var(--text3)">Saves to your profile</div></div>
@@ -1764,6 +1774,32 @@ async function loadAnalytics(){
 }
 
 // ── SETTINGS ──
+async function changePassword(){
+  const cur=$('set-cur-pass').value,np=$('set-new-pass').value,cp=$('set-conf-pass').value;
+  const msg=$('pass-msg');
+  const show=(text,ok)=>{msg.style.display='block';msg.style.background=ok?'#f0fdf4':'#fef2f2';msg.style.color=ok?'#065f46':'#991b1b';msg.style.border=`1px solid ${ok?'rgba(16,185,129,.3)':'rgba(239,68,68,.3)'}`;msg.textContent=text;};
+  if(!cur||!np||!cp){show('⚠ Please fill all fields.',false);return;}
+  if(np.length<6){show('⚠ New password must be at least 6 characters.',false);return;}
+  if(np!==cp){show('⚠ New passwords do not match.',false);return;}
+  try{
+    // Re-authenticate first
+    const cred=firebase.auth.EmailAuthProvider.credential(CU.email,cur);
+    await CU.reauthenticateWithCredential(cred);
+    await CU.updatePassword(np);
+    await logAudit('Staff','Changed own password');
+    show('✅ Password updated successfully!',true);
+    $('set-cur-pass').value='';$('set-new-pass').value='';$('set-conf-pass').value='';
+    setTimeout(()=>{msg.style.display='none';},3000);
+  }catch(e){
+    const m={
+      'auth/wrong-password':'⚠ Current password is incorrect.',
+      'auth/too-many-requests':'⚠ Too many attempts. Please try again later.',
+      'auth/requires-recent-login':'⚠ Session expired. Please sign out and sign in again.'
+    }[e.code]||'⚠ '+e.message;
+    show(m,false);
+  }
+}
+
 async function saveProfile(){
   const name=$('set-name').value.trim();if(!name){toast('Enter name','error');return;}
   try{await db.collection('users').doc(CU.uid).update({name});$('uname').textContent=name;$('uavatar').textContent=name.substring(0,2).toUpperCase();toast('Saved','success');}catch(e){toast(e.message,'error');}
