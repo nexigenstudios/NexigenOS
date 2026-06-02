@@ -1723,7 +1723,7 @@ async function addFeedback(){
 async function loadAnalytics(){
   try{
     const[ts2,ps,ss,us]=await Promise.all([db.collection('tasks').get(),db.collection('projects').get(),db.collection('invoices').get(),db.collection('users').get()]);
-    const tasks=ts2.docs.map(d=>d.data()),projs=ps.docs.map(d=>d.data()),invs=ss.docs.map(d=>d.data()),users=us.docs.map(d=>({...d.data(),id:us.docs[us.docs.indexOf(us.docs.find(x=>x.id===us.docs[us.docs.findIndex(y=>y.id===us.docs[0].id)].id))].id,...d.data()}));
+    const tasks=ts2.docs.map(d=>d.data()),projs=ps.docs.map(d=>d.data()),invs=ss.docs.map(d=>d.data());
     const uMap={};us.docs.forEach(d=>{uMap[d.id]=d.data().name||d.data().email;});
 
     const totalRev=invs.filter(i=>i.status==='paid').reduce((a,i)=>a+(+i.amount||0),0);
