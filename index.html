@@ -13,253 +13,209 @@
 :root{
   --accent:#2563EB;--accent-light:#EFF6FF;--accent-dark:#1d4ed8;
   --gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;
-  --gray-300:#64748b;--gray-400:#94a3b8;--gray-600:#475569;
-  --gray-800:#1e293b;--green:#10b981;--red:#ef4444;
-  --amber:#f59e0b;--purple:#8b5cf6;--sidebar-w:240px
+  --gray-400:#94a3b8;--gray-600:#475569;--gray-800:#1e293b;
+  --green:#10b981;--red:#ef4444;--amber:#f59e0b;--purple:#8b5cf6;
+  --sidebar-w:240px
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#1e293b;overflow:hidden;height:100vh}
-
-/* LOGIN */
-#login-screen{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#EFF6FF,#f1f5f9)}
-.login-card{background:#fff;border:1px solid var(--gray-200);border-radius:20px;padding:40px;width:380px;text-align:center;box-shadow:0 8px 40px rgba(37,99,235,.1)}
-.login-logo{width:60px;height:60px;margin:0 auto 16px;border-radius:14px;background:var(--accent);display:flex;align-items:center;justify-content:center}
-.login-logo svg{width:32px;height:32px}
-.login-title{font-size:22px;font-weight:800;margin-bottom:4px}
-.login-sub{font-size:13px;color:var(--gray-400);margin-bottom:28px}
-.inp-grp{margin-bottom:14px;text-align:left}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#1e293b;height:100vh;overflow:hidden}
+#login-screen{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#EFF6FF,#f1f5f9);padding:16px}
+.login-card{background:#fff;border:1px solid var(--gray-200);border-radius:20px;padding:36px 28px;width:100%;max-width:380px;text-align:center;box-shadow:0 8px 40px rgba(37,99,235,.1)}
+.login-logo{width:56px;height:56px;margin:0 auto 14px;border-radius:14px;background:var(--accent);display:flex;align-items:center;justify-content:center}
+.login-title{font-size:20px;font-weight:800;margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--gray-400);margin-bottom:24px}
+.inp-grp{margin-bottom:13px;text-align:left}
 .inp-grp label{font-size:11px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:5px}
-.inp-grp input{width:100%;background:#f8fafc;border:1px solid var(--gray-200);border-radius:10px;padding:11px 14px;font-size:13px;color:#1e293b;outline:none;transition:border .2s}
+.inp-grp input{width:100%;background:#f8fafc;border:1px solid var(--gray-200);border-radius:10px;padding:11px 14px;font-size:14px;color:#1e293b;outline:none;transition:border .2s}
 .inp-grp input:focus{border-color:var(--accent);background:#fff}
 #login-btn{width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px}
 #login-btn:hover{background:var(--accent-dark)}
-.login-note{font-size:11px;color:var(--gray-400);margin-top:14px;line-height:1.6}
-.login-note b{color:var(--gray-600)}
+.login-note{font-size:11px;color:var(--gray-400);margin-top:12px;line-height:1.6}
 #login-err{display:none;margin-top:12px;padding:10px 14px;background:#FEF2F2;border:1px solid rgba(239,68,68,.3);border-radius:8px;font-size:12px;color:#991b1b;text-align:left}
-
-/* FIRST-SETUP SCREEN */
-#setup-screen{position:fixed;inset:0;z-index:11;display:none;align-items:center;justify-content:center;background:linear-gradient(135deg,#EFF6FF,#f1f5f9)}
-.setup-card{background:#fff;border:1px solid var(--gray-200);border-radius:20px;padding:40px;width:400px;text-align:center;box-shadow:0 8px 40px rgba(37,99,235,.1)}
-.setup-badge{display:inline-block;padding:4px 12px;background:#ECFDF5;color:var(--green);border-radius:99px;font-size:11px;font-weight:700;margin-bottom:14px}
-
-/* APP */
-#app-screen{display:none;height:100vh;flex-direction:row}
-#sidebar{width:var(--sidebar-w);height:100vh;background:#fff;border-right:1px solid var(--gray-200);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
-.sidebar-logo{padding:18px 16px 14px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;gap:10px}
-.logo-icon{width:34px;height:34px;border-radius:9px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.logo-text{font-weight:700;font-size:14px}
-.logo-sub{font-size:10px;color:var(--gray-400)}
-.sidebar-nav{flex:1;overflow-y:auto;padding:10px 8px}
+#app-screen{display:none;height:100vh;flex-direction:row;position:relative}
+#sidebar{width:var(--sidebar-w);height:100vh;background:#fff;border-right:1px solid var(--gray-200);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;transition:transform .3s ease;z-index:200}
+.sidebar-logo{padding:16px 14px 12px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;gap:10px}
+.logo-icon{width:32px;height:32px;border-radius:9px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-text{font-weight:700;font-size:13px}.logo-sub{font-size:10px;color:var(--gray-400)}
+.sidebar-nav{flex:1;overflow-y:auto;padding:8px}
 .nav-sec{font-size:10px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.08em;padding:8px 10px 4px}
 .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--gray-600);transition:all .15s;margin-bottom:2px}
 .nav-item:hover{background:var(--accent-light);color:var(--accent)}
 .nav-item.active{background:var(--accent);color:#fff}
 .nav-icon{width:15px;height:15px;flex-shrink:0}
-.sidebar-foot{padding:10px 8px;border-top:1px solid var(--gray-200)}
-.user-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer}
-.user-row:hover{background:var(--gray-50)}
+.sidebar-foot{padding:8px;border-top:1px solid var(--gray-200)}
+.user-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px}
 .avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
-.uname{font-size:12px;font-weight:600}
-.urole{font-size:10px;color:var(--gray-400)}
+.uname{font-size:12px;font-weight:600}.urole{font-size:10px;color:var(--gray-400)}
 .logout-btn{margin-top:6px;width:100%;padding:8px;background:rgba(239,68,68,.08);color:var(--red);border:1px solid rgba(239,68,68,.2);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
 .logout-btn:hover{background:rgba(239,68,68,.15)}
-
-/* MAIN */
-#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-#topbar{height:54px;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--gray-200);display:flex;align-items:center;padding:0 22px;gap:14px;flex-shrink:0}
-.topbar-title{font-size:15px;font-weight:600;flex:1}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+#sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:199}
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+#topbar{height:52px;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--gray-200);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0}
+#menu-btn{display:none;width:34px;height:34px;border:1px solid var(--gray-200);border-radius:8px;background:#fff;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.topbar-title{font-size:14px;font-weight:600;flex:1}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s}
 .btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent-dark)}
 .btn-ghost{background:transparent;color:var(--gray-600);border:1px solid var(--gray-200)}.btn-ghost:hover{background:var(--gray-50)}
-.icon-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--gray-200);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--gray-600)}.icon-btn:hover{background:var(--gray-50)}
-#content{flex:1;overflow-y:auto;padding:22px;background:#f1f5f9}
-
-/* CARDS */
+.btn-danger{background:rgba(239,68,68,.08);color:var(--red);border:1px solid rgba(239,68,68,.2)}.btn-danger:hover{background:rgba(239,68,68,.15)}
+.icon-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--gray-200);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--gray-600)}
+#content{flex:1;overflow-y:auto;padding:16px;background:#f1f5f9}
 .card{background:#fff;border:1px solid var(--gray-200);border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
-.kpi-card{padding:16px 18px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.kpi-card{padding:14px 16px}
 .kpi-label{font-size:10px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em}
-.kpi-value{font-size:22px;font-weight:700;margin:4px 0 2px}
+.kpi-value{font-size:20px;font-weight:700;margin:4px 0 2px}
 .kpi-sub{font-size:11px;color:var(--gray-400)}
-.kpi-icon{float:right;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
-.g3{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:18px}
-.card-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--gray-200)}
+.kpi-icon{float:right;width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.g3{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:16px}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--gray-200);flex-wrap:wrap;gap:8px}
 .card-title{font-size:13px;font-weight:600}
-.card-body{padding:14px 18px}
-canvas{max-height:190px}
-
-/* TAGS */
+.card-body{padding:12px 16px}
+canvas{max-height:180px}
 .tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;display:inline-block}
-.t-blue{background:#EFF6FF;color:var(--accent)}
-.t-green{background:#ECFDF5;color:var(--green)}
-.t-amber{background:#FFFBEB;color:var(--amber)}
-.t-red{background:#FEF2F2;color:var(--red)}
+.t-blue{background:#EFF6FF;color:var(--accent)}.t-green{background:#ECFDF5;color:var(--green)}
+.t-amber{background:#FFFBEB;color:var(--amber)}.t-red{background:#FEF2F2;color:var(--red)}
 .t-purple{background:#F5F3FF;color:var(--purple)}
-
-/* ACTIVITY */
 .act-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--gray-200)}
 .act-item:last-child{border:none}
 .act-dot{width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0}
 .act-text{font-size:12px;color:var(--gray-600);line-height:1.5}
 .act-time{font-size:10px;color:var(--gray-400);margin-top:2px}
-
-/* KANBAN */
-.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.k-col{background:var(--gray-100);border:1px solid var(--gray-200);border-radius:12px;padding:12px;min-height:380px}
-.k-hdr{font-size:11px;font-weight:700;margin-bottom:10px;color:var(--gray-600)}
-.t-card{background:#fff;border:1px solid var(--gray-200);border-radius:10px;padding:11px;margin-bottom:8px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.kanban{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:10px;overflow-x:auto;padding-bottom:8px}
+.k-col{background:var(--gray-100);border:1px solid var(--gray-200);border-radius:12px;padding:10px;min-height:320px;min-width:180px}
+.k-hdr{font-size:11px;font-weight:700;margin-bottom:8px;color:var(--gray-600)}
+.t-card{background:#fff;border:1px solid var(--gray-200);border-radius:10px;padding:10px;margin-bottom:8px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
 .mini-btn{padding:3px 7px;border-radius:5px;border:1px solid var(--gray-200);background:#fff;color:var(--gray-600);font-size:10px;cursor:pointer}
 .mini-btn:hover{background:var(--gray-50)}
 .mini-del{color:var(--red);border-color:rgba(239,68,68,.3)}
-
-/* PROJECTS */
-.proj-card{padding:14px;margin-bottom:10px}
-.proj-name{font-size:13px;font-weight:700;margin-bottom:3px}
-.proj-meta{font-size:11px;color:var(--gray-400);margin-bottom:8px}
-.pbar{height:5px;background:var(--gray-200);border-radius:99px;overflow:hidden}
+.proj-card{padding:16px;margin-bottom:12px}
+.proj-name{font-size:14px;font-weight:700;margin-bottom:3px}
+.proj-meta{font-size:11px;color:var(--gray-400);margin-bottom:10px}
+.pbar{height:6px;background:var(--gray-200);border-radius:99px;overflow:hidden}
 .pfill{height:100%;border-radius:99px;background:var(--accent);transition:width .4s}
-
-/* TABLE */
-table{width:100%;border-collapse:collapse;font-size:12px}
-th{padding:9px 14px;text-align:left;color:var(--gray-400);font-weight:600;border-bottom:1px solid var(--gray-200);white-space:nowrap}
-td{padding:9px 14px;border-bottom:1px solid var(--gray-200);color:var(--gray-600)}
-tr:last-child td{border:none}
-tr:hover td{background:var(--gray-50)}
-
-/* PAGES */
+/* Daily updates */
+.update-item{padding:8px 0;border-bottom:1px solid var(--gray-100);font-size:12px}
+.update-item:last-child{border:none}
+.update-date{font-size:10px;color:var(--gray-400);margin-bottom:2px;font-weight:600}
+.update-text{color:var(--gray-600);line-height:1.5}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:520px}
+th{padding:9px 12px;text-align:left;color:var(--gray-400);font-weight:600;border-bottom:1px solid var(--gray-200);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--gray-200);color:var(--gray-600)}
+tr:last-child td{border:none}tr:hover td{background:var(--gray-50)}
 .page{display:none}.page.active{display:block}
-
-/* MODAL */
-.modal{display:none;position:fixed;inset:0;z-index:50;align-items:center;justify-content:center;background:rgba(15,23,42,.3);backdrop-filter:blur(3px)}
-.modal-box{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:26px;width:420px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.12)}
-.modal-title{font-size:15px;font-weight:700;margin-bottom:18px}
-.fg{margin-bottom:13px}
+.modal{display:none;position:fixed;inset:0;z-index:300;align-items:center;justify-content:center;background:rgba(15,23,42,.35);backdrop-filter:blur(3px);padding:16px}
+.modal-box{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:22px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.modal-title{font-size:15px;font-weight:700;margin-bottom:16px}
+.fg{margin-bottom:12px}
 .fg label{font-size:11px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px}
-.fg input,.fg select,.fg textarea{width:100%;background:#f8fafc;border:1px solid var(--gray-200);border-radius:8px;padding:9px 11px;font-size:12px;color:#1e293b;outline:none}
+.fg input,.fg select,.fg textarea{width:100%;background:#f8fafc;border:1px solid var(--gray-200);border-radius:8px;padding:9px 11px;font-size:13px;color:#1e293b;outline:none}
 .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent);background:#fff}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
-
-/* WP PANEL */
-#wp-panel{position:fixed;right:0;top:0;height:100vh;width:290px;background:#fff;border-left:1px solid var(--gray-200);z-index:100;transform:translateX(100%);transition:transform .3s ease;display:flex;flex-direction:column;box-shadow:-4px 0 24px rgba(0,0,0,.08)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+#wp-panel{position:fixed;right:0;top:0;height:100vh;width:270px;background:#fff;border-left:1px solid var(--gray-200);z-index:250;transform:translateX(100%);transition:transform .3s ease;display:flex;flex-direction:column;box-shadow:-4px 0 24px rgba(0,0,0,.08)}
 #wp-panel.open{transform:translateX(0)}
-.wp-hdr{padding:18px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:14px}
+.wp-hdr{padding:16px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:14px}
 .wp-body{flex:1;overflow-y:auto;padding:14px}
-.wp-sec{margin-bottom:18px}
+.wp-sec{margin-bottom:16px}
 .wp-sec h4{font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
 .wp-presets{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.wp-preset{height:52px;border-radius:9px;cursor:pointer;border:2px solid transparent;font-size:10px;font-weight:600;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4);display:flex;align-items:flex-end;padding:5px;transition:all .15s}
+.wp-preset{height:50px;border-radius:9px;cursor:pointer;border:2px solid transparent;font-size:10px;font-weight:600;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4);display:flex;align-items:flex-end;padding:5px;transition:all .15s}
 .wp-preset:hover{border-color:var(--accent)}
-
-/* TOAST */
-.toast{position:fixed;bottom:22px;right:22px;background:#fff;border:1px solid var(--gray-200);border-radius:10px;padding:11px 16px;font-size:13px;font-weight:500;color:#1e293b;z-index:9999;transform:translateY(16px);opacity:0;transition:all .3s;box-shadow:0 6px 24px rgba(0,0,0,.1)}
+.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.toast{position:fixed;bottom:16px;right:16px;left:16px;max-width:360px;margin:0 auto;background:#fff;border:1px solid var(--gray-200);border-radius:10px;padding:11px 16px;font-size:13px;font-weight:500;color:#1e293b;z-index:9999;transform:translateY(16px);opacity:0;transition:all .3s;box-shadow:0 6px 24px rgba(0,0,0,.1)}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.t-success{border-color:rgba(16,185,129,.4);background:#f0fdf4;color:#065f46}
 .toast.t-error{border-color:rgba(239,68,68,.4);background:#fef2f2;color:#991b1b}
 .toast.t-info{border-color:rgba(37,99,235,.3);background:#EFF6FF;color:#1e40af}
-
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:99px}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:99px}
+@media(max-width:768px){
+  body{overflow:auto}
+  #app-screen{overflow:hidden}
+  #sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);box-shadow:4px 0 24px rgba(0,0,0,.12)}
+  #sidebar.open{transform:translateX(0)}
+  #sidebar-overlay{display:block;opacity:0;pointer-events:none;transition:opacity .3s}
+  #sidebar-overlay.show{opacity:1;pointer-events:all}
+  #menu-btn{display:flex}
+  #content{padding:12px}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .g2,.g3{grid-template-columns:1fr}
+  .kanban{grid-template-columns:repeat(4,minmax(160px,1fr))}
+  .staff-grid{grid-template-columns:repeat(2,1fr)}
+  .modal-box{padding:18px}
+}
+@media(min-width:769px) and (max-width:1024px){
+  :root{--sidebar-w:200px}
+  .kpi-grid{grid-template-columns:repeat(3,1fr)}
+  .g3{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-card">
-    <div class="login-logo">
-      <svg viewBox="0 0 32 32" fill="none"><text x="16" y="23" text-anchor="middle" fill="white" font-size="20" font-weight="900" font-family="Arial">N</text></svg>
-    </div>
+    <div class="login-logo"><svg viewBox="0 0 32 32" fill="none"><text x="16" y="23" text-anchor="middle" fill="white" font-size="20" font-weight="900" font-family="Arial">N</text></svg></div>
     <div class="login-title">NexigenOS</div>
     <div class="login-sub">Internal Operating System · Nexigen Studios</div>
-    <div class="inp-grp"><label>Email Address</label><input id="li-email" type="email" placeholder="you@nexigenstudios.com"/></div>
-    <div class="inp-grp"><label>Password</label><input id="li-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-    <div id="login-err">⚠ Account not found. Contact your Admin to get access.</div>
+    <div class="inp-grp"><label>Email</label><input id="li-email" type="email" placeholder="you@nexigenstudios.com" autocomplete="email"/></div>
+    <div class="inp-grp"><label>Password</label><input id="li-pass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <div id="login-err"></div>
     <button id="login-btn" onclick="doLogin()">Sign In</button>
-    <div class="login-note"><b>Staff accounts</b> are created by the Admin only.<br/>If you don't have access, contact your administrator.</div>
+    <div class="login-note">Staff accounts are created by Admin only.</div>
   </div>
 </div>
 
-<!-- FIRST-TIME SETUP (shown only when no admin exists yet) -->
-<div id="setup-screen">
-  <div class="setup-card">
-    <div class="login-logo" style="margin-bottom:12px">
-      <svg viewBox="0 0 32 32" fill="none"><text x="16" y="23" text-anchor="middle" fill="white" font-size="20" font-weight="900" font-family="Arial">N</text></svg>
-    </div>
-    <div class="setup-badge">🎉 First-Time Setup</div>
-    <div class="login-title" style="margin-bottom:4px">Create Admin Account</div>
-    <div class="login-sub">This will be the master administrator account. No other account can be created from the login screen.</div>
-    <div class="inp-grp" style="text-align:left"><label>Full Name</label><input id="su-name" type="text" placeholder="Your full name"/></div>
-    <div class="inp-grp" style="text-align:left"><label>Email Address</label><input id="su-email" type="email" placeholder="admin@nexigenstudios.com"/></div>
-    <div class="inp-grp" style="text-align:left"><label>Password</label><input id="su-pass" type="password" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSetup()"/></div>
-    <button id="setup-btn" onclick="doSetup()" style="width:100%;padding:13px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px">Create Admin Account</button>
-    <div id="setup-err" style="display:none;margin-top:12px;padding:10px 14px;background:#FEF2F2;border:1px solid rgba(239,68,68,.3);border-radius:8px;font-size:12px;color:#991b1b;text-align:left"></div>
-  </div>
-</div>
-
-<!-- APP -->
-<div id="app-screen" style="display:none;flex-direction:row">
-
-  <!-- SIDEBAR -->
+<div id="app-screen">
+  <div id="sidebar-overlay" onclick="closeSidebar()"></div>
   <nav id="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-icon">
-        <svg viewBox="0 0 34 34" fill="none" width="22" height="22"><text x="17" y="24" text-anchor="middle" fill="white" font-size="18" font-weight="900" font-family="Arial">N</text></svg>
-      </div>
+      <div class="logo-icon"><svg viewBox="0 0 34 34" fill="none" width="20" height="20"><text x="17" y="24" text-anchor="middle" fill="white" font-size="18" font-weight="900" font-family="Arial">N</text></svg></div>
       <div><div class="logo-text">NexigenOS</div><div class="logo-sub">Nexigen Studios</div></div>
     </div>
     <div class="sidebar-nav">
       <div class="nav-sec">Overview</div>
       <div class="nav-item active" data-page="dashboard" onclick="nav('dashboard',this)">
-        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        Dashboard
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard
       </div>
       <div class="nav-sec">Work</div>
       <div class="nav-item" data-page="tasks" onclick="nav('tasks',this)">
-        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-        Tasks
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Tasks
       </div>
       <div class="nav-item" data-page="projects" onclick="nav('projects',this)">
-        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h12"/></svg>
-        Projects
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h12"/></svg>Projects
       </div>
       <div class="nav-sec admin-only">Business</div>
       <div class="nav-item admin-only" data-page="sales" onclick="nav('sales',this)">
-        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-        Sales
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Sales
       </div>
       <div class="nav-item admin-only" data-page="invoices" onclick="nav('invoices',this)">
-        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        Invoices
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Invoices
       </div>
       <div class="nav-item" data-page="feedback" onclick="nav('feedback',this)">
-        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-        Feedback
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Feedback
       </div>
       <div class="nav-sec admin-only">Admin</div>
       <div class="nav-item admin-only" data-page="staff" onclick="nav('staff',this)">
-        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-        Staff
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Staff
       </div>
       <div class="nav-item admin-only" data-page="analytics" onclick="nav('analytics',this)">
-        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Analytics
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Analytics
       </div>
       <div class="nav-item" data-page="settings" onclick="nav('settings',this)">
-        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-        Settings
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings
       </div>
     </div>
     <div class="sidebar-foot">
-      <div class="user-row">
-        <div class="avatar" id="uavatar">?</div>
-        <div><div class="uname" id="uname">—</div><div class="urole" id="urole">—</div></div>
-      </div>
+      <div class="user-row"><div class="avatar" id="uavatar">?</div><div><div class="uname" id="uname">—</div><div class="urole" id="urole">—</div></div></div>
       <button class="logout-btn" onclick="doLogout()">Sign Out</button>
     </div>
   </nav>
 
-  <!-- MAIN -->
   <div id="main">
     <div id="topbar">
+      <button id="menu-btn" onclick="toggleSidebar()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
       <span class="topbar-title" id="page-title">Dashboard</span>
       <div style="display:flex;gap:8px">
         <div class="icon-btn" onclick="toggleWP()" title="Wallpaper">
@@ -271,44 +227,38 @@ tr:hover td{background:var(--gray-50)}
 
       <!-- DASHBOARD -->
       <div class="page active" id="page-dashboard">
-        <div class="kpi-grid">
-          <div class="card kpi-card">
-            <div class="kpi-icon" style="background:#EFF6FF"><svg width="16" height="16" fill="none" stroke="#2563EB" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
-            <div class="kpi-label">Total Revenue</div><div class="kpi-value" id="k-rev">—</div><div class="kpi-sub">Paid invoices</div>
-          </div>
-          <div class="card kpi-card">
-            <div class="kpi-icon" style="background:#FFFBEB"><svg width="16" height="16" fill="none" stroke="#f59e0b" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-            <div class="kpi-label">Pending Payments</div><div class="kpi-value" id="k-pend">—</div><div class="kpi-sub">Unpaid invoices</div>
-          </div>
-          <div class="card kpi-card">
-            <div class="kpi-icon" style="background:#F5F3FF"><svg width="16" height="16" fill="none" stroke="#8b5cf6" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h12"/></svg></div>
-            <div class="kpi-label">Active Projects</div><div class="kpi-value" id="k-proj">—</div><div class="kpi-sub">In progress</div>
-          </div>
-          <div class="card kpi-card">
-            <div class="kpi-icon" style="background:#FEF2F2"><svg width="16" height="16" fill="none" stroke="#ef4444" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
-            <div class="kpi-label">Pending Tasks</div><div class="kpi-value" id="k-tasks">—</div><div class="kpi-sub">Open tasks</div>
-          </div>
-          <div class="card kpi-card">
-            <div class="kpi-icon" style="background:#ECFDF5"><svg width="16" height="16" fill="none" stroke="#10b981" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8z"/></svg></div>
-            <div class="kpi-label">Team Members</div><div class="kpi-value" id="k-staff">—</div><div class="kpi-sub">Active staff</div>
-          </div>
+        <div class="kpi-grid admin-only">
+          <div class="card kpi-card"><div class="kpi-icon" style="background:#EFF6FF"><svg width="15" height="15" fill="none" stroke="#2563EB" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><div class="kpi-label">Revenue</div><div class="kpi-value" id="k-rev">—</div><div class="kpi-sub">Paid invoices</div></div>
+          <div class="card kpi-card"><div class="kpi-icon" style="background:#FFFBEB"><svg width="15" height="15" fill="none" stroke="#f59e0b" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="kpi-label">Pending</div><div class="kpi-value" id="k-pend">—</div><div class="kpi-sub">Unpaid invoices</div></div>
+          <div class="card kpi-card"><div class="kpi-icon" style="background:#F5F3FF"><svg width="15" height="15" fill="none" stroke="#8b5cf6" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h12"/></svg></div><div class="kpi-label">Projects</div><div class="kpi-value" id="k-proj">—</div><div class="kpi-sub">Active</div></div>
+          <div class="card kpi-card"><div class="kpi-icon" style="background:#FEF2F2"><svg width="15" height="15" fill="none" stroke="#ef4444" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/></svg></div><div class="kpi-label">Open Tasks</div><div class="kpi-value" id="k-tasks">—</div><div class="kpi-sub">Pending</div></div>
+          <div class="card kpi-card"><div class="kpi-icon" style="background:#ECFDF5"><svg width="15" height="15" fill="none" stroke="#10b981" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8z"/></svg></div><div class="kpi-label">Team</div><div class="kpi-value" id="k-staff">—</div><div class="kpi-sub">Active staff</div></div>
         </div>
-        <div class="g3">
+        <div class="kpi-grid staff-only" style="display:none">
+          <div class="card kpi-card"><div class="kpi-label">My Open Tasks</div><div class="kpi-value" id="sk-tasks">—</div></div>
+          <div class="card kpi-card"><div class="kpi-label">Done Tasks</div><div class="kpi-value" id="sk-done">—</div></div>
+          <div class="card kpi-card"><div class="kpi-label">My Projects</div><div class="kpi-value" id="sk-proj">—</div></div>
+        </div>
+        <div class="g3 admin-only">
           <div class="card"><div class="card-hdr"><span class="card-title">Monthly Revenue</span></div><div class="card-body"><canvas id="revChart"></canvas></div></div>
-          <div class="card"><div class="card-hdr"><span class="card-title">Task Status</span></div><div class="card-body" style="display:flex;align-items:center;justify-content:center"><canvas id="donutChart" style="max-height:160px"></canvas></div></div>
+          <div class="card"><div class="card-hdr"><span class="card-title">Task Status</span></div><div class="card-body" style="display:flex;align-items:center;justify-content:center"><canvas id="donutChart" style="max-height:150px"></canvas></div></div>
         </div>
-        <div class="card"><div class="card-hdr"><span class="card-title">Recent Activity</span></div><div class="card-body" style="padding-top:8px;padding-bottom:8px" id="activity-feed"><div style="color:var(--gray-400);font-size:12px">Loading…</div></div></div>
+        <div class="g2 staff-only" style="display:none">
+          <div class="card"><div class="card-hdr"><span class="card-title">My Task Status</span></div><div class="card-body" style="display:flex;align-items:center;justify-content:center"><canvas id="staffDonut" style="max-height:150px"></canvas></div></div>
+          <div class="card"><div class="card-hdr"><span class="card-title">My Recent Tasks</span></div><div class="card-body" id="staff-activity"></div></div>
+        </div>
+        <div class="card admin-only"><div class="card-hdr"><span class="card-title">Recent Activity</span></div><div class="card-body" id="activity-feed"><div style="color:var(--gray-400);font-size:12px">Loading…</div></div></div>
       </div>
 
       <!-- STAFF -->
       <div class="page" id="page-staff">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn btn-primary admin-only" onclick="showM('staff-modal')">+ Add Staff</button></div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px" id="staff-list"><div style="color:var(--gray-400);padding:16px">Loading…</div></div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-primary" onclick="showM('staff-modal')">+ Add Staff</button></div>
+        <div class="staff-grid" id="staff-list"></div>
       </div>
 
       <!-- TASKS -->
       <div class="page" id="page-tasks">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn btn-primary admin-only" onclick="openTaskM()">+ New Task</button></div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:12px" id="task-add-bar"></div>
         <div class="kanban">
           <div class="k-col"><div class="k-hdr">📋 TO DO</div><div id="col-pending"></div></div>
           <div class="k-col"><div class="k-hdr" style="color:var(--amber)">▶ IN PROGRESS</div><div id="col-working"></div></div>
@@ -319,20 +269,20 @@ tr:hover td{background:var(--gray-50)}
 
       <!-- PROJECTS -->
       <div class="page" id="page-projects">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn btn-primary admin-only" onclick="showM('proj-modal')">+ New Project</button></div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:12px" id="proj-add-bar"></div>
         <div id="proj-list"></div>
       </div>
 
       <!-- SALES -->
       <div class="page" id="page-sales">
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px">
           <div class="card kpi-card"><div class="kpi-label">Total Sales</div><div class="kpi-value" id="s-total">—</div></div>
           <div class="card kpi-card"><div class="kpi-label">Paid</div><div class="kpi-value" style="color:var(--green)" id="s-paid">—</div></div>
           <div class="card kpi-card"><div class="kpi-label">Pending</div><div class="kpi-value" style="color:var(--amber)" id="s-pend">—</div></div>
         </div>
         <div class="card">
-          <div class="card-hdr"><span class="card-title">Sales Records</span><button class="btn btn-primary admin-only" onclick="showM('sale-modal')">+ Add Sale</button></div>
-          <div style="overflow-x:auto"><table><thead><tr><th>Client</th><th>Service</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="sales-tbody"></tbody></table></div>
+          <div class="card-hdr"><span class="card-title">Sales Records</span><button class="btn btn-primary" onclick="showM('sale-modal')">+ Add Sale</button></div>
+          <div class="table-wrap"><table><thead><tr><th>Client</th><th>Service</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="sales-tbody"></tbody></table></div>
         </div>
       </div>
 
@@ -340,19 +290,19 @@ tr:hover td{background:var(--gray-50)}
       <div class="page" id="page-invoices">
         <div class="card">
           <div class="card-hdr"><span class="card-title">Invoices</span><span style="font-size:11px;color:var(--gray-400)">Auto-generated from sales</span></div>
-          <div style="overflow-x:auto"><table><thead><tr><th>Invoice ID</th><th>Client</th><th>Service</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead><tbody id="inv-tbody"></tbody></table></div>
+          <div class="table-wrap"><table><thead><tr><th>Invoice ID</th><th>Client</th><th>Service</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead><tbody id="inv-tbody"></tbody></table></div>
         </div>
       </div>
 
       <!-- FEEDBACK -->
       <div class="page" id="page-feedback">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn btn-primary" onclick="showM('fb-modal')">+ Add Feedback</button></div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-primary" onclick="showM('fb-modal')">+ Add Feedback</button></div>
         <div id="fb-list"></div>
       </div>
 
       <!-- ANALYTICS -->
       <div class="page" id="page-analytics">
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px">
           <div class="card kpi-card"><div class="kpi-label">All-Time Revenue</div><div class="kpi-value" id="an-rev">—</div></div>
           <div class="card kpi-card"><div class="kpi-label">Pending Invoices</div><div class="kpi-value" style="color:var(--amber)" id="an-pinv">—</div></div>
           <div class="card kpi-card"><div class="kpi-label">Active Projects</div><div class="kpi-value" id="an-aproj">—</div></div>
@@ -366,26 +316,15 @@ tr:hover td{background:var(--gray-50)}
       <!-- SETTINGS -->
       <div class="page" id="page-settings">
         <div class="g2">
-          <div class="card">
-            <div class="card-hdr"><span class="card-title">Profile</span></div>
-            <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
-              <div class="fg"><label>Display Name</label><input id="set-name" type="text" placeholder="Your name"/></div>
-              <button class="btn btn-primary" style="align-self:flex-start" onclick="saveProfile()">Save Changes</button>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-hdr"><span class="card-title">Wallpaper</span><button class="btn btn-ghost" onclick="toggleWP()">Open →</button></div>
-            <div class="card-body">
-              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
-                <div onclick="applyWP('#f1f5f9')" style="height:44px;border-radius:8px;background:#f1f5f9;border:2px solid var(--gray-200);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gray-400)">Default</div>
-                <div onclick="applyWP('linear-gradient(135deg,#667eea,#764ba2)')" style="height:44px;border-radius:8px;background:linear-gradient(135deg,#667eea,#764ba2);cursor:pointer;border:2px solid transparent"></div>
-                <div onclick="applyWP('linear-gradient(160deg,#2563EB,#06b6d4)')" style="height:44px;border-radius:8px;background:linear-gradient(160deg,#2563EB,#06b6d4);cursor:pointer;border:2px solid transparent"></div>
-                <div onclick="applyWP('linear-gradient(135deg,#f093fb,#f5576c)')" style="height:44px;border-radius:8px;background:linear-gradient(135deg,#f093fb,#f5576c);cursor:pointer;border:2px solid transparent"></div>
-                <div onclick="applyWP('linear-gradient(135deg,#84fab0,#8fd3f4)')" style="height:44px;border-radius:8px;background:linear-gradient(135deg,#84fab0,#8fd3f4);cursor:pointer;border:2px solid transparent"></div>
-                <div onclick="applyWP('linear-gradient(135deg,#ffecd2,#fcb69f)')" style="height:44px;border-radius:8px;background:linear-gradient(135deg,#ffecd2,#fcb69f);cursor:pointer;border:2px solid transparent"></div>
-              </div>
-            </div>
-          </div>
+          <div class="card"><div class="card-hdr"><span class="card-title">Profile</span></div><div class="card-body" style="display:flex;flex-direction:column;gap:12px"><div class="fg"><label>Display Name</label><input id="set-name" type="text" placeholder="Your name"/></div><button class="btn btn-primary" style="align-self:flex-start" onclick="saveProfile()">Save Changes</button></div></div>
+          <div class="card"><div class="card-hdr"><span class="card-title">Wallpaper</span><button class="btn btn-ghost" onclick="toggleWP()">Open →</button></div><div class="card-body"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
+            <div onclick="applyWP('#f1f5f9')" style="height:40px;border-radius:8px;background:#f1f5f9;border:2px solid var(--gray-200);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gray-400)">Default</div>
+            <div onclick="applyWP('linear-gradient(135deg,#667eea,#764ba2)')" style="height:40px;border-radius:8px;background:linear-gradient(135deg,#667eea,#764ba2);cursor:pointer;border:2px solid transparent"></div>
+            <div onclick="applyWP('linear-gradient(160deg,#2563EB,#06b6d4)')" style="height:40px;border-radius:8px;background:linear-gradient(160deg,#2563EB,#06b6d4);cursor:pointer;border:2px solid transparent"></div>
+            <div onclick="applyWP('linear-gradient(135deg,#f093fb,#f5576c)')" style="height:40px;border-radius:8px;background:linear-gradient(135deg,#f093fb,#f5576c);cursor:pointer;border:2px solid transparent"></div>
+            <div onclick="applyWP('linear-gradient(135deg,#84fab0,#8fd3f4)')" style="height:40px;border-radius:8px;background:linear-gradient(135deg,#84fab0,#8fd3f4);cursor:pointer;border:2px solid transparent"></div>
+            <div onclick="applyWP('linear-gradient(135deg,#ffecd2,#fcb69f)')" style="height:40px;border-radius:8px;background:linear-gradient(135deg,#ffecd2,#fcb69f);cursor:pointer;border:2px solid transparent"></div>
+          </div></div></div>
         </div>
       </div>
 
@@ -397,28 +336,24 @@ tr:hover td{background:var(--gray-50)}
 <div id="wp-panel">
   <div class="wp-hdr"><span>🎨 Wallpaper</span><button onclick="toggleWP()" style="background:none;border:1px solid var(--gray-200);border-radius:6px;cursor:pointer;padding:3px 8px;color:var(--gray-600)">✕</button></div>
   <div class="wp-body">
-    <div class="wp-sec"><h4>Presets</h4>
-      <div class="wp-presets">
-        <div class="wp-preset" style="background:linear-gradient(135deg,#667eea,#764ba2)" onclick="applyWP('linear-gradient(135deg,#667eea,#764ba2)')">Aurora</div>
-        <div class="wp-preset" style="background:linear-gradient(160deg,#2563EB,#06b6d4)" onclick="applyWP('linear-gradient(160deg,#2563EB,#06b6d4)')">Ocean</div>
-        <div class="wp-preset" style="background:linear-gradient(135deg,#f093fb,#f5576c)" onclick="applyWP('linear-gradient(135deg,#f093fb,#f5576c)')">Rose</div>
-        <div class="wp-preset" style="background:linear-gradient(135deg,#84fab0,#8fd3f4)" onclick="applyWP('linear-gradient(135deg,#84fab0,#8fd3f4)')">Mint</div>
-        <div class="wp-preset" style="background:linear-gradient(135deg,#ffecd2,#fcb69f)" onclick="applyWP('linear-gradient(135deg,#ffecd2,#fcb69f)')">Peach</div>
-        <div class="wp-preset" style="background:#f1f5f9;border:1px solid var(--gray-200);color:var(--gray-600);text-shadow:none" onclick="applyWP('#f1f5f9')">Default</div>
-      </div>
-    </div>
-    <div class="wp-sec"><h4>Custom Color</h4>
-      <input type="color" value="#f1f5f9" onchange="applyWP(this.value)" style="width:100%;height:40px;border-radius:8px;border:1px solid var(--gray-200);cursor:pointer;background:#fff"/>
-    </div>
+    <div class="wp-sec"><h4>Presets</h4><div class="wp-presets">
+      <div class="wp-preset" style="background:linear-gradient(135deg,#667eea,#764ba2)" onclick="applyWP('linear-gradient(135deg,#667eea,#764ba2)')">Aurora</div>
+      <div class="wp-preset" style="background:linear-gradient(160deg,#2563EB,#06b6d4)" onclick="applyWP('linear-gradient(160deg,#2563EB,#06b6d4)')">Ocean</div>
+      <div class="wp-preset" style="background:linear-gradient(135deg,#f093fb,#f5576c)" onclick="applyWP('linear-gradient(135deg,#f093fb,#f5576c)')">Rose</div>
+      <div class="wp-preset" style="background:linear-gradient(135deg,#84fab0,#8fd3f4)" onclick="applyWP('linear-gradient(135deg,#84fab0,#8fd3f4)')">Mint</div>
+      <div class="wp-preset" style="background:linear-gradient(135deg,#ffecd2,#fcb69f)" onclick="applyWP('linear-gradient(135deg,#ffecd2,#fcb69f)')">Peach</div>
+      <div class="wp-preset" style="background:#f1f5f9;border:1px solid var(--gray-200);color:var(--gray-600);text-shadow:none" onclick="applyWP('#f1f5f9')">Default</div>
+    </div></div>
+    <div class="wp-sec"><h4>Custom Color</h4><input type="color" value="#f1f5f9" onchange="applyWP(this.value)" style="width:100%;height:40px;border-radius:8px;border:1px solid var(--gray-200);cursor:pointer"/></div>
   </div>
 </div>
 
 <!-- MODALS -->
 <div class="modal" id="staff-modal"><div class="modal-box">
   <div class="modal-title">Add Staff Member</div>
-  <div style="padding:10px 14px;background:#EFF6FF;border:1px solid rgba(37,99,235,.2);border-radius:8px;font-size:12px;color:#1e40af;margin-bottom:16px">🔐 Only admins can create accounts. The new member will receive their credentials from you directly.</div>
-  <div class="fg"><label>Full Name</label><input id="sm-name" type="text" placeholder="Jane Smith"/></div>
-  <div class="fg"><label>Email</label><input id="sm-email" type="email" placeholder="jane@nexigenstudios.com"/></div>
+  <div style="padding:9px 12px;background:#EFF6FF;border:1px solid rgba(37,99,235,.2);border-radius:8px;font-size:12px;color:#1e40af;margin-bottom:14px">🔐 Share credentials with the new member directly.</div>
+  <div class="fg"><label>Full Name</label><input id="sm-name" type="text"/></div>
+  <div class="fg"><label>Email</label><input id="sm-email" type="email"/></div>
   <div class="fg"><label>Initial Password</label><input id="sm-pass" type="password" placeholder="Min 6 characters"/></div>
   <div class="fg"><label>Role</label><select id="sm-role"><option value="staff">Staff</option><option value="admin">Admin</option></select></div>
   <div class="modal-actions"><button class="btn btn-ghost" onclick="hideM('staff-modal')">Cancel</button><button class="btn btn-primary" onclick="addStaff()">Create Account</button></div>
@@ -426,301 +361,206 @@ tr:hover td{background:var(--gray-50)}
 
 <div class="modal" id="task-modal"><div class="modal-box">
   <div class="modal-title">Create Task</div>
-  <div class="fg"><label>Task Title</label><input id="tm-title" type="text" placeholder="e.g. Setup Prisma schema"/></div>
+  <div class="fg"><label>Task Title</label><input id="tm-title" type="text"/></div>
   <div class="fg"><label>Assign To</label><select id="tm-assign"><option value="">Select staff…</option></select></div>
   <div class="fg"><label>Priority</label><select id="tm-pri"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option><option value="critical">Critical</option></select></div>
   <div class="fg"><label>Deadline</label><input id="tm-deadline" type="date"/></div>
   <div class="modal-actions"><button class="btn btn-ghost" onclick="hideM('task-modal')">Cancel</button><button class="btn btn-primary" onclick="addTask()">Create</button></div>
 </div></div>
 
+<!-- PROJECT MODAL - full featured -->
 <div class="modal" id="proj-modal"><div class="modal-box">
-  <div class="modal-title">New Project</div>
-  <div class="fg"><label>Project Name</label><input id="pm-name" type="text" placeholder="Client Portal v2"/></div>
-  <div class="fg"><label>Client Name</label><input id="pm-client" type="text" placeholder="Acme Corp"/></div>
-  <div class="modal-actions"><button class="btn btn-ghost" onclick="hideM('proj-modal')">Cancel</button><button class="btn btn-primary" onclick="addProject()">Create</button></div>
+  <div class="modal-title" id="proj-modal-title">New Project</div>
+  <div class="fg"><label>Project Name</label><input id="pm-name" type="text" placeholder="e.g. E-Commerce Platform"/></div>
+  <div class="fg"><label>Client Name</label><input id="pm-client" type="text" placeholder="Client or Company Name"/></div>
+  <div class="fg"><label>Client Email (optional)</label><input id="pm-cemail" type="email" placeholder="client@company.com"/></div>
+  <div class="fg"><label>Project Type</label><select id="pm-type"><option value="Web Development">Web Development</option><option value="Mobile App">Mobile App</option><option value="UI/UX Design">UI/UX Design</option><option value="E-Commerce">E-Commerce</option><option value="Branding">Branding</option><option value="SEO / Digital Marketing">SEO / Digital Marketing</option><option value="Other">Other</option></select></div>
+  <div class="fg"><label>Assign To (Staff)</label><select id="pm-assign"><option value="">Unassigned</option></select></div>
+  <div class="fg"><label>Start Date</label><input id="pm-start" type="date"/></div>
+  <div class="fg"><label>Deadline</label><input id="pm-deadline" type="date"/></div>
+  <div class="fg"><label>Budget (₹)</label><input id="pm-budget" type="number" placeholder="0"/></div>
+  <div class="fg"><label>Description / Scope</label><textarea id="pm-desc" rows="3" placeholder="Brief project description…"></textarea></div>
+  <div class="fg"><label>Priority</label><select id="pm-priority"><option value="normal">Normal</option><option value="high">High</option><option value="urgent">Urgent</option></select></div>
+  <input type="hidden" id="pm-edit-id"/>
+  <div class="modal-actions"><button class="btn btn-ghost" onclick="hideM('proj-modal')">Cancel</button><button class="btn btn-primary" onclick="saveProject()">Save Project</button></div>
+</div></div>
+
+<!-- DAILY UPDATE MODAL -->
+<div class="modal" id="update-modal"><div class="modal-box">
+  <div class="modal-title">Add Daily Update</div>
+  <input type="hidden" id="um-proj-id"/>
+  <div class="fg"><label>Date</label><input id="um-date" type="date"/></div>
+  <div class="fg"><label>Update / Progress Note</label><textarea id="um-note" rows="4" placeholder="What was done today? Any blockers?"></textarea></div>
+  <div class="fg"><label>Progress % (after this update)</label><input id="um-progress" type="number" min="0" max="100" placeholder="e.g. 65"/></div>
+  <div class="modal-actions"><button class="btn btn-ghost" onclick="hideM('update-modal')">Cancel</button><button class="btn btn-primary" onclick="addDailyUpdate()">Post Update</button></div>
 </div></div>
 
 <div class="modal" id="sale-modal"><div class="modal-box">
   <div class="modal-title">Add Sale</div>
-  <div class="fg"><label>Client Name</label><input id="sam-client" type="text" placeholder="Client name"/></div>
+  <div class="fg"><label>Client Name</label><input id="sam-client" type="text"/></div>
   <div class="fg"><label>Service</label><input id="sam-service" type="text" placeholder="e.g. Website Development"/></div>
-  <div class="fg"><label>Amount (INR)</label><input id="sam-amount" type="number" placeholder="50000"/></div>
+  <div class="fg"><label>Amount (₹)</label><input id="sam-amount" type="number"/></div>
   <div class="fg"><label>Payment Status</label><select id="sam-status"><option value="pending">Pending</option><option value="partial">Partial</option><option value="paid">Paid</option></select></div>
   <div class="modal-actions"><button class="btn btn-ghost" onclick="hideM('sale-modal')">Cancel</button><button class="btn btn-primary" onclick="addSale()">Add & Generate Invoice</button></div>
 </div></div>
 
 <div class="modal" id="fb-modal"><div class="modal-box">
   <div class="modal-title">Add Client Feedback</div>
-  <div class="fg"><label>Client Name</label><input id="fbm-client" type="text" placeholder="Client name"/></div>
+  <div class="fg"><label>Client Name</label><input id="fbm-client" type="text"/></div>
   <div class="fg"><label>Rating</label><select id="fbm-rating"><option value="5">⭐⭐⭐⭐⭐ Excellent</option><option value="4">⭐⭐⭐⭐ Good</option><option value="3">⭐⭐⭐ Average</option><option value="2">⭐⭐ Poor</option><option value="1">⭐ Very Poor</option></select></div>
-  <div class="fg"><label>Project (optional)</label><input id="fbm-proj" type="text" placeholder="Project name"/></div>
-  <div class="fg"><label>Comment</label><textarea id="fbm-comment" rows="3" placeholder="Client's feedback…"></textarea></div>
+  <div class="fg"><label>Project (optional)</label><input id="fbm-proj" type="text"/></div>
+  <div class="fg"><label>Comment</label><textarea id="fbm-comment" rows="3"></textarea></div>
   <div class="modal-actions"><button class="btn btn-ghost" onclick="hideM('fb-modal')">Cancel</button><button class="btn btn-primary" onclick="addFeedback()">Submit</button></div>
 </div></div>
 
 <script>
-// ── FIREBASE ──
 const firebaseConfig={apiKey:"AIzaSyCr8wnvIUZlegrd5W_3hsXNgK-BzYjk1wA",authDomain:"nexigenos.firebaseapp.com",projectId:"nexigenos",storageBucket:"nexigenos.firebasestorage.app",messagingSenderId:"579141932654",appId:"1:579141932654:web:d022c97ac32d21f2a0f87f"};
 firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();
-const db=firebase.firestore();
-
-// ── STATE ──
-let CU=null,CR=null,revChart=null,donutCh=null,anChart=null;
+const auth=firebase.auth(),db=firebase.firestore();
+let CU=null,CR=null,revChart=null,donutCh=null,staffDonutCh=null,anChart=null;
 const $=id=>document.getElementById(id);
 const fmtMoney=n=>'₹'+Number(n).toLocaleString('en-IN');
 const genId=()=>'INV-'+Date.now().toString(36).toUpperCase();
+const today=()=>new Date().toISOString().split('T')[0];
 
-// ── TOAST ──
-function toast(msg,type='info'){
-  const t=document.createElement('div');
-  t.className='toast t-'+type;t.textContent=msg;
-  document.body.appendChild(t);
-  setTimeout(()=>t.classList.add('show'),10);
-  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400)},3500);
-}
-
-// ── MODAL ──
+function toast(msg,type='info'){const t=document.createElement('div');t.className='toast t-'+type;t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.classList.add('show'),10);setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400)},3500);}
 function showM(id){$(id).style.display='flex';}
 function hideM(id){$(id).style.display='none';}
+function toggleSidebar(){$('sidebar').classList.toggle('open');$('sidebar-overlay').classList.toggle('show');}
+function closeSidebar(){$('sidebar').classList.remove('open');$('sidebar-overlay').classList.remove('show');}
 
-// ─────────────────────────────────────────────
-// AUTH FLOW
-// Logic:
-//  1. On page load: check Firestore for any existing admin.
-//     • None found → show first-time setup screen.
-//     • Found → show normal login screen.
-//  2. Login screen: ONLY signs in existing users. Never auto-creates.
-//     • Firebase errors map to friendly "Contact admin" message.
-//  3. After successful sign-in: verify the user doc exists in Firestore.
-//     • If the doc doesn't exist → sign them out + show "contact admin".
-//  4. Only Admins (via addStaff modal) can create new Firebase Auth users.
-// ─────────────────────────────────────────────
-
-async function checkFirstRun(){
-  try{
-    const snap=await db.collection('users').where('role','==','admin').limit(1).get();
-    if(snap.empty){
-      // No admin yet — show setup screen
-      $('login-screen').style.display='none';
-      $('setup-screen').style.display='flex';
-    }
-    // else: normal login screen is already shown (default)
-  }catch(e){
-    // Firestore might be cold; fall back to normal login
-    console.warn('checkFirstRun error',e);
-  }
-}
-checkFirstRun();
-
-// ── FIRST-TIME SETUP ──
-async function doSetup(){
-  const name=$('su-name').value.trim();
-  const email=$('su-email').value.trim();
-  const pass=$('su-pass').value.trim();
-  const errEl=$('setup-err');
-  errEl.style.display='none';
-  if(!name||!email||!pass){errEl.textContent='Please fill in all fields.';errEl.style.display='block';return;}
-  if(pass.length<6){errEl.textContent='Password must be at least 6 characters.';errEl.style.display='block';return;}
-  $('setup-btn').textContent='Creating…';$('setup-btn').disabled=true;
-  try{
-    // Double-check no admin slipped in
-    const existing=await db.collection('users').where('role','==','admin').limit(1).get();
-    if(!existing.empty){
-      errEl.textContent='An admin already exists. Please use the login screen.';
-      errEl.style.display='block';
-      $('setup-screen').style.display='none';
-      $('login-screen').style.display='flex';
-      return;
-    }
-    const cred=await auth.createUserWithEmailAndPassword(email,pass);
-    await db.collection('users').doc(cred.user.uid).set({
-      uid:cred.user.uid,name,email,role:'admin',status:'active',
-      createdAt:firebase.firestore.FieldValue.serverTimestamp()
-    });
-    toast('Admin account created! Welcome, '+name,'success');
-    $('setup-screen').style.display='none';
-  }catch(e){
-    errEl.textContent=e.message;errEl.style.display='block';
-  }
-  $('setup-btn').textContent='Create Admin Account';$('setup-btn').disabled=false;
-}
-
-// ── LOGIN (sign-in only — no self-registration) ──
 async function doLogin(){
-  const email=$('li-email').value.trim();
-  const pass=$('li-pass').value.trim();
-  const errEl=$('login-err');
+  const email=$('li-email').value.trim(),pass=$('li-pass').value.trim(),errEl=$('login-err');
   errEl.style.display='none';
   if(!email||!pass){errEl.style.display='block';errEl.textContent='⚠ Please enter your email and password.';return;}
   $('login-btn').textContent='Signing in…';$('login-btn').disabled=true;
-  try{
-    await auth.signInWithEmailAndPassword(email,pass);
-    // onAuthStateChanged handles the rest
-  }catch(e){
-    // All Firebase auth errors → friendly message; never leak details or offer registration
-    errEl.style.display='block';
-    errEl.textContent='⚠ Account not found or incorrect password. Contact your Admin to get access.';
-  }
+  try{await auth.signInWithEmailAndPassword(email,pass);}
+  catch(e){errEl.style.display='block';errEl.textContent='⚠ Account not found or incorrect password. Contact your Admin.';}
   $('login-btn').textContent='Sign In';$('login-btn').disabled=false;
 }
-
 function doLogout(){auth.signOut();}
 
-// ── AUTH STATE ──
 auth.onAuthStateChanged(async user=>{
   if(user){
-    // Verify user exists in our Firestore users collection
-    let snap;
-    try{snap=await db.collection('users').doc(user.uid).get();}catch(e){await auth.signOut();return;}
-    if(!snap||!snap.exists){
-      // Firebase Auth account exists but no Firestore record → reject
-      await auth.signOut();
-      $('login-err').style.display='block';
-      $('login-err').textContent='⚠ Your account is not registered in the system. Contact your Admin.';
-      return;
-    }
-    CU=user;
-    const d=snap.data();
-    CR=d.role;
-    $('uname').textContent=d.name||d.email;
-    $('urole').textContent=d.role;
+    let snap;try{snap=await db.collection('users').doc(user.uid).get();}catch(e){await auth.signOut();return;}
+    if(!snap||!snap.exists){await auth.signOut();const e=$('login-err');e.style.display='block';e.textContent='⚠ Not registered. Contact Admin.';return;}
+    CU=user;const d=snap.data();CR=d.role;
+    $('uname').textContent=d.name||d.email;$('urole').textContent=d.role;
     $('uavatar').textContent=(d.name||d.email).substring(0,2).toUpperCase();
-    $('login-screen').style.display='none';
-    $('setup-screen').style.display='none';
-    $('app-screen').style.display='flex';
-    applyRoleUI();
-    nav('dashboard',document.querySelector('.nav-item[data-page="dashboard"]'));
+    $('login-screen').style.display='none';$('app-screen').style.display='flex';
+    applyRoleUI();nav('dashboard',document.querySelector('.nav-item[data-page="dashboard"]'));
     checkReminder();
-  }else{
-    CU=null;CR=null;
-    $('app-screen').style.display='none';
-    // Show login or setup depending on whether admin exists
-    checkFirstRun().then(()=>{
-      // If setup is not visible, show login
-      if($('setup-screen').style.display==='none'||$('setup-screen').style.display===''){
-        $('login-screen').style.display='flex';
-      }
-    });
-  }
+  }else{CU=null;CR=null;$('app-screen').style.display='none';$('login-screen').style.display='flex';}
 });
 
 function applyRoleUI(){
-  document.querySelectorAll('.admin-only').forEach(el=>{
-    el.style.display=CR==='admin'?'':'none';
-  });
+  const isAdmin=CR==='admin';
+  document.querySelectorAll('.admin-only').forEach(el=>el.style.display=isAdmin?'':'none');
+  document.querySelectorAll('.staff-only').forEach(el=>el.style.display=isAdmin?'none':'');
+  if(isAdmin){document.querySelectorAll('.kpi-grid.admin-only,.g3.admin-only').forEach(el=>el.style.display='grid');}
+  else{document.querySelectorAll('.kpi-grid.staff-only,.g2.staff-only').forEach(el=>el.style.display='grid');}
+  // task & project add buttons
+  $('task-add-bar').innerHTML=isAdmin?'<button class="btn btn-primary" onclick="openTaskM()">+ New Task</button>':'';
+  $('proj-add-bar').innerHTML=isAdmin?'<button class="btn btn-primary" onclick="openProjModal()">+ New Project</button>':'';
 }
 
-function checkReminder(){
-  const last=localStorage.getItem('nx_rem');
-  if(!last||Date.now()-parseInt(last)>172800000){
-    setTimeout(()=>{toast('📋 Reminder: Update tasks, sales & project status!','info');localStorage.setItem('nx_rem',Date.now().toString());},2000);
-  }
-}
+function checkReminder(){const last=localStorage.getItem('nx_rem');if(!last||Date.now()-parseInt(last)>172800000){setTimeout(()=>{toast('📋 Reminder: Update tasks, projects & sales!','info');localStorage.setItem('nx_rem',Date.now().toString());},2000);}}
 
-// ── NAV ──
-const pageTitles={dashboard:'Dashboard',staff:'Staff Management',tasks:'Task Management',projects:'Projects',sales:'Sales',invoices:'Invoices',feedback:'Feedback',analytics:'Analytics',settings:'Settings'};
+const pageTitles={dashboard:'Dashboard',staff:'Staff',tasks:'Tasks',projects:'Projects',sales:'Sales',invoices:'Invoices',feedback:'Feedback',analytics:'Analytics',settings:'Settings'};
 function nav(name,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   const pg=$('page-'+name);if(pg)pg.classList.add('active');
-  if(el)el.classList.add('active');
-  else{const f=document.querySelector(`.nav-item[data-page="${name}"]`);if(f)f.classList.add('active');}
-  $('page-title').textContent=pageTitles[name]||name;
+  if(el)el.classList.add('active');else{const f=document.querySelector(`.nav-item[data-page="${name}"]`);if(f)f.classList.add('active');}
+  $('page-title').textContent=pageTitles[name]||name;closeSidebar();
   ({dashboard:loadDash,staff:loadStaff,tasks:loadTasks,projects:loadProjects,sales:loadSales,invoices:loadInvoices,feedback:loadFeedback,analytics:loadAnalytics}[name]||function(){})();
 }
 
 // ── DASHBOARD ──
 async function loadDash(){
   try{
-    const[ts,ps,ss,us,ivs]=await Promise.all([
-      db.collection('tasks').get(),db.collection('projects').get(),
-      db.collection('sales').get(),db.collection('users').get(),db.collection('invoices').get()
-    ]);
-    const tasks=ts.docs.map(d=>d.data()),projs=ps.docs.map(d=>d.data()),sales=ss.docs.map(d=>d.data()),staff=us.docs.map(d=>d.data()),invs=ivs.docs.map(d=>d.data());
-    const totalRev=sales.filter(s=>s.paymentStatus==='paid').reduce((a,s)=>a+(+s.amount||0),0);
-    const pendAmt=invs.filter(i=>i.status!=='paid').reduce((a,i)=>a+(+i.amount||0),0);
-    $('k-rev').textContent=fmtMoney(totalRev);$('k-pend').textContent=fmtMoney(pendAmt);
-    $('k-proj').textContent=projs.filter(p=>p.status==='active').length;
-    $('k-tasks').textContent=tasks.filter(t=>t.status!=='done').length;
-    $('k-staff').textContent=staff.filter(s=>s.status==='active').length;
-    renderDashCharts(tasks,sales);renderActivity(tasks,sales);
-  }catch(e){toast('Dashboard error: '+e.message,'error');}
+    if(CR==='admin'){
+      const[ts,ps,ss,us,ivs]=await Promise.all([db.collection('tasks').get(),db.collection('projects').get(),db.collection('sales').get(),db.collection('users').get(),db.collection('invoices').get()]);
+      const tasks=ts.docs.map(d=>d.data()),projs=ps.docs.map(d=>d.data()),sales=ss.docs.map(d=>d.data()),staff=us.docs.map(d=>d.data()),invs=ivs.docs.map(d=>d.data());
+      $('k-rev').textContent=fmtMoney(sales.filter(s=>s.paymentStatus==='paid').reduce((a,s)=>a+(+s.amount||0),0));
+      $('k-pend').textContent=fmtMoney(invs.filter(i=>i.status!=='paid').reduce((a,i)=>a+(+i.amount||0),0));
+      $('k-proj').textContent=projs.filter(p=>p.status==='active').length;
+      $('k-tasks').textContent=tasks.filter(t=>t.status!=='done').length;
+      $('k-staff').textContent=staff.filter(s=>s.status==='active').length;
+      renderDashCharts(tasks,sales);renderActivity(tasks,sales);
+    }else{
+      const[ts,ps]=await Promise.all([db.collection('tasks').where('assignedTo','==',CU.uid).get(),db.collection('projects').where('assignedTo','==',CU.uid).get()]);
+      const tasks=ts.docs.map(d=>d.data()),projs=ps.docs.map(d=>d.data());
+      $('sk-tasks').textContent=tasks.filter(t=>t.status!=='done').length;
+      $('sk-done').textContent=tasks.filter(t=>t.status==='done').length;
+      $('sk-proj').textContent=projs.length;
+      renderStaffCharts(tasks);renderStaffActivity(tasks);
+    }
+  }catch(e){toast('Dashboard error','error');}
 }
 
 function renderDashCharts(tasks,sales){
   const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const revByMonth=Array(12).fill(0);
-  sales.filter(s=>s.paymentStatus==='paid').forEach(s=>{const d=s.createdAt?.toDate?.()||new Date();revByMonth[d.getMonth()]+=+s.amount||0;});
+  const rev=Array(12).fill(0);
+  sales.filter(s=>s.paymentStatus==='paid').forEach(s=>{const d=s.createdAt?.toDate?.()||new Date();rev[d.getMonth()]+=+s.amount||0;});
   if(revChart)revChart.destroy();
   const rc=$('revChart')?.getContext('2d');
-  if(rc)revChart=new Chart(rc,{type:'bar',data:{labels:months,datasets:[{label:'Revenue',data:revByMonth,backgroundColor:'rgba(37,99,235,0.75)',borderRadius:6,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{labels:{color:'#64748b',font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{color:'#94a3b8',font:{size:10}}},y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{color:'#94a3b8',font:{size:10},callback:v=>'₹'+(v/1000).toFixed(0)+'k'}}}}});
+  if(rc)revChart=new Chart(rc,{type:'bar',data:{labels:months,datasets:[{label:'Revenue',data:rev,backgroundColor:'rgba(37,99,235,0.75)',borderRadius:6,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{labels:{color:'#64748b',font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{color:'#94a3b8',font:{size:10}}},y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{color:'#94a3b8',font:{size:10},callback:v=>'₹'+(v/1000).toFixed(0)+'k'}}}}});
   const done=tasks.filter(t=>t.status==='done').length,work=tasks.filter(t=>t.status==='working').length,pend=tasks.filter(t=>t.status==='pending').length;
   if(donutCh)donutCh.destroy();
   const dc=$('donutChart')?.getContext('2d');
-  if(dc)donutCh=new Chart(dc,{type:'doughnut',data:{labels:['Done','In Progress','Pending'],datasets:[{data:[done,work,pend],backgroundColor:['#10b981','#f59e0b','#94a3b8'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,cutout:'72%',plugins:{legend:{position:'bottom',labels:{color:'#64748b',font:{size:10},padding:10}}}}});
+  if(dc)donutCh=new Chart(dc,{type:'doughnut',data:{labels:['Done','In Progress','Pending'],datasets:[{data:[done,work,pend],backgroundColor:['#10b981','#f59e0b','#94a3b8'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,cutout:'72%',plugins:{legend:{position:'bottom',labels:{color:'#64748b',font:{size:10},padding:8}}}}});
 }
-
+function renderStaffCharts(tasks){
+  const done=tasks.filter(t=>t.status==='done').length,work=tasks.filter(t=>t.status==='working').length,pend=tasks.filter(t=>t.status==='pending').length;
+  if(staffDonutCh)staffDonutCh.destroy();
+  const dc=$('staffDonut')?.getContext('2d');
+  if(dc)staffDonutCh=new Chart(dc,{type:'doughnut',data:{labels:['Done','In Progress','Pending'],datasets:[{data:[done,work,pend],backgroundColor:['#10b981','#f59e0b','#94a3b8'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,cutout:'72%',plugins:{legend:{position:'bottom',labels:{color:'#64748b',font:{size:10},padding:8}}}}});
+}
 function renderActivity(tasks,sales){
   const el=$('activity-feed');if(!el)return;
   let items=[];
   tasks.slice(0,5).forEach(t=>items.push({text:`Task <b>${t.title}</b> — ${t.status}`,time:t.createdAt?.toDate?.()||new Date(),color:'var(--accent)'}));
   sales.slice(0,3).forEach(s=>items.push({text:`Sale <b>${s.clientName}</b> ${fmtMoney(s.amount)} — ${s.paymentStatus}`,time:s.createdAt?.toDate?.()||new Date(),color:'var(--green)'}));
   items.sort((a,b)=>b.time-a.time);
-  if(!items.length){el.innerHTML='<div style="color:var(--gray-400);font-size:12px">No activity yet.</div>';return;}
-  el.innerHTML=items.slice(0,8).map(i=>`<div class="act-item"><div class="act-dot" style="background:${i.color}"></div><div><div class="act-text">${i.text}</div><div class="act-time">${i.time.toLocaleDateString()}</div></div></div>`).join('');
+  el.innerHTML=items.slice(0,8).map(i=>`<div class="act-item"><div class="act-dot" style="background:${i.color}"></div><div><div class="act-text">${i.text}</div><div class="act-time">${i.time.toLocaleDateString('en-IN')}</div></div></div>`).join('')||'<div style="color:var(--gray-400);font-size:12px">No activity yet.</div>';
+}
+function renderStaffActivity(tasks){
+  const el=$('staff-activity');if(!el)return;
+  el.innerHTML=tasks.slice(0,6).map(t=>`<div class="act-item"><div class="act-dot" style="background:var(--accent)"></div><div><div class="act-text"><b>${t.title}</b> — ${t.status}</div><div class="act-time">Deadline: ${t.deadline||'—'}</div></div></div>`).join('')||'<div style="color:var(--gray-400);font-size:12px">No tasks yet.</div>';
 }
 
 // ── STAFF ──
 async function loadStaff(){
-  const el=$('staff-list');if(!el)return;
-  el.innerHTML='<div style="color:var(--gray-400);padding:16px">Loading…</div>';
+  const el=$('staff-list');if(!el)return;el.innerHTML='<div style="color:var(--gray-400);padding:16px">Loading…</div>';
   try{
     const snap=await db.collection('users').get();
     if(snap.empty){el.innerHTML='<div style="color:var(--gray-400);padding:16px">No staff yet.</div>';return;}
-    el.innerHTML=snap.docs.map(d=>{const u=d.data();return`<div class="card" style="padding:18px;text-align:center;position:relative">
-      <div class="avatar" style="width:46px;height:46px;font-size:17px;margin:0 auto 10px">${(u.name||u.email).substring(0,2).toUpperCase()}</div>
+    el.innerHTML=snap.docs.map(d=>{const u=d.data();return`<div class="card" style="padding:16px;text-align:center;position:relative">
+      <div class="avatar" style="width:44px;height:44px;font-size:16px;margin:0 auto 8px">${(u.name||u.email).substring(0,2).toUpperCase()}</div>
       <div style="font-weight:700;font-size:13px">${u.name||u.email}</div>
-      <div style="font-size:11px;color:var(--gray-400);margin-bottom:8px">${u.email}</div>
+      <div style="font-size:11px;color:var(--gray-400);margin-bottom:6px">${u.email}</div>
       <span class="tag t-purple" style="margin-right:4px">${u.role}</span>
       <span class="tag ${u.status==='active'?'t-green':'t-red'}">${u.status||'active'}</span>
-      ${CR==='admin'&&u.uid!==CU?.uid?`<button onclick="removeStaff('${d.id}')" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;color:var(--red);font-size:15px" title="Remove">✕</button>`:''}
+      ${CR==='admin'&&u.uid!==CU?.uid?`<button onclick="removeStaff('${d.id}')" style="position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;color:var(--red);font-size:15px">✕</button>`:''}
     </div>`;}).join('');
   }catch(e){el.innerHTML='<div style="color:var(--red);padding:16px">'+e.message+'</div>';}
 }
-
-// Admin-only: create Firebase Auth user + Firestore record
 async function addStaff(){
-  if(CR!=='admin'){toast('Only admins can add staff','error');return;}
+  if(CR!=='admin'){toast('Admins only','error');return;}
   const name=$('sm-name').value.trim(),email=$('sm-email').value.trim(),pass=$('sm-pass').value.trim(),role=$('sm-role').value;
   if(!name||!email||!pass){toast('Fill all fields','error');return;}
-  if(pass.length<6){toast('Password must be at least 6 characters','error');return;}
+  if(pass.length<6){toast('Password min 6 chars','error');return;}
   try{
-    // Create auth user (this signs in as the new user in client SDK — we re-authenticate admin after)
-    const adminEmail=CU.email;
-    // We use a secondary app instance trick to avoid signing out current admin
-    const secondaryApp=firebase.initializeApp(firebaseConfig,'secondary_'+Date.now());
-    const secondaryAuth=secondaryApp.auth();
-    const c=await secondaryAuth.createUserWithEmailAndPassword(email,pass);
-    await db.collection('users').doc(c.user.uid).set({
-      uid:c.user.uid,name,email,role,status:'active',
-      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
-      createdBy:CU.uid
-    });
-    await secondaryAuth.signOut();
-    await secondaryApp.delete();
-    toast(`✅ ${name} added as ${role}!`,'success');
-    hideM('staff-modal');
-    $('sm-name').value='';$('sm-email').value='';$('sm-pass').value='';
-    loadStaff();
+    const sec=firebase.initializeApp(firebaseConfig,'sec_'+Date.now());
+    const secAuth=sec.auth();
+    const c=await secAuth.createUserWithEmailAndPassword(email,pass);
+    await db.collection('users').doc(c.user.uid).set({uid:c.user.uid,name,email,role,status:'active',createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:CU.uid});
+    await secAuth.signOut();await sec.delete();
+    toast(`✅ ${name} added!`,'success');hideM('staff-modal');$('sm-name').value='';$('sm-email').value='';$('sm-pass').value='';loadStaff();
   }catch(e){toast(e.message,'error');}
 }
-
-async function removeStaff(id){
-  if(CR!=='admin'){toast('Only admins can remove staff','error');return;}
-  if(!confirm('Remove this staff member from the system?'))return;
-  try{await db.collection('users').doc(id).delete();toast('Staff member removed','info');loadStaff();}catch(e){toast(e.message,'error');}
-}
+async function removeStaff(id){if(!confirm('Remove this staff member?'))return;try{await db.collection('users').doc(id).delete();toast('Removed','info');loadStaff();}catch(e){toast(e.message,'error');}}
 
 // ── TASKS ──
 async function loadTasks(){
@@ -739,10 +579,10 @@ async function loadTasks(){
       col.innerHTML+=`<div class="t-card">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px">
           <span style="font-weight:600;font-size:12px">${t.title}</span>
-          <span class="tag ${priCls}" style="margin-left:6px;flex-shrink:0">${t.priority}</span>
+          <span class="tag ${priCls}" style="margin-left:4px;flex-shrink:0">${t.priority}</span>
         </div>
-        <div style="font-size:11px;color:var(--gray-400);margin-bottom:5px">👤 ${uMap[t.assignedTo]||'Unassigned'}</div>
-        <div style="font-size:10px;color:var(--gray-400);margin-bottom:7px">📅 ${t.deadline||'No deadline'}</div>
+        <div style="font-size:11px;color:var(--gray-400);margin-bottom:4px">👤 ${uMap[t.assignedTo]||'Unassigned'}</div>
+        <div style="font-size:10px;color:var(--gray-400);margin-bottom:6px">📅 ${t.deadline||'No deadline'}</div>
         <div style="display:flex;gap:4px;flex-wrap:wrap">
           ${t.status==='pending'?`<button class="mini-btn" onclick="setTaskStatus('${tid}','working')">▶ Start</button>`:''}
           ${t.status==='working'?`<button class="mini-btn" onclick="setTaskStatus('${tid}','review')">👁 Review</button>`:''}
@@ -753,87 +593,144 @@ async function loadTasks(){
     });
   }catch(e){toast('Tasks error: '+e.message,'error');}
 }
-
-async function setTaskStatus(id,status){try{await db.collection('tasks').doc(id).update({status});toast('Updated','success');loadTasks();}catch(e){toast(e.message,'error');}}
+async function setTaskStatus(id,s){try{await db.collection('tasks').doc(id).update({status:s});toast('Updated','success');loadTasks();}catch(e){toast(e.message,'error');}}
 async function delTask(id){if(!confirm('Delete task?'))return;try{await db.collection('tasks').doc(id).delete();toast('Deleted','info');loadTasks();}catch(e){toast(e.message,'error');}}
 async function openTaskM(){
   const snap=await db.collection('users').get();
-  const el=$('tm-assign');
-  el.innerHTML='<option value="">Select staff…</option>'+snap.docs.map(d=>`<option value="${d.id}">${d.data().name||d.data().email}</option>`).join('');
+  $('tm-assign').innerHTML='<option value="">Select staff…</option>'+snap.docs.map(d=>`<option value="${d.id}">${d.data().name||d.data().email}</option>`).join('');
   showM('task-modal');
 }
 async function addTask(){
   const title=$('tm-title').value.trim(),assignedTo=$('tm-assign').value,priority=$('tm-pri').value,deadline=$('tm-deadline').value;
   if(!title){toast('Enter task title','error');return;}
-  try{
-    await db.collection('tasks').add({title,assignedTo,priority,deadline,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:CU.uid});
-    toast('Task created','success');hideM('task-modal');$('tm-title').value='';loadTasks();
-  }catch(e){toast(e.message,'error');}
+  try{await db.collection('tasks').add({title,assignedTo,priority,deadline,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:CU.uid});toast('Task created','success');hideM('task-modal');$('tm-title').value='';loadTasks();}catch(e){toast(e.message,'error');}
 }
 
 // ── PROJECTS ──
-async function loadProjects(){
-  const el=$('proj-list');if(!el)return;
-  el.innerHTML='<div style="color:var(--gray-400);padding:16px">Loading…</div>';
+async function openProjModal(editId=null){
+  const snap=await db.collection('users').get();
+  $('pm-assign').innerHTML='<option value="">Unassigned</option>'+snap.docs.map(d=>`<option value="${d.id}">${d.data().name||d.data().email}</option>`).join('');
+  $('pm-edit-id').value=editId||'';
+  if(editId){
+    $('proj-modal-title').textContent='Edit Project';
+    const doc=await db.collection('projects').doc(editId).get();
+    const p=doc.data();
+    $('pm-name').value=p.name||'';$('pm-client').value=p.clientName||'';$('pm-cemail').value=p.clientEmail||'';
+    $('pm-type').value=p.projectType||'Web Development';$('pm-assign').value=p.assignedTo||'';
+    $('pm-start').value=p.startDate||'';$('pm-deadline').value=p.deadline||'';
+    $('pm-budget').value=p.budget||'';$('pm-desc').value=p.description||'';$('pm-priority').value=p.priority||'normal';
+  }else{
+    $('proj-modal-title').textContent='New Project';
+    ['pm-name','pm-client','pm-cemail','pm-budget','pm-desc'].forEach(id=>$(id).value='');
+    $('pm-assign').value='';$('pm-start').value=today();$('pm-deadline').value='';
+    $('pm-type').value='Web Development';$('pm-priority').value='normal';
+  }
+  showM('proj-modal');
+}
+async function saveProject(){
+  const name=$('pm-name').value.trim(),clientName=$('pm-client').value.trim();
+  if(!name||!clientName){toast('Fill required fields','error');return;}
+  const data={name,clientName,clientEmail:$('pm-cemail').value.trim(),projectType:$('pm-type').value,assignedTo:$('pm-assign').value,startDate:$('pm-start').value,deadline:$('pm-deadline').value,budget:+$('pm-budget').value||0,description:$('pm-desc').value.trim(),priority:$('pm-priority').value};
+  const editId=$('pm-edit-id').value;
   try{
-    const snap=await db.collection('projects').get();
-    if(snap.empty){el.innerHTML='<div style="color:var(--gray-400);padding:16px">No projects yet.</div>';return;}
-    el.innerHTML=snap.docs.map(d=>{const p=d.data(),pid=d.id;return`<div class="card proj-card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-        <div class="proj-name">${p.name}</div>
-        <div style="display:flex;gap:6px;align-items:center">
-          <span class="tag ${p.status==='active'?'t-blue':p.status==='completed'?'t-green':'t-amber'}">${p.status}</span>
-          ${CR==='admin'?`<button onclick="delProject('${pid}')" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:13px">✕</button>`:''}
+    if(editId){await db.collection('projects').doc(editId).update(data);toast('Project updated','success');}
+    else{await db.collection('projects').add({...data,progress:0,status:'active',dailyUpdates:[],createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:CU.uid});toast('Project created','success');}
+    hideM('proj-modal');loadProjects();
+  }catch(e){toast(e.message,'error');}
+}
+async function loadProjects(){
+  const el=$('proj-list');if(!el)return;el.innerHTML='<div style="color:var(--gray-400);padding:16px">Loading…</div>';
+  try{
+    const q=CR==='admin'?db.collection('projects'):db.collection('projects').where('assignedTo','==',CU.uid);
+    const snap=await q.get();
+    const usersSnap=await db.collection('users').get();
+    const uMap={};usersSnap.docs.forEach(d=>{uMap[d.id]=d.data().name||d.data().email;});
+    if(snap.empty){el.innerHTML='<div style="color:var(--gray-400);padding:16px">'+(CR==='admin'?'No projects yet.':'No projects assigned to you yet.')+'</div>';return;}
+    el.innerHTML=snap.docs.map(d=>{
+      const p=d.data(),pid=d.id;
+      const updates=p.dailyUpdates||[];
+      const priColor={urgent:'var(--red)',high:'var(--amber)',normal:'var(--accent)'}[p.priority||'normal'];
+      return`<div class="card proj-card" style="margin-bottom:14px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <div class="proj-name">${p.name}</div>
+              <span class="tag ${p.status==='active'?'t-blue':p.status==='completed'?'t-green':'t-amber'}">${p.status}</span>
+              <span class="tag" style="background:rgba(0,0,0,.05);color:${priColor}">${p.priority||'normal'}</span>
+            </div>
+            <div class="proj-meta" style="margin-top:4px">
+              🏢 ${p.clientName}${p.clientEmail?' · '+p.clientEmail:''} &nbsp;|&nbsp; 💼 ${p.projectType||'—'}<br/>
+              👤 ${uMap[p.assignedTo]||'Unassigned'} &nbsp;|&nbsp; 📅 ${p.startDate||'—'} → ${p.deadline||'—'}<br/>
+              💰 Budget: ${p.budget?fmtMoney(p.budget):'—'} &nbsp;|&nbsp; ${p.progress||0}% complete
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            ${CR==='admin'?`<button class="btn btn-ghost" style="font-size:11px;padding:5px 10px" onclick="openProjModal('${pid}')">✏ Edit</button>`:''}
+            <button class="btn btn-primary" style="font-size:11px;padding:5px 10px" onclick="openUpdateModal('${pid}')">+ Daily Update</button>
+            ${CR==='admin'?`<button class="btn btn-danger" style="font-size:11px;padding:5px 10px" onclick="delProject('${pid}')">🗑</button>`:''}
+          </div>
         </div>
-      </div>
-      <div class="proj-meta">👤 ${p.clientName} · ${p.progress||0}% complete</div>
-      <div class="pbar"><div class="pfill" style="width:${p.progress||0}%"></div></div>
-      ${CR==='admin'?`<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-        <input type="number" min="0" max="100" value="${p.progress||0}" id="pg-${pid}" style="width:58px;border:1px solid var(--gray-200);border-radius:6px;padding:4px 6px;font-size:11px"/>
-        <button class="mini-btn" onclick="updateProg('${pid}')">Update %</button>
-        <select id="st-${pid}" style="border:1px solid var(--gray-200);border-radius:6px;padding:4px 6px;font-size:11px">
-          <option ${p.status==='active'?'selected':''} value="active">Active</option>
-          <option ${p.status==='on-hold'?'selected':''} value="on-hold">On Hold</option>
-          <option ${p.status==='completed'?'selected':''} value="completed">Completed</option>
-        </select>
-        <button class="mini-btn" onclick="updateProjStatus('${pid}')">Set Status</button>
-      </div>`:''}
-    </div>`;}).join('');
+        ${p.description?`<div style="font-size:12px;color:var(--gray-600);margin-bottom:10px;padding:8px;background:var(--gray-50);border-radius:8px;line-height:1.6">${p.description}</div>`:''}
+        <div class="pbar" style="margin-bottom:${CR==='admin'?'10px':'8px'}"><div class="pfill" style="width:${p.progress||0}%"></div></div>
+        ${CR==='admin'?`<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+          <input type="number" min="0" max="100" value="${p.progress||0}" id="pg-${pid}" style="width:56px;border:1px solid var(--gray-200);border-radius:6px;padding:4px 6px;font-size:11px"/>
+          <button class="mini-btn" onclick="updateProg('${pid}')">Update %</button>
+          <select id="st-${pid}" style="border:1px solid var(--gray-200);border-radius:6px;padding:4px 6px;font-size:11px">
+            <option ${p.status==='active'?'selected':''} value="active">Active</option>
+            <option ${p.status==='on-hold'?'selected':''} value="on-hold">On Hold</option>
+            <option ${p.status==='completed'?'selected':''} value="completed">Completed</option>
+          </select>
+          <button class="mini-btn" onclick="updateProjStatus('${pid}')">Set Status</button>
+        </div>`:''}
+        ${updates.length?`<div style="border-top:1px solid var(--gray-200);padding-top:10px">
+          <div style="font-size:11px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">📝 Daily Updates</div>
+          ${[...updates].reverse().slice(0,5).map(u=>`<div class="update-item"><div class="update-date">${u.date} &nbsp;·&nbsp; Progress after: ${u.progress}%</div><div class="update-text">${u.note}</div></div>`).join('')}
+          ${updates.length>5?`<div style="font-size:11px;color:var(--gray-400);margin-top:4px">+${updates.length-5} more updates</div>`:''}
+        </div>`:'<div style="font-size:12px;color:var(--gray-400);margin-top:4px;border-top:1px solid var(--gray-100);padding-top:8px">No daily updates yet.</div>'}
+      </div>`;
+    }).join('');
   }catch(e){el.innerHTML='<div style="color:var(--red);padding:16px">'+e.message+'</div>';}
 }
 async function updateProg(id){const v=parseInt($('pg-'+id)?.value||0);try{await db.collection('projects').doc(id).update({progress:v});toast('Updated','success');loadProjects();}catch(e){toast(e.message,'error');}}
 async function updateProjStatus(id){const v=$('st-'+id)?.value;try{await db.collection('projects').doc(id).update({status:v});toast('Updated','success');loadProjects();}catch(e){toast(e.message,'error');}}
 async function delProject(id){if(!confirm('Delete project?'))return;try{await db.collection('projects').doc(id).delete();toast('Deleted','info');loadProjects();}catch(e){toast(e.message,'error');}}
-async function addProject(){
-  const name=$('pm-name').value.trim(),clientName=$('pm-client').value.trim();
-  if(!name||!clientName){toast('Fill all fields','error');return;}
-  try{await db.collection('projects').add({name,clientName,progress:0,status:'active',createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:CU.uid});toast('Project created','success');hideM('proj-modal');$('pm-name').value='';$('pm-client').value='';loadProjects();}catch(e){toast(e.message,'error');}
+
+function openUpdateModal(pid){
+  $('um-proj-id').value=pid;$('um-date').value=today();$('um-note').value='';$('um-progress').value='';showM('update-modal');
+}
+async function addDailyUpdate(){
+  const pid=$('um-proj-id').value,date=$('um-date').value,note=$('um-note').value.trim(),progress=parseInt($('um-progress').value||0);
+  if(!date||!note){toast('Fill date and note','error');return;}
+  try{
+    const ref=db.collection('projects').doc(pid);
+    const doc=await ref.get();const existing=doc.data().dailyUpdates||[];
+    await ref.update({dailyUpdates:[...existing,{date,note,progress,addedBy:CU.uid,addedAt:new Date().toISOString()}],progress});
+    toast('Update posted!','success');hideM('update-modal');loadProjects();
+  }catch(e){toast(e.message,'error');}
 }
 
 // ── SALES ──
 async function loadSales(){
-  const el=$('sales-tbody');if(!el)return;el.innerHTML='';
-  let total=0,paid=0,pend=0;
+  const el=$('sales-tbody');if(!el)return;el.innerHTML='';let total=0,paid=0,pend=0;
   try{
     const snap=await db.collection('sales').orderBy('createdAt','desc').get();
     if(snap.empty){el.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--gray-400);padding:16px">No sales yet.</td></tr>';return;}
     snap.docs.forEach(d=>{
-      const s=d.data(),sid=d.id;
-      total+=+s.amount||0;
+      const s=d.data(),sid=d.id;total+=+s.amount||0;
       if(s.paymentStatus==='paid')paid+=+s.amount||0;else pend+=+s.amount||0;
       el.innerHTML+=`<tr><td>${s.clientName}</td><td>${s.service}</td><td>${fmtMoney(s.amount)}</td>
         <td><span class="tag ${s.paymentStatus==='paid'?'t-green':s.paymentStatus==='partial'?'t-amber':'t-red'}">${s.paymentStatus}</span></td>
-        <td style="color:var(--gray-400)">${s.createdAt?.toDate?.().toLocaleDateString()||'—'}</td>
-        <td>${CR==='admin'?`<select onchange="updateSaleStatus('${sid}',this.value)" style="border:1px solid var(--gray-200);border-radius:6px;padding:3px 6px;font-size:11px">
+        <td style="color:var(--gray-400)">${s.createdAt?.toDate?.().toLocaleDateString('en-IN')||'—'}</td>
+        <td><select onchange="updateSaleStatus('${sid}',this.value)" style="border:1px solid var(--gray-200);border-radius:6px;padding:3px 6px;font-size:11px;margin-right:6px">
           <option ${s.paymentStatus==='pending'?'selected':''} value="pending">Pending</option>
           <option ${s.paymentStatus==='partial'?'selected':''} value="partial">Partial</option>
           <option ${s.paymentStatus==='paid'?'selected':''} value="paid">Paid</option>
-        </select><button onclick="delSale('${sid}')" style="background:none;border:none;cursor:pointer;color:var(--red);margin-left:6px">✕</button>`:'—'}</td></tr>`;
+        </select><button onclick="delSale('${sid}')" style="background:none;border:none;cursor:pointer;color:var(--red)">✕</button></td></tr>`;
     });
     $('s-total').textContent=fmtMoney(total);$('s-paid').textContent=fmtMoney(paid);$('s-pend').textContent=fmtMoney(pend);
-  }catch(e){el.innerHTML='<tr><td colspan="6" style="color:var(--red);padding:16px">'+e.message+'</td></tr>';}
+  }catch(e){toast('Sales error','error');}
 }
-async function updateSaleStatus(id,status){try{await db.collection('sales').doc(id).update({paymentStatus:status});toast('Updated','success');loadSales();}catch(e){toast(e.message,'error');}}
+async function updateSaleStatus(id,s){try{await db.collection('sales').doc(id).update({paymentStatus:s});toast('Updated','success');loadSales();}catch(e){toast(e.message,'error');}}
 async function delSale(id){if(!confirm('Delete sale?'))return;try{await db.collection('sales').doc(id).delete();toast('Deleted','info');loadSales();}catch(e){toast(e.message,'error');}}
 async function addSale(){
   const clientName=$('sam-client').value.trim(),service=$('sam-service').value.trim(),amount=$('sam-amount').value,paymentStatus=$('sam-status').value;
@@ -841,8 +738,7 @@ async function addSale(){
   try{
     await db.collection('sales').add({clientName,service,amount:+amount,paymentStatus,createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:CU.uid});
     await db.collection('invoices').add({invoiceId:genId(),clientName,service,amount:+amount,status:paymentStatus==='paid'?'paid':'unpaid',dueDate:'',createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-    toast('Sale added & invoice generated','success');hideM('sale-modal');
-    $('sam-client').value='';$('sam-service').value='';$('sam-amount').value='';loadSales();
+    toast('Sale added & invoice generated','success');hideM('sale-modal');$('sam-client').value='';$('sam-service').value='';$('sam-amount').value='';loadSales();
   }catch(e){toast(e.message,'error');}
 }
 
@@ -856,40 +752,168 @@ async function loadInvoices(){
       const iv=d.data(),iid=d.id;
       el.innerHTML+=`<tr><td style="font-weight:600">${iv.invoiceId}</td><td>${iv.clientName}</td><td>${iv.service}</td><td>${fmtMoney(iv.amount)}</td>
         <td><span class="tag ${iv.status==='paid'?'t-green':iv.status==='overdue'?'t-red':'t-amber'}">${iv.status}</span></td>
-        <td style="display:flex;gap:6px;align-items:center">
+        <td style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
           <button class="mini-btn" onclick="printInv('${iid}')">🖨 Print</button>
-          ${CR==='admin'?`<select onchange="updateInvStatus('${iid}',this.value)" style="border:1px solid var(--gray-200);border-radius:6px;padding:3px 5px;font-size:11px">
+          <select onchange="updateInvStatus('${iid}',this.value)" style="border:1px solid var(--gray-200);border-radius:6px;padding:3px 5px;font-size:11px">
             <option ${iv.status==='unpaid'?'selected':''} value="unpaid">Unpaid</option>
             <option ${iv.status==='paid'?'selected':''} value="paid">Paid</option>
             <option ${iv.status==='overdue'?'selected':''} value="overdue">Overdue</option>
-          </select>`:''}
+          </select>
+          <button onclick="delInvoice('${iid}')" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:14px" title="Delete">🗑</button>
         </td></tr>`;
     });
-  }catch(e){el.innerHTML='<tr><td colspan="6" style="color:var(--red);padding:16px">'+e.message+'</td></tr>';}
+  }catch(e){toast('Invoices error','error');}
 }
-async function updateInvStatus(id,status){try{await db.collection('invoices').doc(id).update({status});toast('Updated','success');loadInvoices();}catch(e){toast(e.message,'error');}}
+async function updateInvStatus(id,s){try{await db.collection('invoices').doc(id).update({status:s});toast('Updated','success');loadInvoices();}catch(e){toast(e.message,'error');}}
+async function delInvoice(id){if(!confirm('Delete this invoice permanently?'))return;try{await db.collection('invoices').doc(id).delete();toast('Invoice deleted','info');loadInvoices();}catch(e){toast(e.message,'error');}}
+
 async function printInv(id){
   try{
     const snap=await db.collection('invoices').doc(id).get();
     if(!snap.exists){toast('Not found','error');return;}
     const iv=snap.data();
-    const w=window.open('','_blank','width=700,height=900');
-    w.document.write(`<!DOCTYPE html><html><head><title>${iv.invoiceId}</title><style>
-      body{font-family:sans-serif;padding:40px;color:#1e293b}
-      .hdr{display:flex;justify-content:space-between;border-bottom:2px solid #2563EB;padding-bottom:20px;margin-bottom:28px}
-      h1{color:#2563EB;margin:0;font-size:22px}
-      table{width:100%;border-collapse:collapse}th,td{padding:11px;text-align:left;border-bottom:1px solid #e2e8f0}th{background:#f8fafc;font-weight:600}
-      .total{font-size:18px;font-weight:700;color:#2563EB}
-      .badge{padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;background:${iv.status==='paid'?'#ECFDF5':iv.status==='overdue'?'#FEF2F2':'#FFFBEB'};color:${iv.status==='paid'?'#10b981':iv.status==='overdue'?'#ef4444':'#f59e0b'}}
-      @media print{button{display:none}}
-    </style></head><body>
-      <div class="hdr"><div><h1>NEXIGEN STUDIOS</h1><p style="color:#64748b;margin:4px 0 0">nexigenstudios.com</p></div>
-      <div style="text-align:right"><h2 style="margin:0;color:#64748b">INVOICE</h2><p style="margin:4px 0;font-weight:700">${iv.invoiceId}</p><span class="badge">${iv.status.toUpperCase()}</span></div></div>
-      <p style="margin-bottom:20px"><strong>Bill To:</strong> ${iv.clientName}</p>
-      <table><thead><tr><th>Service</th><th>Amount</th></tr></thead><tbody><tr><td>${iv.service}</td><td>${fmtMoney(iv.amount)}</td></tr></tbody></table>
-      <div style="text-align:right;margin-top:20px;padding-top:14px;border-top:2px solid #e2e8f0"><div class="total">Total: ${fmtMoney(iv.amount)}</div></div>
-      <div style="margin-top:36px;text-align:center"><button onclick="window.print()" style="padding:10px 24px;background:#2563EB;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px">🖨 Print Invoice</button></div>
-    </body></html>`);
+    const invoiceDate=iv.createdAt?.toDate?.().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'})||new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+    const dueDate=iv.dueDate||new Date(Date.now()+15*86400000).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+    const gst=(+iv.amount*0.18).toFixed(0);
+    const total=(+iv.amount+ +gst);
+    const w=window.open('','_blank','width=860,height:1100');
+    w.document.write(`<!DOCTYPE html><html><head><title>Invoice ${iv.invoiceId}</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',Arial,sans-serif;color:#1a1a2e;background:#fff;padding:0}
+  .page{width:794px;min-height:1123px;margin:0 auto;padding:0;position:relative;background:#fff}
+  /* Header */
+  .inv-header{background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);color:#fff;padding:40px 50px 30px;display:flex;justify-content:space-between;align-items:flex-start}
+  .brand-logo{display:flex;align-items:center;gap:14px}
+  .brand-icon{width:52px;height:52px;background:#2563EB;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#fff;font-family:Arial}
+  .brand-name{font-size:22px;font-weight:800;letter-spacing:-.5px}
+  .brand-tagline{font-size:11px;color:#94a3b8;margin-top:3px;letter-spacing:.5px;text-transform:uppercase}
+  .inv-badge{text-align:right}
+  .inv-word{font-size:32px;font-weight:800;letter-spacing:2px;color:#fff;text-transform:uppercase}
+  .inv-num{font-size:13px;color:#94a3b8;margin-top:4px;letter-spacing:.5px}
+  /* Status bar */
+  .status-bar{padding:14px 50px;display:flex;align-items:center;gap:10px;background:#f8fafc;border-bottom:2px solid #e2e8f0}
+  .status-pill{padding:5px 16px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+  .s-paid{background:#ECFDF5;color:#065f46}.s-unpaid{background:#FFFBEB;color:#92400e}.s-overdue{background:#FEF2F2;color:#991b1b}
+  .status-meta{font-size:12px;color:#64748b;margin-left:auto}
+  /* Body */
+  .inv-body{padding:36px 50px}
+  .addr-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-bottom:36px}
+  .addr-box h4{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;border-bottom:2px solid #e2e8f0;padding-bottom:6px}
+  .addr-box p{font-size:13px;color:#1e293b;line-height:1.8}
+  .addr-box .co-name{font-size:15px;font-weight:700;color:#0f172a;margin-bottom:2px}
+  /* Table */
+  .inv-table{width:100%;border-collapse:collapse;margin-bottom:28px}
+  .inv-table thead tr{background:linear-gradient(135deg,#1e293b,#334155)}
+  .inv-table thead th{padding:13px 16px;text-align:left;color:#e2e8f0;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+  .inv-table thead th:last-child{text-align:right}
+  .inv-table tbody tr:nth-child(even){background:#f8fafc}
+  .inv-table tbody td{padding:13px 16px;font-size:13px;color:#334155;border-bottom:1px solid #e2e8f0}
+  .inv-table tbody td:last-child{text-align:right;font-weight:600;color:#1e293b}
+  /* Totals */
+  .totals{display:flex;justify-content:flex-end;margin-bottom:32px}
+  .totals-box{width:280px;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden}
+  .tot-row{display:flex;justify-content:space-between;padding:10px 16px;font-size:13px;border-bottom:1px solid #e2e8f0}
+  .tot-row:last-child{border:none;background:linear-gradient(135deg,#1e293b,#334155);color:#fff;font-weight:700;font-size:14px;padding:13px 16px}
+  .tot-label{color:inherit}
+  .tot-val{font-weight:600}
+  /* Bank */
+  .bank-box{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:12px;padding:18px 20px;margin-bottom:28px}
+  .bank-box h4{font-size:11px;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+  .bank-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px}
+  .bank-row{font-size:12px;color:#1e293b;display:flex;gap:6px}
+  .bank-key{color:#64748b;min-width:110px}
+  /* Terms */
+  .terms-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 18px;margin-bottom:28px}
+  .terms-box h4{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+  .terms-box ul{padding-left:14px}
+  .terms-box li{font-size:12px;color:#64748b;line-height:1.8}
+  /* Footer */
+  .inv-footer{border-top:2px solid #e2e8f0;padding:18px 50px;display:flex;justify-content:space-between;align-items:center;background:#f8fafc}
+  .footer-brand{font-size:11px;color:#94a3b8}
+  .footer-brand b{color:#475569}
+  .footer-contact{font-size:11px;color:#94a3b8;text-align:right}
+  /* Watermark */
+  .watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-size:90px;font-weight:900;color:${iv.status==='paid'?'rgba(16,185,129,.06)':iv.status==='overdue'?'rgba(239,68,68,.06)':'rgba(0,0,0,.03)'};letter-spacing:10px;pointer-events:none;white-space:nowrap;text-transform:uppercase}
+  @media print{
+    body{background:#fff}
+    .no-print{display:none!important}
+    .page{width:100%;margin:0;padding:0}
+  }
+</style>
+</head><body>
+<div class="page">
+  <div class="watermark">${iv.status.toUpperCase()}</div>
+  <div class="inv-header">
+    <div class="brand-logo">
+      <div class="brand-icon">N</div>
+      <div><div class="brand-name">Nexigen Studios</div><div class="brand-tagline">Digital · Design · Development</div></div>
+    </div>
+    <div class="inv-badge">
+      <div class="inv-word">Invoice</div>
+      <div class="inv-num">${iv.invoiceId}</div>
+    </div>
+  </div>
+  <div class="status-bar">
+    <span class="status-pill s-${iv.status}">${iv.status.toUpperCase()}</span>
+    <span class="status-meta">Issued: ${invoiceDate} &nbsp;|&nbsp; Due: ${dueDate}</span>
+  </div>
+  <div class="inv-body">
+    <div class="addr-grid">
+      <div class="addr-box">
+        <h4>From</h4>
+        <p class="co-name">Nexigen Studios</p>
+        <p>nexigenstudios.com<br/>hello@nexigenstudios.com<br/>+91 XXXXX XXXXX<br/>Kerala, India</p>
+      </div>
+      <div class="addr-box">
+        <h4>Bill To</h4>
+        <p class="co-name">${iv.clientName}</p>
+        <p>Client Reference: ${iv.invoiceId}</p>
+      </div>
+    </div>
+    <table class="inv-table">
+      <thead><tr><th>#</th><th>Service Description</th><th>Type</th><th>Amount</th></tr></thead>
+      <tbody>
+        <tr><td>01</td><td>${iv.service}</td><td>Professional Services</td><td>${fmtMoney(iv.amount)}</td></tr>
+      </tbody>
+    </table>
+    <div class="totals">
+      <div class="totals-box">
+        <div class="tot-row"><span class="tot-label">Subtotal</span><span class="tot-val">${fmtMoney(iv.amount)}</span></div>
+        <div class="tot-row"><span class="tot-label">GST (18%)</span><span class="tot-val">${fmtMoney(gst)}</span></div>
+        <div class="tot-row"><span class="tot-label">Total Due</span><span class="tot-val">${fmtMoney(total)}</span></div>
+      </div>
+    </div>
+    <div class="bank-box">
+      <h4>💳 Payment Details</h4>
+      <div class="bank-grid">
+        <div class="bank-row"><span class="bank-key">Bank Name:</span><span>Your Bank Name</span></div>
+        <div class="bank-row"><span class="bank-key">Account Name:</span><span>Nexigen Studios</span></div>
+        <div class="bank-row"><span class="bank-key">Account No:</span><span>XXXXXXXXXXXX</span></div>
+        <div class="bank-row"><span class="bank-key">IFSC Code:</span><span>XXXXXXXXX</span></div>
+        <div class="bank-row"><span class="bank-key">UPI ID:</span><span>nexigen@upi</span></div>
+        <div class="bank-row"><span class="bank-key">SWIFT (Int'l):</span><span>XXXXXXXXX</span></div>
+      </div>
+    </div>
+    <div class="terms-box">
+      <h4>Terms & Conditions</h4>
+      <ul>
+        <li>Payment is due within 15 days of invoice date.</li>
+        <li>Late payments may incur a 2% monthly interest charge.</li>
+        <li>All prices are in Indian Rupees (INR) inclusive of applicable GST.</li>
+        <li>This invoice is computer generated and valid without signature.</li>
+      </ul>
+    </div>
+    <div style="text-align:center;margin-top:8px" class="no-print">
+      <button onclick="window.print()" style="padding:11px 28px;background:#2563EB;color:#fff;border:none;border-radius:9px;cursor:pointer;font-size:13px;font-weight:700;letter-spacing:.3px">🖨 Print / Save as PDF</button>
+    </div>
+  </div>
+  <div class="inv-footer">
+    <div class="footer-brand">Thank you for your business! &nbsp;·&nbsp; <b>Nexigen Studios</b></div>
+    <div class="footer-contact">nexigenstudios.com &nbsp;·&nbsp; hello@nexigenstudios.com</div>
+  </div>
+</div>
+</body></html>`);
   }catch(e){toast(e.message,'error');}
 }
 
@@ -899,15 +923,15 @@ async function loadFeedback(){
   try{
     const snap=await db.collection('feedback').orderBy('createdAt','desc').get();
     if(snap.empty){el.innerHTML='<div style="color:var(--gray-400);padding:16px">No feedback yet.</div>';return;}
-    el.innerHTML=snap.docs.map(d=>{const f=d.data(),fid=d.id;return`<div class="card" style="padding:16px;margin-bottom:10px">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px">
+    el.innerHTML=snap.docs.map(d=>{const f=d.data(),fid=d.id;return`<div class="card" style="padding:14px;margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:4px">
         <div style="font-weight:700;font-size:13px">${f.clientName}</div>
         <div style="display:flex;gap:8px;align-items:center">
-          <span style="color:#f59e0b;font-size:15px">${'★'.repeat(f.rating)}${'☆'.repeat(5-f.rating)}</span>
+          <span style="color:#f59e0b">${'★'.repeat(f.rating)}${'☆'.repeat(5-f.rating)}</span>
           ${CR==='admin'?`<button onclick="delFeedback('${fid}')" style="background:none;border:none;cursor:pointer;color:var(--red)">✕</button>`:''}
         </div>
       </div>
-      <div style="font-size:11px;color:var(--gray-400);margin-bottom:5px">Project: ${f.linkedProject||'—'}</div>
+      <div style="font-size:11px;color:var(--gray-400);margin-bottom:4px">Project: ${f.linkedProject||'—'}</div>
       <div style="font-size:12px;color:var(--gray-600);line-height:1.6">${f.comment}</div>
     </div>`;}).join('');
   }catch(e){el.innerHTML='<div style="color:var(--red);padding:16px">'+e.message+'</div>';}
@@ -916,10 +940,7 @@ async function delFeedback(id){if(!confirm('Delete feedback?'))return;try{await 
 async function addFeedback(){
   const clientName=$('fbm-client').value.trim(),rating=parseInt($('fbm-rating').value),comment=$('fbm-comment').value.trim(),linkedProject=$('fbm-proj').value.trim();
   if(!clientName||!comment){toast('Fill required fields','error');return;}
-  try{
-    await db.collection('feedback').add({clientName,rating,comment,linkedProject,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-    toast('Feedback added','success');hideM('fb-modal');$('fbm-client').value='';$('fbm-comment').value='';$('fbm-proj').value='';loadFeedback();
-  }catch(e){toast(e.message,'error');}
+  try{await db.collection('feedback').add({clientName,rating,comment,linkedProject,createdAt:firebase.firestore.FieldValue.serverTimestamp()});toast('Feedback added','success');hideM('fb-modal');$('fbm-client').value='';$('fbm-comment').value='';$('fbm-proj').value='';loadFeedback();}catch(e){toast(e.message,'error');}
 }
 
 // ── ANALYTICS ──
@@ -927,9 +948,8 @@ async function loadAnalytics(){
   try{
     const[ts,ps,ss,ivs]=await Promise.all([db.collection('tasks').get(),db.collection('projects').get(),db.collection('sales').get(),db.collection('invoices').get()]);
     const tasks=ts.docs.map(d=>d.data()),projs=ps.docs.map(d=>d.data()),sales=ss.docs.map(d=>d.data()),invs=ivs.docs.map(d=>d.data());
-    const totalRev=sales.filter(s=>s.paymentStatus==='paid').reduce((a,s)=>a+(+s.amount||0),0);
-    const pendInv=invs.filter(i=>i.status!=='paid').reduce((a,i)=>a+(+i.amount||0),0);
-    $('an-rev').textContent=fmtMoney(totalRev);$('an-pinv').textContent=fmtMoney(pendInv);
+    $('an-rev').textContent=fmtMoney(sales.filter(s=>s.paymentStatus==='paid').reduce((a,s)=>a+(+s.amount||0),0));
+    $('an-pinv').textContent=fmtMoney(invs.filter(i=>i.status!=='paid').reduce((a,i)=>a+(+i.amount||0),0));
     $('an-aproj').textContent=projs.filter(p=>p.status==='active').length;
     $('an-cproj').textContent=projs.filter(p=>p.status==='completed').length;
     $('an-tdone').textContent=tasks.filter(t=>t.status==='done').length;
@@ -939,17 +959,13 @@ async function loadAnalytics(){
     sales.filter(s=>s.paymentStatus==='paid').forEach(s=>{const d=s.createdAt?.toDate?.()||new Date();rev[d.getMonth()]+=+s.amount||0;});
     if(anChart)anChart.destroy();
     const ac=$('analyticsChart')?.getContext('2d');
-    if(ac)anChart=new Chart(ac,{type:'line',data:{labels:months,datasets:[{label:'Revenue',data:rev,borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.08)',fill:true,tension:0.4,pointRadius:3,pointBackgroundColor:'#10b981'}]},options:{responsive:true,plugins:{legend:{labels:{color:'#64748b',font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{color:'#94a3b8',font:{size:10}}},y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{color:'#94a3b8',font:{size:10},callback:v=>'₹'+(v/1000).toFixed(0)+'k'}}}}});
-  }catch(e){toast('Analytics error: '+e.message,'error');}
+    if(ac)anChart=new Chart(ac,{type:'line',data:{labels:months,datasets:[{label:'Revenue (₹)',data:rev,borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.08)',fill:true,tension:0.4,pointRadius:3,pointBackgroundColor:'#10b981'}]},options:{responsive:true,plugins:{legend:{labels:{color:'#64748b',font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{color:'#94a3b8',font:{size:10}}},y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{color:'#94a3b8',font:{size:10},callback:v=>'₹'+(v/1000).toFixed(0)+'k'}}}}});
+  }catch(e){toast('Analytics error','error');}
 }
 
 // ── SETTINGS ──
-async function saveProfile(){
-  const name=$('set-name').value.trim();if(!name){toast('Enter name','error');return;}
-  try{await db.collection('users').doc(CU.uid).update({name});$('uname').textContent=name;$('uavatar').textContent=name.substring(0,2).toUpperCase();toast('Saved','success');}catch(e){toast(e.message,'error');}
-}
+async function saveProfile(){const name=$('set-name').value.trim();if(!name){toast('Enter name','error');return;}try{await db.collection('users').doc(CU.uid).update({name});$('uname').textContent=name;$('uavatar').textContent=name.substring(0,2).toUpperCase();toast('Saved','success');}catch(e){toast(e.message,'error');}}
 
-// ── WALLPAPER ──
 function applyWP(val){document.body.style.background=val;$('content').style.background='transparent';}
 function toggleWP(){$('wp-panel').classList.toggle('open');}
 </script>
