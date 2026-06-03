@@ -778,7 +778,7 @@ function listenNotifs(){
       if(badge){badge.style.display=unread>0?'flex':'none';badge.textContent=unread>9?'9+':unread;}
       const list=$('notif-list');if(!list)return;
       if(!items.length){list.innerHTML='<div style="padding:16px;text-align:center;font-size:12px;color:var(--text3)">No notifications</div>';return;}
-      const icons={task:'📋',project:'',invoice:'🧾',proposal:'📝',staff:'👤',feedback:'💬',deadline:'⏰'};
+      const icons={task:'📋',project:'📁',invoice:'🧾',proposal:'📝',staff:'👤',feedback:'💬',deadline:'⏰'};
       list.innerHTML=items.map(i=>`<div class="notif-item ${i.read?'':'unread'}" onclick="readNotif('${i.id}')">
         <div class="notif-icon" style="background:var(--accent-light)">${icons[i.type]||'🔔'}</div>
         <div><div class="notif-text">${i.message}</div><div class="notif-time">${i.createdAt?.toDate?.().toLocaleString('en-IN')||'just now'}</div></div>
