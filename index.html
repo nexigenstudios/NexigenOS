@@ -1518,7 +1518,7 @@ async function printSaleInv(id,source='inv'){
     const sectionsHTML=sections.map(sec=>{
       const secTotal=sec.items.reduce((a,it)=>a+(+it.qty||0)*(+it.price||0),0);
       return`<div style="margin-bottom:22px">
-        <div style="background:linear-gradient(90deg,#1e293b,#334155);color:#e2e8f0;padding:9px 14px;border-radius:8px 8px 0 0;font-size:12px;font-weight:700;letter-spacing:.03em">📁 ${sec.projectName}</div>
+        <div style="background:linear-gradient(90deg,#1e293b,#334155);color:#e2e8f0;padding:9px 14px;border-radius:8px 8px 0 0;font-size:12px;font-weight:700;letter-spacing:.03em"> ${sec.projectName}</div>
         <table style="width:100%;border-collapse:collapse">
           <thead><tr style="background:#f1f5f9">
             <th style="padding:8px 12px;text-align:left;font-size:10px;color:#64748b;font-weight:700;text-transform:uppercase;border-bottom:1px solid #e2e8f0">#</th>
