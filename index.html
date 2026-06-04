@@ -203,7 +203,7 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
 <body>
 <div id="login-screen">
   <div class="login-card">
-    <div class="login-logo"><canvas id="login-logo-canvas" width="90" height="90" style="border-radius:18px"></canvas></div>
+    <div class="login-logo"><img id="login-logo-img" src="" alt="Nexigen Studios" style="width:90px;height:90px;border-radius:18px;object-fit:cover"/></div>
     <div class="login-title">NexigenOS</div>
     <div class="login-sub">Internal Operating System · Nexigen Studios</div>
     <div class="inp-grp"><label>Email</label><input id="li-email" type="email" placeholder="you@nexigenstudios.com" autocomplete="email"/></div>
@@ -218,7 +218,7 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
   <div id="sidebar-overlay" onclick="closeSidebar()"></div>
   <nav id="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-icon"><canvas id="sidebar-logo-canvas" width="38" height="38" style="border-radius:9px"></canvas></div>
+      <div class="logo-icon"><img id="sidebar-logo-img" src="" alt="N" style="width:38px;height:38px;border-radius:9px;object-fit:cover"/></div>
       <div><div class="logo-text">NexigenOS</div><div class="logo-sub">v2 · Nexigen Studios</div></div>
     </div>
     <div class="sidebar-nav">
@@ -878,6 +878,9 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
 
 <script>
 // ── LOGO ──
+const LOGO_URL = 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/logo.png';
+
+// Fallback canvas logo (used in PDFs and if image fails to load)
 const LOGO_B64=(()=>{
   const c=document.createElement('canvas');c.width=200;c.height=200;
   const ctx=c.getContext('2d');
@@ -887,8 +890,16 @@ const LOGO_B64=(()=>{
   ctx.beginPath();ctx.moveTo(52,155);ctx.lineTo(52,45);ctx.lineTo(148,155);ctx.lineTo(148,45);ctx.stroke();
   return c.toDataURL('image/png');
 })();
-function renderLogos(){['login-logo-canvas','sidebar-logo-canvas'].forEach(id=>{const cv=document.getElementById(id);if(!cv)return;const img=new Image();img.onload=()=>{const ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(img,0,0,cv.width,cv.height);};img.src=LOGO_B64;});}
-renderLogos();
+
+function renderLogos(){
+  const ids=['login-logo-img','sidebar-logo-img'];
+  ids.forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.src=LOGO_URL;
+    el.onerror=()=>{ el.src=LOGO_B64; }; // fallback to canvas N logo
+  });
+}
 
 // ── FIREBASE ──
 const FC={apiKey:"AIzaSyCr8wnvIUZlegrd5W_3hsXNgK-BzYjk1wA",authDomain:"nexigenos.firebaseapp.com",projectId:"nexigenos",storageBucket:"nexigenos.firebasestorage.app",messagingSenderId:"579141932654",appId:"1:579141932654:web:d022c97ac32d21f2a0f87f"};
