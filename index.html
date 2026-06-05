@@ -513,7 +513,7 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
           <div class="card kpi-card"><div class="kpi-label">Best Month</div><div class="kpi-value" id="an-bestm" style="font-size:13px">—</div></div>
         </div>
         <div class="card" style="margin-bottom:16px">
-          <div class="card-hdr"><span class="card-title">Revenue vs Expenses vs Net Cash</span><button class="btn btn-primary" style="font-size:11px" onclick="openExpenseModal()">+ Add Expenses</button></div>
+          <div class="card-hdr"><span class="card-title">Revenue vs Expenses vs Net Cash</span></div>
           <div class="card-body"><canvas id="revenueExpChart" style="max-height:200px"></canvas></div>
         </div>
         <div class="g2" style="margin-bottom:16px">
@@ -2440,56 +2440,103 @@ async function saveExpenses(){
 async function loadAnalytics(){
   try{
     const curYear=new Date().getFullYear();
-    const[tSnap,pSnap,iSnap,uSnap,eSnap]=await Promise.all([db.collection('tasks').get(),db.collection('projects').get(),db.collection('invoices').get(),db.collection('users').get(),db.collection('expenses').doc(String(curYear)).get()]);
-    const tasks=tSnap.docs.map(d=>d.data()),projs=pSnap.docs.map(d=>d.data()),invs=iSnap.docs.map(d=>d.data());
+    const[tSnap,pSnap,iSnap,uSnap,eeSnap]=await Promise.all([
+      db.collection('tasks').get(),
+      db.collection('projects').get(),
+      db.collection('invoices').get(),
+      db.collection('users').get(),
+      db.collection('expenseEntries').where('year','==',curYear).get()
+    ]);
+    const tasks=tSnap.docs.map(d=>d.data()),
+          projs=pSnap.docs.map(d=>d.data()),
+          invs=iSnap.docs.map(d=>d.data());
     const uMap={};uSnap.docs.forEach(d=>{uMap[d.id]=d.data().name||d.data().email;});
+
+    // Revenue by month from invoice payments
     const revByMonth=Array(12).fill(0);
     invs.forEach(iv=>{
       const pays=iv.payments||[];
-      pays.forEach(p=>{if(p.date){const d=new Date(p.date);if(d.getFullYear()===curYear)revByMonth[d.getMonth()]+=+p.amount||0;}});
-      if(iv.status==='paid'&&!pays.length){const d=iv.createdAt?.toDate?.()||new Date();if(d.getFullYear()===curYear)revByMonth[d.getMonth()]+=+iv.amount||0;}
+      pays.forEach(p=>{
+        if(p.date){const d=new Date(p.date);if(d.getFullYear()===curYear)revByMonth[d.getMonth()]+=+p.amount||0;}
+      });
+      if(iv.status==='paid'&&!pays.length){
+        const d=iv.createdAt?.toDate?.()||new Date();
+        if(d.getFullYear()===curYear)revByMonth[d.getMonth()]+=+iv.amount||0;
+      }
     });
+
+    // Expenses by month from expenseEntries collection
+    const expByMonth=Array(12).fill(0);
+    eeSnap.docs.forEach(d=>{
+      const e=d.data();
+      if(e.date){const m=new Date(e.date).getMonth();expByMonth[m]+=+e.amount||0;}
+    });
+
     const totalRevYear=revByMonth.reduce((a,v)=>a+v,0);
     const totalRevAll=invs.filter(i=>i.status==='paid').reduce((a,i)=>a+(+i.amount||0),0);
-    const expData=eSnap.exists?eSnap.data():{};
-    const expCats=expData._categories||[];
-    const expByMonth=Array(12).fill(0);
-    expCats.forEach(cat=>{(expData[cat]||[]).forEach((v,mi)=>{expByMonth[mi]+=+v||0;});});
     const totalExpYear=expByMonth.reduce((a,v)=>a+v,0);
     const netCash=totalRevYear-totalExpYear;
     const margin=totalRevYear>0?Math.round((netCash/totalRevYear)*100):0;
+
     const nc=$('an-netcash');if(nc){nc.textContent=fmtM(netCash);nc.style.color=netCash>=0?'#10b981':'#ef4444';}
     const rb=$('an-rev-banner');if(rb)rb.textContent=fmtM(totalRevYear);
     const eb=$('an-exp-banner');if(eb)eb.textContent=fmtM(totalExpYear);
     const mb=$('an-margin');if(mb)mb.textContent=margin+'%';
+
     const completedProjs=projs.filter(p=>p.status==='completed');
-    $('an-rev').textContent=fmtM(totalRevAll);$('an-exp').textContent=fmtM(totalExpYear);
+    $('an-rev').textContent=fmtM(totalRevAll);
+    $('an-exp').textContent=fmtM(totalExpYear);
     $('an-avg').textContent=fmtM(completedProjs.length?totalRevAll/completedProjs.length:0);
     $('an-cproj').textContent=completedProjs.length;
     const doneTasks=tasks.filter(t=>t.status==='done').length;
     $('an-trate').textContent=tasks.length?Math.round(doneTasks/tasks.length*100)+'%':'0%';
     const bestIdx=revByMonth.indexOf(Math.max(...revByMonth));
     $('an-bestm').textContent=Math.max(...revByMonth)>0?`${MN[bestIdx]} (${fmtM(revByMonth[bestIdx])})`:'—';
+
     const cc=CC();
     const netByMonth=revByMonth.map((r,i)=>r-expByMonth[i]);
-    mkChart('revenueExpChart',{type:'bar',data:{labels:MN,datasets:[{label:'Revenue',data:revByMonth,backgroundColor:'rgba(16,185,129,.7)',borderRadius:4},{label:'Expenses',data:expByMonth,backgroundColor:'rgba(239,68,68,.6)',borderRadius:4},{label:'Net Cash',data:netByMonth,type:'line',borderColor:'#f59e0b',backgroundColor:'transparent',fill:false,tension:.4,pointRadius:3,pointBackgroundColor:'#f59e0b'}]},options:{responsive:true,plugins:{legend:{labels:{color:cc.tick,font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{color:cc.tick,font:{size:9}}},y:{grid:{color:cc.grid},ticks:{color:cc.tick,font:{size:9},callback:v=>'₹'+(v/1000).toFixed(0)+'k'}}}}});
+
+    mkChart('revenueExpChart',{type:'bar',data:{labels:MN,datasets:[
+      {label:'Revenue',data:revByMonth,backgroundColor:'rgba(16,185,129,.7)',borderRadius:4},
+      {label:'Expenses',data:expByMonth,backgroundColor:'rgba(239,68,68,.6)',borderRadius:4},
+      {label:'Net Cash',data:netByMonth,type:'line',borderColor:'#f59e0b',backgroundColor:'transparent',fill:false,tension:.4,pointRadius:3,pointBackgroundColor:'#f59e0b'}
+    ]},options:{responsive:true,plugins:{legend:{labels:{color:cc.tick,font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{color:cc.tick,font:{size:9}}},y:{grid:{color:cc.grid},ticks:{color:cc.tick,font:{size:9},callback:v=>'₹'+(v/1000).toFixed(0)+'k'}}}}});
+
     const tbody=$('expense-table-body');
-    if(tbody){tbody.innerHTML=MN.map((m,i)=>{const r=revByMonth[i],ex=expByMonth[i],n=r-ex;return`<tr><td style="font-weight:600">${m} ${curYear}</td><td style="color:var(--green)">${fmtM(r)}</td><td style="color:var(--red)">${fmtM(ex)}</td><td style="font-weight:700;color:${n>=0?'var(--green)':'var(--red)'}">${fmtM(n)}</td></tr>`;}).join('')+`<tr style="background:var(--bg);font-weight:700"><td>Total</td><td style="color:var(--green)">${fmtM(totalRevYear)}</td><td style="color:var(--red)">${fmtM(totalExpYear)}</td><td style="color:${netCash>=0?'var(--green)':'var(--red)'}">${fmtM(netCash)}</td></tr>`;}
-    const typeRev={};invs.filter(i=>i.status==='paid').forEach(i=>{const pr=projs.find(p=>p.clientName===i.clientName)||{projectType:'Other'};const t=pr.projectType||'Other';typeRev[t]=(typeRev[t]||0)+(+i.amount||0);});
+    if(tbody){
+      tbody.innerHTML=MN.map((m,i)=>{
+        const r=revByMonth[i],ex=expByMonth[i],n=r-ex;
+        return`<tr><td style="font-weight:600">${m} ${curYear}</td><td style="color:var(--green)">${fmtM(r)}</td><td style="color:var(--red)">${fmtM(ex)}</td><td style="font-weight:700;color:${n>=0?'var(--green)':'var(--red)'}">${fmtM(n)}</td></tr>`;
+      }).join('')+`<tr style="background:var(--bg);font-weight:700"><td>Total</td><td style="color:var(--green)">${fmtM(totalRevYear)}</td><td style="color:var(--red)">${fmtM(totalExpYear)}</td><td style="color:${netCash>=0?'var(--green)':'var(--red)'}">${fmtM(netCash)}</td></tr>`;
+    }
+
+    const typeRev={};
+    invs.filter(i=>i.status==='paid').forEach(i=>{
+      const pr=projs.find(p=>p.clientName===i.clientName)||{projectType:'Other'};
+      const t=pr.projectType||'Other';typeRev[t]=(typeRev[t]||0)+(+i.amount||0);
+    });
     const tLabels=Object.keys(typeRev),tVals=Object.values(typeRev);
     const pal=['#2563EB','#10b981','#f59e0b','#8b5cf6','#ef4444','#06b6d4','#84cc16'];
     mkChart('typeChart',{type:'doughnut',data:{labels:tLabels.length?tLabels:['No data'],datasets:[{data:tLabels.length?tVals:[1],backgroundColor:pal,borderWidth:0,hoverOffset:4}]},options:{responsive:true,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:cc.tick,font:{size:10},padding:8}}}}});
-    const cSpend={};invs.filter(i=>i.status==='paid').forEach(i=>{cSpend[i.clientName]=(cSpend[i.clientName]||0)+(+i.amount||0);});
+
+    const cSpend={};
+    invs.filter(i=>i.status==='paid').forEach(i=>{cSpend[i.clientName]=(cSpend[i.clientName]||0)+(+i.amount||0);});
     const sClients=Object.entries(cSpend).sort((a,b)=>b[1]-a[1]).slice(0,5);
     mkChart('clientChart',{type:'bar',data:{labels:sClients.length?sClients.map(c=>c[0]):['No data'],datasets:[{label:'Spend',data:sClients.length?sClients.map(c=>c[1]):[0],backgroundColor:'rgba(139,92,246,.7)',borderRadius:6,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:cc.grid},ticks:{color:cc.tick,font:{size:9},callback:v=>'₹'+(v/1000).toFixed(0)+'k'}},y:{grid:{display:false},ticks:{color:cc.tick,font:{size:10}}}}}});
+
     const growth=revByMonth.map((v,i)=>i===0?0:revByMonth[i-1]>0?Math.round(((v-revByMonth[i-1])/revByMonth[i-1])*100):0);
-    mkChart('growthChart',{type:'line',data:{labels:MN,datasets:[{label:'Revenue',data:revByMonth,borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.08)',fill:true,tension:.4,pointRadius:3,yAxisID:'y'},{label:'Growth %',data:growth,borderColor:'#f59e0b',backgroundColor:'transparent',tension:.4,pointRadius:3,borderDash:[4,4],yAxisID:'y2'}]},options:{responsive:true,plugins:{legend:{labels:{color:cc.tick,font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{color:cc.tick,font:{size:9}}},y:{grid:{color:cc.grid},ticks:{color:cc.tick,font:{size:9},callback:v=>'₹'+(v/1000).toFixed(0)+'k'},position:'left'},y2:{ticks:{color:cc.tick,font:{size:9},callback:v=>v+'%'},position:'right',grid:{display:false}}}}});
-    const sDone={};tasks.filter(t=>t.status==='done'&&t.assignedTo).forEach(t=>{sDone[t.assignedTo]=(sDone[t.assignedTo]||0)+1;});
+    mkChart('growthChart',{type:'line',data:{labels:MN,datasets:[
+      {label:'Revenue',data:revByMonth,borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.08)',fill:true,tension:.4,pointRadius:3,yAxisID:'y'},
+      {label:'Growth %',data:growth,borderColor:'#f59e0b',backgroundColor:'transparent',tension:.4,pointRadius:3,borderDash:[4,4],yAxisID:'y2'}
+    ]},options:{responsive:true,plugins:{legend:{labels:{color:cc.tick,font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{color:cc.tick,font:{size:9}}},y:{grid:{color:cc.grid},ticks:{color:cc.tick,font:{size:9},callback:v=>'₹'+(v/1000).toFixed(0)+'k'},position:'left'},y2:{ticks:{color:cc.tick,font:{size:9},callback:v=>v+'%'},position:'right',grid:{display:false}}}}});
+
+    const sDone={};
+    tasks.filter(t=>t.status==='done'&&t.assignedTo).forEach(t=>{sDone[t.assignedTo]=(sDone[t.assignedTo]||0)+1;});
     const sEntries=Object.entries(sDone).sort((a,b)=>b[1]-a[1]).slice(0,8);
     mkChart('staffChart',{type:'bar',data:{labels:sEntries.length?sEntries.map(e=>uMap[e[0]]||e[0]):['No data'],datasets:[{label:'Tasks Done',data:sEntries.length?sEntries.map(e=>e[1]):[0],backgroundColor:'rgba(37,99,235,.7)',borderRadius:6,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:cc.tick,font:{size:9}}},y:{grid:{color:cc.grid},ticks:{color:cc.tick,font:{size:9},stepSize:1}}}}});
+
   }catch(e){toast('Analytics error: '+e.message,'error');}
 }
-
 // ═══════════════════════════════════════════
 // AUDIT LOG
 // ═══════════════════════════════════════════
