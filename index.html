@@ -291,19 +291,57 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
         </div>
         <!-- Staff KPIs -->
         <div class="kpi-grid staff-only" style="display:none">
-          <div class="card kpi-card"><div class="kpi-label">My Open Tasks</div><div class="kpi-value" id="sk-tasks">—</div></div>
-          <div class="card kpi-card"><div class="kpi-label">Done Tasks</div><div class="kpi-value" id="sk-done">—</div></div>
-          <div class="card kpi-card"><div class="kpi-label">My Projects</div><div class="kpi-value" id="sk-proj">—</div></div>
+          <div class="card kpi-card">
+            <div style="float:right;width:32px;height:32px;border-radius:9px;background:#FEF2F2;display:flex;align-items:center;justify-content:center">
+              <svg width="15" height="15" fill="none" stroke="#ef4444" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/></svg>
+            </div>
+            <div class="kpi-label">Open Tasks</div><div class="kpi-value" id="sk-tasks">—</div><div class="kpi-sub">Assigned to me</div>
+          </div>
+          <div class="card kpi-card">
+            <div style="float:right;width:32px;height:32px;border-radius:9px;background:#ECFDF5;display:flex;align-items:center;justify-content:center">
+              <svg width="15" height="15" fill="none" stroke="#10b981" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="kpi-label">Done Tasks</div><div class="kpi-value" id="sk-done">—</div><div class="kpi-sub">Completed</div>
+          </div>
+          <div class="card kpi-card">
+            <div style="float:right;width:32px;height:32px;border-radius:9px;background:#FFFBEB;display:flex;align-items:center;justify-content:center">
+              <svg width="15" height="15" fill="none" stroke="#f59e0b" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="kpi-label">In Progress</div><div class="kpi-value" id="sk-working">—</div><div class="kpi-sub">Currently active</div>
+          </div>
+          <div class="card kpi-card">
+            <div style="float:right;width:32px;height:32px;border-radius:9px;background:#F5F3FF;display:flex;align-items:center;justify-content:center">
+              <svg width="15" height="15" fill="none" stroke="#8b5cf6" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h12"/></svg>
+            </div>
+            <div class="kpi-label">My Projects</div><div class="kpi-value" id="sk-proj">—</div><div class="kpi-sub">Assigned</div>
+          </div>
+          <div class="card kpi-card">
+            <div style="float:right;width:32px;height:32px;border-radius:9px;background:#FEF2F2;display:flex;align-items:center;justify-content:center">
+              <svg width="15" height="15" fill="none" stroke="#ef4444" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="kpi-label">Overdue</div><div class="kpi-value" style="color:var(--red)" id="sk-overdue">—</div><div class="kpi-sub">Past deadline</div>
+          </div>
+          <div class="card kpi-card">
+            <div style="float:right;width:32px;height:32px;border-radius:9px;background:var(--accent-light);display:flex;align-items:center;justify-content:center">
+              <svg width="15" height="15" fill="none" stroke="var(--accent)" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="kpi-label">Completion Rate</div><div class="kpi-value" id="sk-rate">—</div><div class="kpi-sub">All tasks</div>
+          </div>
         </div>
         <!-- Admin Charts -->
         <div class="g3 admin-only">
           <div class="card"><div class="card-hdr"><span class="card-title">Monthly Revenue</span></div><div class="card-body"><canvas id="revChart"></canvas></div></div>
           <div class="card"><div class="card-hdr"><span class="card-title">Task Status</span></div><div class="card-body" style="display:flex;align-items:center;justify-content:center"><canvas id="donutChart" style="max-height:150px"></canvas></div></div>
         </div>
-        <!-- Staff Charts + Activity -->
+        <!-- Staff Charts Row -->
         <div class="g2 staff-only" style="display:none">
           <div class="card"><div class="card-hdr"><span class="card-title">My Task Status</span></div><div class="card-body" style="display:flex;align-items:center;justify-content:center"><canvas id="staffDonut" style="max-height:150px"></canvas></div></div>
-          <div class="card"><div class="card-hdr"><span class="card-title">My Recent Tasks</span></div><div class="card-body" id="staff-activity"></div></div>
+          <div class="card"><div class="card-hdr"><span class="card-title">⏰ Upcoming Deadlines</span></div><div class="card-body" id="staff-deadlines"><div style="color:var(--text3);font-size:12px">Loading…</div></div></div>
+        </div>
+        <!-- Staff Second Row -->
+        <div class="g2 staff-only" style="display:none;margin-top:0">
+          <div class="card"><div class="card-hdr"><span class="card-title">📋 My Recent Tasks</span></div><div class="card-body" id="staff-activity"></div></div>
+          <div class="card"><div class="card-hdr"><span class="card-title">📁 My Projects</span></div><div class="card-body" id="staff-projects"></div></div>
         </div>
         <!-- Admin Activity Feed -->
         <div class="card admin-only"><div class="card-hdr"><span class="card-title">Recent Activity</span></div><div class="card-body" id="activity-feed"><div style="color:var(--text3);font-size:12px">Loading…</div></div></div>
@@ -430,7 +468,22 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
       </div>
       <!-- STAFF -->
       <div class="page" id="page-staff">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-primary" onclick="showM('staff-modal')">+ Add Staff</button></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <input id="staff-search" type="text" placeholder="🔍 Search staff…" oninput="filterStaff()" style="border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-size:12px;background:var(--surface);color:var(--text);outline:none;width:200px"/>
+            <select id="staff-role-filter" onchange="filterStaff()" style="border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:12px;background:var(--surface);color:var(--text)">
+              <option value="all">All Roles</option>
+              <option value="admin">Admin</option>
+              <option value="staff">Staff</option>
+            </select>
+            <select id="staff-status-filter" onchange="filterStaff()" style="border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:12px;background:var(--surface);color:var(--text)">
+              <option value="all">All Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="showM('staff-modal')">+ Add Staff</button>
+        </div>
         <div class="staff-grid" id="staff-list"></div>
       </div>
       <!-- SETTINGS -->
@@ -556,7 +609,58 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
 </div>
 
 <!-- MODALS -->
-<div class="modal" id="staff-modal"><div class="modal-box">
+<!-- EDIT STAFF MODAL -->
+<div class="modal" id="edit-staff-modal"><div class="modal-box" style="max-width:560px">
+  <div class="modal-title">✏ Edit Staff Member</div>
+  <input type="hidden" id="esm-id"/>
+  <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:16px">
+    <div class="avatar" id="esm-avatar" style="width:56px;height:56px;font-size:20px;margin-bottom:8px">?</div>
+    <div style="font-size:11px;color:var(--text3)">Avatar generated from name initials</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="fg"><label>Full Name</label><input id="esm-name" type="text" oninput="updateEsmAvatar()"/></div>
+    <div class="fg"><label>Email (read-only)</label><input id="esm-email" type="email" readonly style="opacity:.6;cursor:not-allowed"/></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="fg"><label>Phone</label><input id="esm-phone" type="tel" placeholder="+91 98765 43210"/></div>
+    <div class="fg"><label>Job Title</label><input id="esm-jobtitle" type="text" placeholder="e.g. UI Designer"/></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="fg"><label>Department</label><input id="esm-dept" type="text" placeholder="e.g. Design, Dev, Marketing"/></div>
+    <div class="fg"><label>Role</label><select id="esm-role"><option value="staff">Staff</option><option value="admin">Admin</option></select></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="fg"><label>Status</label><select id="esm-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+    <div class="fg"><label>Join Date</label><input id="esm-joindate" type="date"/></div>
+  </div>
+  <div class="fg"><label>Bio / Notes</label><textarea id="esm-bio" rows="3" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px;font-size:13px;color:var(--text);outline:none;resize:vertical"></textarea></div>
+  <div style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px">
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">🔒 Reset Password</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg" style="margin:0"><label>New Password</label><input id="esm-newpass" type="password" placeholder="Leave blank to keep current"/></div>
+      <div class="fg" style="margin:0"><label>Confirm Password</label><input id="esm-confpass" type="password" placeholder="Re-enter new password"/></div>
+    </div>
+    <div id="esm-pass-msg" style="display:none;font-size:12px;padding:7px 10px;border-radius:7px;margin-top:8px"></div>
+  </div>
+  <div class="modal-actions"><button class="btn btn-ghost" onclick="hideM('edit-staff-modal')">Cancel</button><button class="btn btn-primary" onclick="saveStaffEdit()">💾 Save Changes</button></div>
+</div></div>
+
+<!-- STAFF PROFILE MODAL (view only for non-admin or quick view) -->
+<div class="modal" id="staff-profile-modal"><div class="modal-box" style="max-width:480px">
+  <div class="modal-title">👤 Staff Profile</div>
+  <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:20px;text-align:center">
+    <div class="avatar" id="spm-avatar" style="width:64px;height:64px;font-size:22px;margin-bottom:10px">?</div>
+    <div style="font-size:18px;font-weight:800;color:var(--text)" id="spm-name">—</div>
+    <div style="font-size:13px;color:var(--text3);margin-top:2px" id="spm-jobtitle">—</div>
+    <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;justify-content:center" id="spm-tags"></div>
+  </div>
+  <div id="spm-details" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
+  <div id="spm-stats" style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px"></div>
+  <div class="modal-actions">
+    <button class="btn btn-ghost" onclick="hideM('staff-profile-modal')">Close</button>
+    <button class="btn btn-primary admin-only" id="spm-edit-btn">✏ Edit Staff</button>
+  </div>
+</div></div>
   <div class="modal-title">Add Staff Member</div>
   <div class="fg"><label>Full Name</label><input id="sm-name" type="text"/></div>
   <div class="fg"><label>Email</label><input id="sm-email" type="email"/></div>
@@ -849,7 +953,7 @@ function applyRoleUI(){
   document.querySelectorAll('.admin-only').forEach(el=>el.style.display=isAdmin?'':'none');
   document.querySelectorAll('.staff-only').forEach(el=>el.style.display=isAdmin?'none':'');
   if(!isAdmin){
-    // Show staff-only grids
+    // Restore display for all staff-only grid/block elements
     document.querySelectorAll('.kpi-grid.staff-only').forEach(el=>el.style.display='grid');
     document.querySelectorAll('.g2.staff-only').forEach(el=>el.style.display='grid');
   }
@@ -953,24 +1057,92 @@ async function loadDash(){
         af.innerHTML=items.slice(0,8).map(i=>`<div class="act-item"><div class="act-dot" style="background:${i.color}"></div><div><div class="act-text">${i.text}</div><div class="act-time">${i.time.toLocaleDateString('en-IN')}</div></div></div>`).join('')||'<div style="color:var(--text3);font-size:12px">No activity yet.</div>';
       }
     }else{
-      // Staff dashboard — original simple view
+      // Staff dashboard — full featured
       const[ts2,ps]=await Promise.all([
         db.collection('tasks').where('assignedTo','==',CU.uid).get(),
         db.collection('projects').where('assignedTo','==',CU.uid).get()
       ]);
       const tasks=ts2.docs.map(d=>({...d.data(),id:d.id}));
       const projs=ps.docs.map(d=>({...d.data(),id:d.id}));
-      $('sk-tasks').textContent=tasks.filter(t=>t.status!=='done').length;
-      $('sk-done').textContent=tasks.filter(t=>t.status==='done').length;
+      const todayStr=today();
+      const openTasks=tasks.filter(t=>t.status!=='done');
+      const doneTasks=tasks.filter(t=>t.status==='done');
+      const workingTasks=tasks.filter(t=>t.status==='working');
+      const overdueTasks=tasks.filter(t=>t.status!=='done'&&t.deadline&&t.deadline<todayStr);
+      const rate=tasks.length?Math.round(doneTasks.length/tasks.length*100):0;
+      $('sk-tasks').textContent=openTasks.length;
+      $('sk-done').textContent=doneTasks.length;
+      $('sk-working').textContent=workingTasks.length;
       $('sk-proj').textContent=projs.length;
-      // Staff donut
+      $('sk-overdue').textContent=overdueTasks.length;
+      $('sk-rate').textContent=rate+'%';
+      // Donut chart
       const cc=CC();
-      const dn=tasks.filter(t=>t.status==='done').length,wk=tasks.filter(t=>t.status==='working').length,pd=tasks.filter(t=>t.status==='pending').length;
-      mkChart('staffDonut',{type:'doughnut',data:{labels:['Done','In Progress','Pending'],datasets:[{data:[dn,wk,pd],backgroundColor:['#10b981','#f59e0b','#94a3b8'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,cutout:'72%',plugins:{legend:{position:'bottom',labels:{color:cc.tick,font:{size:10},padding:8}}}}});
+      const review=tasks.filter(t=>t.status==='review').length;
+      mkChart('staffDonut',{type:'doughnut',data:{labels:['Done','In Progress','In Review','Pending'],datasets:[{data:[doneTasks.length,workingTasks.length,review,tasks.filter(t=>t.status==='pending').length],backgroundColor:['#10b981','#f59e0b','#8b5cf6','#94a3b8'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,cutout:'72%',plugins:{legend:{position:'bottom',labels:{color:cc.tick,font:{size:10},padding:8}}}}});
+      // Upcoming deadlines
+      const dl=$('staff-deadlines');
+      if(dl){
+        const upcoming=tasks.filter(t=>t.status!=='done'&&t.deadline).sort((a,b)=>a.deadline.localeCompare(b.deadline)).slice(0,5);
+        if(!upcoming.length){dl.innerHTML='<div style="color:var(--text3);font-size:12px">No upcoming deadlines 🎉</div>';}
+        else{
+          dl.innerHTML=upcoming.map(t=>{
+            const diff=Math.ceil((new Date(t.deadline)-new Date())/86400000);
+            const dotColor=diff<0?'var(--red)':diff<=3?'var(--amber)':'var(--green)';
+            const pillBg=diff<0?'#FEF2F2':diff<=3?'#FFFBEB':'#ECFDF5';
+            const pillColor=diff<0?'var(--red)':diff<=3?'var(--amber)':'var(--green)';
+            const lbl=diff<0?`${Math.abs(diff)}d overdue`:diff===0?'Due today':diff===1?'Due tomorrow':`${diff}d left`;
+            const priCls={critical:'t-red',high:'t-amber',medium:'t-blue',low:'t-green'}[t.priority]||'t-blue';
+            return`<div class="act-item">
+              <div class="act-dot" style="background:${dotColor}"></div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.title}</div>
+                <div style="display:flex;gap:5px;align-items:center;margin-top:3px;flex-wrap:wrap">
+                  <span class="tag ${priCls}" style="font-size:9px">${t.priority}</span>
+                  <span style="font-size:10px;padding:2px 7px;border-radius:99px;font-weight:600;background:${pillBg};color:${pillColor}">⏰ ${lbl}</span>
+                  <span style="font-size:10px;color:var(--text3)">${t.deadline}</span>
+                </div>
+              </div>
+            </div>`;
+          }).join('');
+        }
+      }
       // Recent tasks list
       const sa=$('staff-activity');
       if(sa){
-        sa.innerHTML=tasks.slice(0,6).map(t=>`<div class="act-item"><div class="act-dot" style="background:var(--accent)"></div><div><div class="act-text"><b>${t.title}</b> — ${t.status}</div><div class="act-time">Deadline: ${t.deadline||'—'}</div></div></div>`).join('')||'<div style="color:var(--text3);font-size:12px">No tasks yet.</div>';
+        sa.innerHTML=tasks.slice(0,6).map(t=>{
+          const priCls={critical:'t-red',high:'t-amber',medium:'t-blue',low:'t-green'}[t.priority]||'t-blue';
+          const stCls={done:'t-green',working:'t-amber',review:'t-purple',pending:'t-blue'}[t.status]||'t-blue';
+          return`<div class="act-item">
+            <div class="act-dot" style="background:var(--accent)"></div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.title}</div>
+              <div style="display:flex;gap:5px;align-items:center;margin-top:3px;flex-wrap:wrap">
+                <span class="tag ${priCls}" style="font-size:9px">${t.priority}</span>
+                <span class="tag ${stCls}" style="font-size:9px">${t.status}</span>
+                <span style="font-size:10px;color:var(--text3)">📅 ${t.deadline||'No deadline'}</span>
+              </div>
+            </div>
+          </div>`;
+        }).join('')||'<div style="color:var(--text3);font-size:12px">No tasks yet.</div>';
+      }
+      // My projects
+      const sp=$('staff-projects');
+      if(sp){
+        if(!projs.length){sp.innerHTML='<div style="color:var(--text3);font-size:12px">No projects assigned.</div>';}
+        else{
+          sp.innerHTML=projs.map(p=>`<div style="padding:8px 0;border-bottom:1px solid var(--border)">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:4px">
+              <div style="font-size:12px;font-weight:600;color:var(--text)">${p.name}</div>
+              <span class="tag ${p.status==='active'?'t-blue':p.status==='completed'?'t-green':'t-amber'}" style="font-size:9px">${p.status}</span>
+            </div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:5px">🏢 ${p.clientName} &nbsp;|&nbsp; 💼 ${p.projectType||'—'} &nbsp;|&nbsp; 📅 ${p.deadline||'No deadline'}</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="pbar" style="flex:1"><div class="pfill" style="width:${p.progress||0}%"></div></div>
+              <span style="font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0">${p.progress||0}%</span>
+            </div>
+          </div>`).join('');
+        }
       }
     }
   }catch(e){toast('Dashboard error: '+e.message,'error');}
@@ -979,22 +1151,227 @@ async function loadDash(){
 // ═══════════════════════════════════════════
 // STAFF
 // ═══════════════════════════════════════════
+// ═══════════════════════════════════════════
+// STAFF — full featured
+// ═══════════════════════════════════════════
+let allStaffCache=[];
+
 async function loadStaff(){
-  const el=$('staff-list');if(!el)return;el.innerHTML='<div style="color:var(--text3);padding:16px">Loading…</div>';
+  const el=$('staff-list');if(!el)return;
+  el.innerHTML='<div style="color:var(--text3);padding:16px">Loading…</div>';
   try{
-    const snap=await db.collection('users').get();
-    if(snap.empty){el.innerHTML='<div style="color:var(--text3);padding:16px">No staff yet.</div>';return;}
-    el.innerHTML=snap.docs.map(d=>{const u=d.data();return`<div class="card" style="padding:16px;text-align:center;position:relative">
-      <div class="avatar" style="width:44px;height:44px;font-size:16px;margin:0 auto 8px">${(u.name||u.email).substring(0,2).toUpperCase()}</div>
-      <div style="font-weight:700;font-size:13px;color:var(--text)">${u.name||u.email}</div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:4px">${u.email}</div>
-      ${u.jobTitle?`<div style="font-size:11px;color:var(--text3);margin-bottom:4px">💼 ${u.jobTitle}</div>`:''}
-      <span class="tag t-purple" style="margin-right:4px">${u.role}</span>
-      <span class="tag ${u.status==='active'?'t-green':'t-red'}">${u.status||'active'}</span>
-      ${CR==='admin'&&u.uid!==CU?.uid?`<button onclick="removeStaff('${d.id}')" style="position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;color:var(--red);font-size:15px">✕</button>`:''}
-    </div>`;}).join('');
+    const[uSnap,tSnap,pSnap]=await Promise.all([
+      db.collection('users').get(),
+      db.collection('tasks').get(),
+      db.collection('projects').get()
+    ]);
+    allStaffCache=uSnap.docs.map(d=>({...d.data(),_id:d.id}));
+    // Count tasks/projects per user
+    const taskCount={},doneCount={},projCount={};
+    tSnap.docs.forEach(d=>{const t=d.data();if(t.assignedTo){taskCount[t.assignedTo]=(taskCount[t.assignedTo]||0)+1;if(t.status==='done')doneCount[t.assignedTo]=(doneCount[t.assignedTo]||0)+1;}});
+    pSnap.docs.forEach(d=>{const p=d.data();if(p.assignedTo)projCount[p.assignedTo]=(projCount[p.assignedTo]||0)+1;});
+    allStaffCache=allStaffCache.map(u=>({...u,_taskCount:taskCount[u.uid]||0,_doneCount:doneCount[u.uid]||0,_projCount:projCount[u.uid]||0}));
+    renderStaffList(allStaffCache);
   }catch(e){el.innerHTML='<div style="color:var(--red);padding:16px">'+e.message+'</div>';}
 }
+
+function filterStaff(){
+  const q=($('staff-search')?.value||'').toLowerCase();
+  const role=$('staff-role-filter')?.value||'all';
+  const status=$('staff-status-filter')?.value||'all';
+  let filtered=allStaffCache;
+  if(q)filtered=filtered.filter(u=>(u.name||'').toLowerCase().includes(q)||(u.email||'').toLowerCase().includes(q)||(u.jobTitle||'').toLowerCase().includes(q)||(u.department||'').toLowerCase().includes(q));
+  if(role!=='all')filtered=filtered.filter(u=>u.role===role);
+  if(status!=='all')filtered=filtered.filter(u=>(u.status||'active')===status);
+  renderStaffList(filtered);
+}
+
+function renderStaffList(list){
+  const el=$('staff-list');if(!el)return;
+  if(!list.length){el.innerHTML='<div style="color:var(--text3);padding:16px;grid-column:1/-1">No staff found.</div>';return;}
+  el.innerHTML=list.map(u=>{
+    const initials=(u.name||u.email).substring(0,2).toUpperCase();
+    const isMe=u.uid===CU?.uid;
+    const taskRate=u._taskCount?Math.round(u._doneCount/u._taskCount*100):0;
+    return`<div class="card" style="padding:0;overflow:hidden;position:relative">
+      <!-- Top color bar based on role -->
+      <div style="height:4px;background:${u.role==='admin'?'var(--accent)':'var(--green)'}"></div>
+      <div style="padding:16px">
+        <!-- Header row -->
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="avatar" style="width:42px;height:42px;font-size:15px;flex-shrink:0">${initials}</div>
+            <div>
+              <div style="font-weight:700;font-size:13px;color:var(--text);line-height:1.2">${u.name||u.email}${isMe?' <span style="font-size:9px;background:var(--accent-light);color:var(--accent);padding:1px 6px;border-radius:99px;font-weight:600">You</span>':''}</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:1px">${u.jobTitle||'—'}</div>
+              ${u.department?`<div style="font-size:10px;color:var(--text3)">🏢 ${u.department}</div>`:''}
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+            <span class="tag t-purple" style="font-size:9px">${u.role}</span>
+            <span class="tag ${(u.status||'active')==='active'?'t-green':'t-red'}" style="font-size:9px">${u.status||'active'}</span>
+          </div>
+        </div>
+        <!-- Info rows -->
+        <div style="font-size:11px;color:var(--text3);margin-bottom:10px;display:flex;flex-direction:column;gap:3px">
+          <div>✉ ${u.email}</div>
+          ${u.phone?`<div>📞 ${u.phone}</div>`:''}
+          ${u.joinDate?`<div>📅 Joined: ${new Date(u.joinDate).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</div>`:''}
+        </div>
+        <!-- Stats row -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px">
+          <div style="text-align:center;background:var(--bg);border-radius:8px;padding:6px 4px">
+            <div style="font-size:16px;font-weight:700;color:var(--text)">${u._taskCount}</div>
+            <div style="font-size:9px;color:var(--text3);font-weight:600;text-transform:uppercase">Tasks</div>
+          </div>
+          <div style="text-align:center;background:var(--bg);border-radius:8px;padding:6px 4px">
+            <div style="font-size:16px;font-weight:700;color:var(--green)">${u._doneCount}</div>
+            <div style="font-size:9px;color:var(--text3);font-weight:600;text-transform:uppercase">Done</div>
+          </div>
+          <div style="text-align:center;background:var(--bg);border-radius:8px;padding:6px 4px">
+            <div style="font-size:16px;font-weight:700;color:var(--purple)">${u._projCount}</div>
+            <div style="font-size:9px;color:var(--text3);font-weight:600;text-transform:uppercase">Projects</div>
+          </div>
+        </div>
+        <!-- Task completion bar -->
+        ${u._taskCount>0?`<div style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:3px"><span>Task Completion</span><span style="font-weight:700;color:var(--text)">${taskRate}%</span></div>
+          <div class="pbar"><div class="pfill" style="width:${taskRate}%;background:${taskRate>=80?'var(--green)':taskRate>=50?'var(--amber)':'var(--red)'}"></div></div>
+        </div>`:''}
+        <!-- Action buttons -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn btn-ghost" style="flex:1;font-size:11px;padding:6px" onclick="viewStaffProfile('${u._id}')">👁 View</button>
+          ${CR==='admin'?`<button class="btn btn-primary" style="flex:1;font-size:11px;padding:6px" onclick="openEditStaff('${u._id}')">✏ Edit</button>`:''}
+          ${CR==='admin'&&!isMe?`<button class="btn btn-danger" style="font-size:11px;padding:6px" onclick="toggleStaffStatus('${u._id}','${u.status||'active'}')">
+            ${(u.status||'active')==='active'?'🚫 Deactivate':'✅ Activate'}
+          </button>`:''}
+          ${CR==='admin'&&!isMe?`<button onclick="removeStaff('${u._id}')" style="background:none;border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:6px 8px;cursor:pointer;color:var(--red);font-size:11px">🗑</button>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateEsmAvatar(){
+  const name=$('esm-name')?.value||'?';
+  const av=$('esm-avatar');if(av)av.textContent=name.substring(0,2).toUpperCase();
+}
+
+async function openEditStaff(id){
+  const u=allStaffCache.find(s=>s._id===id);
+  if(!u){toast('Staff not found','error');return;}
+  $('esm-id').value=id;
+  $('esm-name').value=u.name||'';
+  $('esm-email').value=u.email||'';
+  $('esm-phone').value=u.phone||'';
+  $('esm-jobtitle').value=u.jobTitle||'';
+  $('esm-dept').value=u.department||'';
+  $('esm-role').value=u.role||'staff';
+  $('esm-status').value=u.status||'active';
+  $('esm-joindate').value=u.joinDate||'';
+  $('esm-bio').value=u.bio||'';
+  $('esm-newpass').value='';$('esm-confpass').value='';
+  const msg=$('esm-pass-msg');if(msg)msg.style.display='none';
+  const av=$('esm-avatar');if(av)av.textContent=(u.name||u.email).substring(0,2).toUpperCase();
+  hideM('staff-profile-modal');
+  showM('edit-staff-modal');
+}
+
+async function saveStaffEdit(){
+  const id=$('esm-id').value;
+  const name=$('esm-name').value.trim();
+  if(!name){toast('Name is required','error');return;}
+  const data={
+    name,phone:$('esm-phone').value.trim(),jobTitle:$('esm-jobtitle').value.trim(),
+    department:$('esm-dept').value.trim(),role:$('esm-role').value,
+    status:$('esm-status').value,joinDate:$('esm-joindate').value,bio:$('esm-bio').value.trim()
+  };
+  // Handle password reset
+  const np=$('esm-newpass').value,cp=$('esm-confpass').value;
+  const msg=$('esm-pass-msg');
+  if(np||cp){
+    if(np.length<6){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#991b1b';msg.textContent='⚠ Password must be at least 6 characters.';return;}
+    if(np!==cp){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#991b1b';msg.textContent='⚠ Passwords do not match.';return;}
+    // Note: Firebase Admin SDK needed for server-side password reset.
+    // We'll store a flag that can be used by a cloud function, or notify the user.
+    data.passwordResetRequested=true;
+    data.passwordResetNote='Admin requested password reset — user should use "Forgot Password" or be re-invited.';
+    toast('⚠ Note: Direct password reset requires Firebase Admin SDK. Please re-invite the staff member or have them use "Forgot Password".','info');
+  }
+  try{
+    await db.collection('users').doc(id).update(data);
+    await logAudit('Staff',`Edited staff details`,name);
+    // Update cache
+    const idx=allStaffCache.findIndex(s=>s._id===id);
+    if(idx>-1)allStaffCache[idx]={...allStaffCache[idx],...data};
+    toast('✅ Staff updated successfully!','success');
+    hideM('edit-staff-modal');
+    loadStaff();
+  }catch(e){toast(e.message,'error');}
+}
+
+async function viewStaffProfile(id){
+  const u=allStaffCache.find(s=>s._id===id);
+  if(!u){toast('Not found','error');return;}
+  const initials=(u.name||u.email).substring(0,2).toUpperCase();
+  const av=$('spm-avatar');if(av)av.textContent=initials;
+  const nm=$('spm-name');if(nm)nm.textContent=u.name||u.email;
+  const jt=$('spm-jobtitle');if(jt)jt.textContent=u.jobTitle||(u.department?u.department:'No title set');
+  const tags=$('spm-tags');
+  if(tags)tags.innerHTML=`<span class="tag t-purple">${u.role}</span><span class="tag ${(u.status||'active')==='active'?'t-green':'t-red'}">${u.status||'active'}</span>${u.department?`<span class="tag t-blue">${u.department}</span>`:''}`;
+  const det=$('spm-details');
+  if(det){det.innerHTML=[
+    {icon:'✉',label:'Email',val:u.email||'—'},
+    {icon:'📞',label:'Phone',val:u.phone||'—'},
+    {icon:'💼',label:'Job Title',val:u.jobTitle||'—'},
+    {icon:'🏢',label:'Department',val:u.department||'—'},
+    {icon:'📅',label:'Joined',val:u.joinDate?new Date(u.joinDate).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}):'—'},
+    {icon:'🆔',label:'User ID',val:(u.uid||'—').substring(0,16)+'…'},
+  ].map(r=>`<div style="background:var(--bg);border-radius:8px;padding:10px">
+    <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;margin-bottom:3px">${r.icon} ${r.label}</div>
+    <div style="font-size:12px;font-weight:600;color:var(--text);word-break:break-all">${r.val}</div>
+  </div>`).join('');}
+  const stats=$('spm-stats');
+  const taskRate=u._taskCount?Math.round(u._doneCount/u._taskCount*100):0;
+  if(stats){stats.innerHTML=`
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">📊 Performance Stats</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px">
+      <div style="text-align:center;background:var(--bg);border-radius:8px;padding:10px">
+        <div style="font-size:20px;font-weight:800;color:var(--text)">${u._taskCount}</div>
+        <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase">Total Tasks</div>
+      </div>
+      <div style="text-align:center;background:var(--bg);border-radius:8px;padding:10px">
+        <div style="font-size:20px;font-weight:800;color:var(--green)">${u._doneCount}</div>
+        <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase">Completed</div>
+      </div>
+      <div style="text-align:center;background:var(--bg);border-radius:8px;padding:10px">
+        <div style="font-size:20px;font-weight:800;color:var(--purple)">${u._projCount}</div>
+        <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase">Projects</div>
+      </div>
+    </div>
+    ${u._taskCount>0?`<div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:4px"><span>Task Completion Rate</span><span style="font-weight:700;color:var(--text)">${taskRate}%</span></div>
+      <div class="pbar" style="height:8px"><div class="pfill" style="width:${taskRate}%;background:${taskRate>=80?'var(--green)':taskRate>=50?'var(--amber)':'var(--red)'}"></div></div>
+    </div>`:'<div style="font-size:12px;color:var(--text3)">No tasks assigned yet.</div>'}
+    ${u.bio?`<div style="margin-top:12px;padding:10px;background:var(--bg);border-radius:8px;font-size:12px;color:var(--text2);line-height:1.6">📝 ${u.bio}</div>`:''}
+  `;}
+  // Wire edit button
+  const editBtn=$('spm-edit-btn');
+  if(editBtn)editBtn.onclick=()=>openEditStaff(id);
+  showM('staff-profile-modal');
+}
+
+async function toggleStaffStatus(id,currentStatus){
+  const newStatus=currentStatus==='active'?'inactive':'active';
+  if(!confirm(`${newStatus==='inactive'?'Deactivate':'Activate'} this staff member?`))return;
+  try{
+    await db.collection('users').doc(id).update({status:newStatus});
+    await logAudit('Staff',`Staff ${newStatus==='inactive'?'deactivated':'activated'}`);
+    toast(`Staff ${newStatus==='inactive'?'deactivated':'activated'}`,newStatus==='inactive'?'info':'success');
+    loadStaff();
+  }catch(e){toast(e.message,'error');}
+}
+
 async function addStaff(){
   if(CR!=='admin')return;
   const name=$('sm-name').value.trim(),email=$('sm-email').value.trim(),pass=$('sm-pass').value.trim(),role=$('sm-role').value;
@@ -1003,16 +1380,22 @@ async function addStaff(){
   try{
     const sec=firebase.initializeApp(FC,'sec_'+Date.now());const secAuth=sec.auth();
     const c=await secAuth.createUserWithEmailAndPassword(email,pass);
-    await db.collection('users').doc(c.user.uid).set({uid:c.user.uid,name,email,role,status:'active',createdAt:ts(),createdBy:CU.uid});
+    await db.collection('users').doc(c.user.uid).set({uid:c.user.uid,name,email,role,status:'active',joinDate:today(),createdAt:ts(),createdBy:CU.uid});
     await secAuth.signOut();await sec.delete();
     await logAudit('Staff',`Added staff member`,`${name} (${role})`);
     await pushNotif(c.user.uid,'staff',`Welcome to NexigenOS, ${name}!`);
     toast(`✅ ${name} added!`,'success');hideM('staff-modal');$('sm-name').value='';$('sm-email').value='';$('sm-pass').value='';loadStaff();
   }catch(e){toast(e.message,'error');}
 }
+
 async function removeStaff(id){
-  if(!confirm('Remove this staff member?'))return;
-  try{const d=await db.collection('users').doc(id).get();const n=d.data()?.name||id;await db.collection('users').doc(id).delete();await logAudit('Staff',`Removed`,n);toast('Removed','info');loadStaff();}catch(e){toast(e.message,'error');}
+  if(!confirm('Permanently remove this staff member?'))return;
+  try{
+    const d=await db.collection('users').doc(id).get();const n=d.data()?.name||id;
+    await db.collection('users').doc(id).delete();
+    await logAudit('Staff',`Removed staff member`,n);
+    toast('Removed','info');loadStaff();
+  }catch(e){toast(e.message,'error');}
 }
 
 // ═══════════════════════════════════════════
