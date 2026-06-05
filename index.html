@@ -140,6 +140,11 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
 .settings-panel{display:none}.settings-panel.active{display:block}
 .deadline-pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600}
 .dl-red{background:#FEF2F2;color:var(--red)}.dl-amber{background:#FFFBEB;color:var(--amber)}.dl-green{background:#ECFDF5;color:var(--green)}
+/* Avatar DP */
+.av-wrap{position:relative;display:inline-flex;cursor:pointer}
+.av-wrap:hover .av-cam{opacity:1}
+.av-cam{position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;font-size:13px;pointer-events:none}
+.av-img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
 @media(max-width:768px){
   body{overflow:auto}#app-screen{overflow:hidden}
@@ -199,6 +204,9 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
       <div class="nav-item admin-only" data-page="invoices" onclick="nav('invoices',this)">
         <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Invoices
       </div>
+      <div class="nav-item admin-only" data-page="expenses" onclick="nav('expenses',this)">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M15 9h-3V6h-2v3H7v2h3v3h2v-3h3V9z"/></svg>Expenses
+      </div>
       <div class="nav-item" data-page="feedback" onclick="nav('feedback',this)">
         <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Feedback
       </div>
@@ -217,7 +225,13 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
       </div>
     </div>
     <div class="sidebar-foot">
-      <div class="user-row"><div class="avatar" id="uavatar">?</div><div><div class="uname" id="uname">—</div><div class="urole" id="urole">—</div></div></div>
+      <div class="user-row">
+        <div class="av-wrap" onclick="CR==='admin'?openEditStaff(CU?.uid):showM('edit-staff-modal')" title="Click to edit profile" style="flex-shrink:0">
+          <div class="avatar" id="uavatar" style="width:30px;height:30px;font-size:11px;font-weight:700;overflow:hidden">?</div>
+          <div class="av-cam">📷</div>
+        </div>
+        <div><div class="uname" id="uname">—</div><div class="urole" id="urole">—</div></div>
+      </div>
       <button class="logout-btn" onclick="doLogout()">Sign Out</button>
     </div>
   </nav>
@@ -411,6 +425,65 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
           <div class="table-wrap"><table><thead><tr><th>ID</th><th>Client</th><th>Amount</th><th>Paid</th><th>Balance</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead><tbody id="inv-tbody"></tbody></table></div>
         </div>
       </div>
+      <!-- EXPENSES PAGE -->
+      <div class="page" id="page-expenses">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div style="font-size:13px;font-weight:600;color:var(--text)">📅 Year:</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap" id="exp-year-tabs"></div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-ghost" onclick="openAddExpenseEntry()">+ Add Expense</button>
+            <button class="btn btn-primary" onclick="nav('expenses',document.querySelector('.nav-item[data-page=expenses]'))">🔄 Refresh</button>
+          </div>
+        </div>
+        <!-- KPI row -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px">
+          <div class="card kpi-card"><div class="kpi-label">Total Expenses</div><div class="kpi-value" style="color:var(--red)" id="exp-page-total">—</div><div class="kpi-sub">This year</div></div>
+          <div class="card kpi-card"><div class="kpi-label">This Month</div><div class="kpi-value" style="color:var(--amber)" id="exp-page-month">—</div><div class="kpi-sub">Current month</div></div>
+          <div class="card kpi-card"><div class="kpi-label">Avg / Month</div><div class="kpi-value" id="exp-page-avg">—</div><div class="kpi-sub">Monthly avg</div></div>
+          <div class="card kpi-card"><div class="kpi-label">Total Entries</div><div class="kpi-value" id="exp-page-count">—</div><div class="kpi-sub">Records</div></div>
+          <div class="card kpi-card"><div class="kpi-label">Highest Month</div><div class="kpi-value" id="exp-page-peak" style="font-size:13px">—</div><div class="kpi-sub">Peak spending</div></div>
+          <div class="card kpi-card"><div class="kpi-label">Categories</div><div class="kpi-value" id="exp-page-cats">—</div><div class="kpi-sub">Unique</div></div>
+        </div>
+        <!-- Chart -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-hdr">
+            <span class="card-title">Monthly Expense Breakdown</span>
+            <div style="display:flex;gap:6px;flex-wrap:wrap" id="exp-chart-filter-wrap"></div>
+          </div>
+          <div class="card-body"><canvas id="expPageChart" style="max-height:200px"></canvas></div>
+        </div>
+        <!-- Filters + list -->
+        <div class="card">
+          <div class="card-hdr">
+            <span class="card-title">All Expense Entries</span>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+              <input id="exp-search" type="text" placeholder="🔍 Search…" oninput="renderExpEntries()" style="border:1px solid var(--border);border-radius:7px;padding:5px 10px;font-size:12px;background:var(--bg);color:var(--text);outline:none;width:140px"/>
+              <select id="exp-filter-cat" onchange="renderExpEntries()" style="border:1px solid var(--border);border-radius:7px;padding:5px 8px;font-size:12px;background:var(--surface);color:var(--text)">
+                <option value="all">All Categories</option>
+              </select>
+              <select id="exp-filter-month" onchange="renderExpEntries()" style="border:1px solid var(--border);border-radius:7px;padding:5px 8px;font-size:12px;background:var(--surface);color:var(--text)">
+                <option value="all">All Months</option>
+                ${MN.map((m,i)=>`<option value="${i}">${m}</option>`).join('')}
+              </select>
+              <select id="exp-sort" onchange="renderExpEntries()" style="border:1px solid var(--border);border-radius:7px;padding:5px 8px;font-size:12px;background:var(--surface);color:var(--text)">
+                <option value="date-desc">Newest First</option>
+                <option value="date-asc">Oldest First</option>
+                <option value="amount-desc">Amount (High→Low)</option>
+                <option value="amount-asc">Amount (Low→High)</option>
+              </select>
+            </div>
+          </div>
+          <div id="exp-entries-list" style="padding:0"></div>
+        </div>
+        <!-- Category summary -->
+        <div class="card" style="margin-top:16px">
+          <div class="card-hdr"><span class="card-title">Category Summary</span></div>
+          <div class="card-body" id="exp-cat-summary"></div>
+        </div>
+      </div>
+
       <!-- FEEDBACK -->
       <div class="page" id="page-feedback">
         <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-primary" onclick="showM('fb-modal')">+ Add Feedback</button></div>
@@ -482,7 +555,10 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
               <option value="inactive">Inactive</option>
             </select>
           </div>
-          <button class="btn btn-primary" onclick="showM('staff-modal')">+ Add Staff</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-ghost" onclick="openAddStaff('staff')">+ Add Staff</button>
+            <button class="btn btn-primary" onclick="openAddStaff('admin')">+ Add Admin</button>
+          </div>
         </div>
         <div class="staff-grid" id="staff-list"></div>
       </div>
@@ -498,7 +574,20 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
         <div class="settings-panel active" id="sp-profile">
           <div class="g2">
             <div class="card"><div class="card-hdr"><span class="card-title">Profile Information</span></div><div class="card-body" style="display:flex;flex-direction:column;gap:12px">
-              <div class="fg"><label>Display Name</label><input id="set-name" type="text"/></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px">
+                <div class="av-wrap" onclick="$('dp-file-settings').click()" title="Click to upload photo">
+                  <div id="settings-avatar-wrap" style="width:72px;height:72px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:700;overflow:hidden;border:3px solid var(--border)">
+                    <span id="settings-avatar-text">?</span>
+                  </div>
+                  <div class="av-cam" style="font-size:16px">📷</div>
+                </div>
+                <div style="text-align:center">
+                  <div style="font-size:12px;font-weight:600;color:var(--text)" id="settings-name-display">—</div>
+                  <div style="font-size:11px;color:var(--text3)">Click photo to change · max 2MB</div>
+                </div>
+                <button id="settings-remove-dp-btn" onclick="removeDp('settings')" style="display:none;background:none;border:1px solid rgba(239,68,68,.3);border-radius:6px;padding:3px 10px;font-size:11px;color:var(--red);cursor:pointer">✕ Remove Photo</button>
+              </div>
+              <div class="fg"><label>Display Name</label><input id="set-name" type="text" oninput="$('settings-name-display').textContent=this.value||'—'"/></div>
               <div class="fg"><label>Email (read-only)</label><input id="set-email" type="email" readonly style="opacity:.6;cursor:not-allowed"/></div>
               <div class="fg"><label>Phone</label><input id="set-phone" type="tel"/></div>
               <div class="fg"><label>Job Title</label><input id="set-title" type="text"/></div>
@@ -609,13 +698,25 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
 </div>
 
 <!-- MODALS -->
+<!-- Hidden file inputs for DP upload -->
+<input type="file" id="dp-file-input" accept="image/*" style="display:none" onchange="handleDpUpload(this,'esm')"/>
+<input type="file" id="dp-file-settings" accept="image/*" style="display:none" onchange="handleDpUpload(this,'settings')"/>
+
 <!-- EDIT STAFF MODAL -->
 <div class="modal" id="edit-staff-modal"><div class="modal-box" style="max-width:560px">
   <div class="modal-title">✏ Edit Staff Member</div>
   <input type="hidden" id="esm-id"/>
+  <input type="hidden" id="esm-dp-base64"/>
   <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:16px">
-    <div class="avatar" id="esm-avatar" style="width:56px;height:56px;font-size:20px;margin-bottom:8px">?</div>
-    <div style="font-size:11px;color:var(--text3)">Avatar generated from name initials</div>
+    <!-- Clickable avatar with camera overlay -->
+    <div class="av-wrap" onclick="$('dp-file-input').click()" title="Click to upload photo" style="margin-bottom:8px">
+      <div id="esm-avatar-wrap" style="width:72px;height:72px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:700;overflow:hidden;border:3px solid var(--border)">
+        <span id="esm-avatar">?</span>
+      </div>
+      <div class="av-cam" style="font-size:16px">📷</div>
+    </div>
+    <div style="font-size:11px;color:var(--text3)">Click photo to change · JPG, PNG (max 2MB)</div>
+    <button id="esm-remove-dp-btn" onclick="removeDp('esm')" style="display:none;margin-top:6px;background:none;border:1px solid rgba(239,68,68,.3);border-radius:6px;padding:3px 10px;font-size:11px;color:var(--red);cursor:pointer">✕ Remove Photo</button>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
     <div class="fg"><label>Full Name</label><input id="esm-name" type="text" oninput="updateEsmAvatar()"/></div>
@@ -786,6 +887,61 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
   <div class="modal-actions"><button class="btn btn-ghost" onclick="hideM('prop-modal')">Cancel</button><button class="btn btn-primary" onclick="saveProposal()">Save</button></div>
 </div></div>
 
+<!-- ADD / EDIT EXPENSE ENTRY MODAL -->
+<div class="modal" id="exp-entry-modal"><div class="modal-box" style="max-width:520px">
+  <div class="modal-title" id="exp-entry-modal-title">Add Expense</div>
+  <input type="hidden" id="eem-id"/>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="fg"><label>Amount (₹)</label><input id="eem-amount" type="number" placeholder="0" min="0" step="0.01"/></div>
+    <div class="fg"><label>Date</label><input id="eem-date" type="date"/></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="fg">
+      <label>Category</label>
+      <div style="display:flex;gap:6px">
+        <select id="eem-category" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:13px;color:var(--text);outline:none">
+          <option value="">Select or type below…</option>
+          <option value="Salaries">Salaries</option>
+          <option value="Software">Software</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Rent">Rent</option>
+          <option value="Utilities">Utilities</option>
+          <option value="Miscellaneous">Miscellaneous</option>
+        </select>
+      </div>
+      <input id="eem-category-custom" type="text" placeholder="Or type custom category…" style="margin-top:6px;width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 11px;font-size:12px;color:var(--text);outline:none"/>
+    </div>
+    <div class="fg"><label>Payment Method</label>
+      <select id="eem-method" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:13px;color:var(--text);outline:none">
+        <option value="Cash">Cash</option>
+        <option value="UPI">UPI</option>
+        <option value="Bank Transfer">Bank Transfer</option>
+        <option value="Card">Card</option>
+        <option value="Cheque">Cheque</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+  </div>
+  <div class="fg"><label>Title / Description</label><input id="eem-title" type="text" placeholder="e.g. Adobe Creative Cloud subscription"/></div>
+  <div class="fg"><label>Vendor / Paid To</label><input id="eem-vendor" type="text" placeholder="e.g. Adobe Inc., Landlord, Swiggy…"/></div>
+  <div class="fg"><label>Notes (optional)</label><textarea id="eem-notes" rows="2" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:13px;color:var(--text);outline:none;resize:vertical"></textarea></div>
+  <div class="fg">
+    <label>Receipt / Proof (optional)</label>
+    <input type="file" id="eem-receipt-file" accept="image/*,application/pdf" onchange="handleReceiptUpload(this)" style="display:none"/>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button type="button" class="btn btn-ghost" style="font-size:11px" onclick="$('eem-receipt-file').click()">📎 Attach Image/PDF</button>
+      <span id="eem-receipt-name" style="font-size:11px;color:var(--text3)">No file attached</span>
+      <button id="eem-receipt-remove" onclick="removeReceipt()" style="display:none;background:none;border:none;cursor:pointer;color:var(--red);font-size:11px">✕ Remove</button>
+    </div>
+    <input type="hidden" id="eem-receipt-b64"/>
+  </div>
+  <div id="eem-receipt-preview" style="display:none;margin-top:6px"></div>
+  <div class="modal-actions">
+    <button class="btn btn-ghost" onclick="hideM('exp-entry-modal')">Cancel</button>
+    <button class="btn btn-primary" onclick="saveExpenseEntry()">💾 Save Expense</button>
+  </div>
+</div></div>
+
 <div class="modal" id="fb-modal"><div class="modal-box">
   <div class="modal-title">Add Feedback</div>
   <div class="fg"><label>Client Name</label><input id="fbm-client" type="text"/></div>
@@ -817,8 +973,8 @@ function toast(msg,type='info'){
   document.body.appendChild(t);setTimeout(()=>t.classList.add('show'),10);
   setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400)},3500);
 }
-function showM(id){const el=$(id);if(el)el.style.display='flex';}
-function hideM(id){const el=$(id);if(el)el.style.display='none';}
+function showM(id){const el=$(id);if(el){el.style.display='flex';}}
+function hideM(id){const el=$(id);if(el){el.style.display='none';}}
 function toggleSidebar(){$('sidebar').classList.toggle('open');$('sidebar-overlay').classList.toggle('show');}
 function closeSidebar(){$('sidebar').classList.remove('open');$('sidebar-overlay').classList.remove('show');}
 function applyWP(v){const el=$('content');if(el)el.style.background=v;}
@@ -908,7 +1064,8 @@ auth.onAuthStateChanged(async user=>{
     CU=user; const d=snap.data(); CR=d.role;
     $('uname').textContent=d.name||d.email;
     $('urole').textContent=d.role;
-    $('uavatar').textContent=(d.name||d.email).substring(0,2).toUpperCase();
+    // Set topbar avatar with DP if available
+    setTopbarAvatar(d.dp||null, d.name||d.email);
     applyDark(!!d.darkMode);
     if(d.accentColor) setAccentColor(d.accentColor);
     $('login-screen').style.display='none';
@@ -961,7 +1118,7 @@ function applyRoleUI(){
   $('proj-add-bar').innerHTML=isAdmin?'<button class="btn btn-primary" onclick="openProjModal()">+ New Project</button>':'';
 }
 
-const pageTitles={dashboard:'Dashboard',staff:'Staff',tasks:'Tasks',projects:'Projects',sales:'Sales',invoices:'Invoices',feedback:'Feedback',analytics:'Analytics',settings:'Settings',proposals:'Proposals',auditlog:'Audit Log'};
+const pageTitles={dashboard:'Dashboard',staff:'Staff',tasks:'Tasks',projects:'Projects',sales:'Sales',invoices:'Invoices',feedback:'Feedback',analytics:'Analytics',settings:'Settings',proposals:'Proposals',auditlog:'Audit Log',expenses:'Expenses'};
 function nav(name,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -970,7 +1127,7 @@ function nav(name,el){
   else {const f=document.querySelector(`.nav-item[data-page="${name}"]`);if(f)f.classList.add('active');}
   $('page-title').textContent=pageTitles[name]||name; closeSidebar();
   const np=$('notif-panel'); if(np) np.classList.remove('open');
-  ({dashboard:loadDash,staff:loadStaff,tasks:loadTasks,projects:loadProjects,sales:loadSales,invoices:loadInvoices,feedback:loadFeedback,analytics:loadAnalytics,proposals:loadProposals,auditlog:loadAudit,settings:loadSettings}[name]||function(){})();
+  ({dashboard:loadDash,staff:loadStaff,tasks:loadTasks,projects:loadProjects,sales:loadSales,invoices:loadInvoices,feedback:loadFeedback,analytics:loadAnalytics,proposals:loadProposals,auditlog:loadAudit,settings:loadSettings,expenses:loadExpensesPage}[name]||function(){})();
 }
 
 function mkChart(id,cfg){
@@ -1193,16 +1350,17 @@ function renderStaffList(list){
     const initials=(u.name||u.email).substring(0,2).toUpperCase();
     const isMe=u.uid===CU?.uid;
     const taskRate=u._taskCount?Math.round(u._doneCount/u._taskCount*100):0;
+    const avatarHTML=u.dp
+      ?`<img src="${u.dp}" style="width:42px;height:42px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--border)"/>`
+      :`<div class="avatar" style="width:42px;height:42px;font-size:15px;flex-shrink:0">${initials}</div>`;
     return`<div class="card" style="padding:0;overflow:hidden;position:relative">
-      <!-- Top color bar based on role -->
       <div style="height:4px;background:${u.role==='admin'?'var(--accent)':'var(--green)'}"></div>
       <div style="padding:16px">
-        <!-- Header row -->
         <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
           <div style="display:flex;align-items:center;gap:10px">
-            <div class="avatar" style="width:42px;height:42px;font-size:15px;flex-shrink:0">${initials}</div>
+            ${avatarHTML}
             <div>
-              <div style="font-weight:700;font-size:13px;color:var(--text);line-height:1.2">${u.name||u.email}${isMe?' <span style="font-size:9px;background:var(--accent-light);color:var(--accent);padding:1px 6px;border-radius:99px;font-weight:600">You</span>':''}</div>
+              <div style="font-weight:700;font-size:13px;color:var(--text);line-height:1.2">${u.name||u.email}${isMe?` <span style="font-size:9px;background:var(--accent-light);color:var(--accent);padding:1px 6px;border-radius:99px;font-weight:600">You</span>`:''}</div>
               <div style="font-size:11px;color:var(--text3);margin-top:1px">${u.jobTitle||'—'}</div>
               ${u.department?`<div style="font-size:10px;color:var(--text3)">🏢 ${u.department}</div>`:''}
             </div>
@@ -1212,33 +1370,20 @@ function renderStaffList(list){
             <span class="tag ${(u.status||'active')==='active'?'t-green':'t-red'}" style="font-size:9px">${u.status||'active'}</span>
           </div>
         </div>
-        <!-- Info rows -->
         <div style="font-size:11px;color:var(--text3);margin-bottom:10px;display:flex;flex-direction:column;gap:3px">
           <div>✉ ${u.email}</div>
           ${u.phone?`<div>📞 ${u.phone}</div>`:''}
           ${u.joinDate?`<div>📅 Joined: ${new Date(u.joinDate).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</div>`:''}
         </div>
-        <!-- Stats row -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px">
-          <div style="text-align:center;background:var(--bg);border-radius:8px;padding:6px 4px">
-            <div style="font-size:16px;font-weight:700;color:var(--text)">${u._taskCount}</div>
-            <div style="font-size:9px;color:var(--text3);font-weight:600;text-transform:uppercase">Tasks</div>
-          </div>
-          <div style="text-align:center;background:var(--bg);border-radius:8px;padding:6px 4px">
-            <div style="font-size:16px;font-weight:700;color:var(--green)">${u._doneCount}</div>
-            <div style="font-size:9px;color:var(--text3);font-weight:600;text-transform:uppercase">Done</div>
-          </div>
-          <div style="text-align:center;background:var(--bg);border-radius:8px;padding:6px 4px">
-            <div style="font-size:16px;font-weight:700;color:var(--purple)">${u._projCount}</div>
-            <div style="font-size:9px;color:var(--text3);font-weight:600;text-transform:uppercase">Projects</div>
-          </div>
+          <div style="text-align:center;background:var(--bg);border-radius:8px;padding:6px 4px"><div style="font-size:16px;font-weight:700;color:var(--text)">${u._taskCount}</div><div style="font-size:9px;color:var(--text3);font-weight:600;text-transform:uppercase">Tasks</div></div>
+          <div style="text-align:center;background:var(--bg);border-radius:8px;padding:6px 4px"><div style="font-size:16px;font-weight:700;color:var(--green)">${u._doneCount}</div><div style="font-size:9px;color:var(--text3);font-weight:600;text-transform:uppercase">Done</div></div>
+          <div style="text-align:center;background:var(--bg);border-radius:8px;padding:6px 4px"><div style="font-size:16px;font-weight:700;color:var(--purple)">${u._projCount}</div><div style="font-size:9px;color:var(--text3);font-weight:600;text-transform:uppercase">Projects</div></div>
         </div>
-        <!-- Task completion bar -->
         ${u._taskCount>0?`<div style="margin-bottom:12px">
           <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:3px"><span>Task Completion</span><span style="font-weight:700;color:var(--text)">${taskRate}%</span></div>
           <div class="pbar"><div class="pfill" style="width:${taskRate}%;background:${taskRate>=80?'var(--green)':taskRate>=50?'var(--amber)':'var(--red)'}"></div></div>
         </div>`:''}
-        <!-- Action buttons -->
         <div style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="btn btn-ghost" style="flex:1;font-size:11px;padding:6px" onclick="viewStaffProfile('${u._id}')">👁 View</button>
           ${CR==='admin'?`<button class="btn btn-primary" style="flex:1;font-size:11px;padding:6px" onclick="openEditStaff('${u._id}')">✏ Edit</button>`:''}
@@ -1252,15 +1397,98 @@ function renderStaffList(list){
   }).join('');
 }
 
+// ═══════════════════════════════════════════
+// DISPLAY PICTURE (DP) — base64 stored in Firestore
+// ═══════════════════════════════════════════
+function handleDpUpload(input, target){
+  const file=input.files[0];if(!file)return;
+  if(file.size>2*1024*1024){toast('Image must be under 2MB','error');input.value='';return;}
+  if(!file.type.startsWith('image/')){toast('Please select an image file','error');input.value='';return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const b64=e.target.result;// data:image/...;base64,...
+    if(target==='esm'){
+      $('esm-dp-base64').value=b64;
+      setAvatarEl('esm-avatar-wrap','esm-avatar',b64,null);
+      const btn=$('esm-remove-dp-btn');if(btn)btn.style.display='block';
+    }else if(target==='settings'){
+      // Store temporarily, save on saveProfile
+      window._pendingDpBase64=b64;
+      setAvatarEl('settings-avatar-wrap','settings-avatar-text',b64,null);
+      // Also update topbar avatar
+      setTopbarAvatar(b64,null);
+      const btn=$('settings-remove-dp-btn');if(btn)btn.style.display='block';
+    }
+  };
+  reader.readAsDataURL(file);
+  input.value='';// reset so same file can be re-selected
+}
+
+function removeDp(target){
+  if(target==='esm'){
+    $('esm-dp-base64').value='__remove__';
+    const name=$('esm-name')?.value||'?';
+    setAvatarEl('esm-avatar-wrap','esm-avatar',null,name);
+    const btn=$('esm-remove-dp-btn');if(btn)btn.style.display='none';
+  }else if(target==='settings'){
+    window._pendingDpBase64='__remove__';
+    const name=$('set-name')?.value||'?';
+    setAvatarEl('settings-avatar-wrap','settings-avatar-text',null,name);
+    setTopbarAvatar(null,name);
+    const btn=$('settings-remove-dp-btn');if(btn)btn.style.display='none';
+  }
+}
+
+// Set avatar element: if dp provided show image, else show initials
+function setAvatarEl(wrapId, textId, dp, nameOrInitials){
+  const wrap=$(wrapId);if(!wrap)return;
+  if(dp&&dp!=='__remove__'){
+    wrap.innerHTML=`<img src="${dp}" class="av-img" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>`;
+  }else{
+    const initials=(nameOrInitials||'?').substring(0,2).toUpperCase();
+    wrap.innerHTML=`<span id="${textId}">${initials}</span>`;
+  }
+}
+
+// Update the sidebar topbar avatar (small circle)
+function setTopbarAvatar(dp, name){
+  const av=$('uavatar');if(!av)return;
+  if(dp&&dp!=='__remove__'){
+    av.innerHTML=`<img src="${dp}" class="av-img"/>`;
+  }else{
+    av.innerHTML=(name||'?').substring(0,2).toUpperCase();
+    av.style.fontSize='11px';
+  }
+}
+
 function updateEsmAvatar(){
   const name=$('esm-name')?.value||'?';
-  const av=$('esm-avatar');if(av)av.textContent=name.substring(0,2).toUpperCase();
+  const dp=$('esm-dp-base64')?.value;
+  if(!dp||dp==='__remove__'){
+    // Only update text initials if no image set
+    const wrap=$('esm-avatar-wrap');
+    if(wrap&&!wrap.querySelector('img')){
+      const sp=$('esm-avatar');if(sp)sp.textContent=name.substring(0,2).toUpperCase();
+    }
+  }
 }
 
 async function openEditStaff(id){
-  const u=allStaffCache.find(s=>s._id===id);
+  // Support passing uid (from topbar click) or firestore doc id
+  let u=allStaffCache.find(s=>s._id===id||s.uid===id);
+  if(!u){
+    // Fetch directly if not in cache yet (e.g. staff clicking their own profile)
+    try{
+      const snap=await db.collection('users').doc(id).get();
+      if(!snap.exists){// try by uid field
+        const q=await db.collection('users').where('uid','==',id).limit(1).get();
+        if(!q.empty){u={...q.docs[0].data(),_id:q.docs[0].id};}
+      }else{u={...snap.data(),_id:snap.id};}
+    }catch(e){toast('Staff not found','error');return;}
+  }
   if(!u){toast('Staff not found','error');return;}
-  $('esm-id').value=id;
+  $('esm-id').value=u._id;
+  $('esm-dp-base64').value='';
   $('esm-name').value=u.name||'';
   $('esm-email').value=u.email||'';
   $('esm-phone').value=u.phone||'';
@@ -1272,7 +1500,15 @@ async function openEditStaff(id){
   $('esm-bio').value=u.bio||'';
   $('esm-newpass').value='';$('esm-confpass').value='';
   const msg=$('esm-pass-msg');if(msg)msg.style.display='none';
-  const av=$('esm-avatar');if(av)av.textContent=(u.name||u.email).substring(0,2).toUpperCase();
+  // Load DP
+  const rmBtn=$('esm-remove-dp-btn');
+  if(u.dp){
+    setAvatarEl('esm-avatar-wrap','esm-avatar',u.dp,null);
+    if(rmBtn)rmBtn.style.display='block';
+  }else{
+    setAvatarEl('esm-avatar-wrap','esm-avatar',null,u.name||u.email);
+    if(rmBtn)rmBtn.style.display='none';
+  }
   hideM('staff-profile-modal');
   showM('edit-staff-modal');
 }
@@ -1281,30 +1517,36 @@ async function saveStaffEdit(){
   const id=$('esm-id').value;
   const name=$('esm-name').value.trim();
   if(!name){toast('Name is required','error');return;}
+  const dpVal=$('esm-dp-base64').value;
   const data={
     name,phone:$('esm-phone').value.trim(),jobTitle:$('esm-jobtitle').value.trim(),
     department:$('esm-dept').value.trim(),role:$('esm-role').value,
     status:$('esm-status').value,joinDate:$('esm-joindate').value,bio:$('esm-bio').value.trim()
   };
+  // Handle DP
+  if(dpVal==='__remove__') data.dp='';
+  else if(dpVal) data.dp=dpVal;
   // Handle password reset
   const np=$('esm-newpass').value,cp=$('esm-confpass').value;
   const msg=$('esm-pass-msg');
   if(np||cp){
-    if(np.length<6){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#991b1b';msg.textContent='⚠ Password must be at least 6 characters.';return;}
-    if(np!==cp){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#991b1b';msg.textContent='⚠ Passwords do not match.';return;}
-    // Note: Firebase Admin SDK needed for server-side password reset.
-    // We'll store a flag that can be used by a cloud function, or notify the user.
-    data.passwordResetRequested=true;
-    data.passwordResetNote='Admin requested password reset — user should use "Forgot Password" or be re-invited.';
-    toast('⚠ Note: Direct password reset requires Firebase Admin SDK. Please re-invite the staff member or have them use "Forgot Password".','info');
+    if(np.length<6){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#991b1b';msg.style.border='1px solid rgba(239,68,68,.3)';msg.textContent='⚠ Password must be at least 6 characters.';return;}
+    if(np!==cp){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#991b1b';msg.style.border='1px solid rgba(239,68,68,.3)';msg.textContent='⚠ Passwords do not match.';return;}
+    toast('⚠ Password changes require Firebase Admin SDK. Have the staff member use "Forgot Password" on the login page.','info');
   }
   try{
     await db.collection('users').doc(id).update(data);
     await logAudit('Staff',`Edited staff details`,name);
+    // Update topbar if editing own profile
+    const editedUser=allStaffCache.find(s=>s._id===id);
+    if(editedUser?.uid===CU?.uid){
+      setTopbarAvatar(data.dp||editedUser?.dp||null, name);
+      $('uname').textContent=name;
+    }
     // Update cache
     const idx=allStaffCache.findIndex(s=>s._id===id);
     if(idx>-1)allStaffCache[idx]={...allStaffCache[idx],...data};
-    toast('✅ Staff updated successfully!','success');
+    toast('✅ Staff updated!','success');
     hideM('edit-staff-modal');
     loadStaff();
   }catch(e){toast(e.message,'error');}
@@ -1313,8 +1555,12 @@ async function saveStaffEdit(){
 async function viewStaffProfile(id){
   const u=allStaffCache.find(s=>s._id===id);
   if(!u){toast('Not found','error');return;}
-  const initials=(u.name||u.email).substring(0,2).toUpperCase();
-  const av=$('spm-avatar');if(av)av.textContent=initials;
+  // Avatar
+  const av=$('spm-avatar');
+  if(av){
+    if(u.dp){av.innerHTML=`<img src="${u.dp}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--border)"/>`;}
+    else{av.style.cssText='width:64px;height:64px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:700;margin-bottom:10px;overflow:hidden';av.textContent=(u.name||u.email).substring(0,2).toUpperCase();}
+  }
   const nm=$('spm-name');if(nm)nm.textContent=u.name||u.email;
   const jt=$('spm-jobtitle');if(jt)jt.textContent=u.jobTitle||(u.department?u.department:'No title set');
   const tags=$('spm-tags');
@@ -1372,20 +1618,99 @@ async function toggleStaffStatus(id,currentStatus){
   }catch(e){toast(e.message,'error');}
 }
 
+function openAddStaff(role){
+  role=role||'staff';
+  ['sm-name','sm-email','sm-pass','sm-jobtitle','sm-dept'].forEach(id=>{const el=$(id);if(el)el.value='';});
+  const errEl=$('sm-err');if(errEl)errEl.style.display='none';
+  setModalRole(role);
+  showM('staff-modal');
+}
+
+function setModalRole(role){
+  const isAdmin=role==='admin';
+  const r=$('sm-role');if(r)r.value=role;
+  const banner=$('staff-modal-role-banner');
+  if(banner){banner.style.background=isAdmin?'rgba(139,92,246,.1)':'var(--accent-light)';banner.style.borderColor=isAdmin?'rgba(139,92,246,.3)':'rgba(37,99,235,.2)';}
+  const icon=$('staff-modal-role-icon');if(icon)icon.textContent=isAdmin?'🛡️':'👤';
+  const lbl=$('staff-modal-role-label');
+  if(lbl){lbl.textContent=isAdmin?'Creating Admin Account':'Creating Staff Account';lbl.style.color=isAdmin?'var(--purple)':'var(--accent)';}
+  const desc=$('staff-modal-role-desc');
+  if(desc)desc.textContent=isAdmin?'Full access: staff, billing, invoices, analytics, settings.':'Can view tasks, projects, and submit updates.';
+  const title=$('staff-modal-title');if(title)title.textContent=isAdmin?'Add Admin':'Add Staff Member';
+  const btn=$('sm-submit-btn');if(btn)btn.textContent=isAdmin?'Create Admin Account':'Create Staff Account';
+  // Role picker highlight
+  const sc=$('role-pick-staff');
+  if(sc){sc.style.borderColor=!isAdmin?'var(--accent)':'var(--border)';sc.style.background=!isAdmin?'var(--accent-light)':'transparent';}
+  const sl=$('rps-label');if(sl)sl.style.color=!isAdmin?'var(--accent)':'var(--text2)';
+  const ac=$('role-pick-admin');
+  if(ac){ac.style.borderColor=isAdmin?'var(--purple)':'var(--border)';ac.style.background=isAdmin?'rgba(139,92,246,.08)':'transparent';}
+  const al=$('rpa-label');if(al)al.style.color=isAdmin?'var(--purple)':'var(--text2)';
+}
+
+function togglePassVis(inputId,btn){
+  try{
+    const inp=$(inputId);if(!inp)return;
+    const isPass=inp.type==='password';
+    inp.type=isPass?'text':'password';
+    if(btn)btn.textContent=isPass?'🙈':'👁';
+  }catch(e){}
+}
+
 async function addStaff(){
   if(CR!=='admin')return;
-  const name=$('sm-name').value.trim(),email=$('sm-email').value.trim(),pass=$('sm-pass').value.trim(),role=$('sm-role').value;
-  if(!name||!email||!pass){toast('Fill all fields','error');return;}
-  if(pass.length<6){toast('Password min 6 chars','error');return;}
+  const name=$('sm-name').value.trim();
+  const email=$('sm-email').value.trim();
+  const pass=$('sm-pass').value.trim();
+  const role=$('sm-role').value;
+  const jobTitle=$('sm-jobtitle').value.trim();
+  const dept=$('sm-dept').value.trim();
+  const errEl=$('sm-err');
+  const showErr=msg=>{if(errEl){errEl.style.display='block';errEl.textContent=msg;}};
+  if(errEl)errEl.style.display='none';
+  if(!name){showErr('⚠ Full name is required.');return;}
+  if(!email){showErr('⚠ Email address is required.');return;}
+  if(!pass){showErr('⚠ Password is required.');return;}
+  if(pass.length<6){showErr('⚠ Password must be at least 6 characters.');return;}
+  const btn=$('sm-submit-btn');
+  if(btn){btn.textContent='Creating…';btn.disabled=true;}
   try{
-    const sec=firebase.initializeApp(FC,'sec_'+Date.now());const secAuth=sec.auth();
-    const c=await secAuth.createUserWithEmailAndPassword(email,pass);
-    await db.collection('users').doc(c.user.uid).set({uid:c.user.uid,name,email,role,status:'active',joinDate:today(),createdAt:ts(),createdBy:CU.uid});
-    await secAuth.signOut();await sec.delete();
-    await logAudit('Staff',`Added staff member`,`${name} (${role})`);
-    await pushNotif(c.user.uid,'staff',`Welcome to NexigenOS, ${name}!`);
-    toast(`✅ ${name} added!`,'success');hideM('staff-modal');$('sm-name').value='';$('sm-email').value='';$('sm-pass').value='';loadStaff();
-  }catch(e){toast(e.message,'error');}
+    // Use a uniquely named secondary app to avoid overwriting the primary auth session
+    const secAppName='sec_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const secApp=firebase.initializeApp(FC, secAppName);
+    const secAuth=secApp.auth();
+    let newUid=null;
+    try{
+      const cred=await secAuth.createUserWithEmailAndPassword(email,pass);
+      newUid=cred.user.uid;
+    }finally{
+      // Always sign out and delete secondary app to avoid state leak
+      try{await secAuth.signOut();}catch(e2){}
+      try{await secApp.delete();}catch(e2){}
+    }
+    if(!newUid) throw new Error('Failed to create user.');
+    await db.collection('users').doc(newUid).set({
+      uid:newUid,name,email,role,status:'active',
+      jobTitle,department:dept,joinDate:today(),
+      createdAt:ts(),createdBy:CU.uid
+    });
+    await logAudit('Staff',`Added ${role}`,`${name} (${email})`);
+    await pushNotif(newUid,'staff',`Welcome to NexigenOS, ${name}! Your ${role} account is ready.`);
+    toast(`✅ ${role==='admin'?'Admin':'Staff'} "${name}" created successfully!`,'success');
+    hideM('staff-modal');
+    ['sm-name','sm-email','sm-pass','sm-jobtitle','sm-dept'].forEach(id=>{const el=$(id);if(el)el.value='';});
+    loadStaff();
+  }catch(e){
+    const msgs={
+      'auth/email-already-in-use':'⚠ This email is already registered in the system.',
+      'auth/invalid-email':'⚠ Please enter a valid email address.',
+      'auth/weak-password':'⚠ Password is too weak. Use at least 6 characters.',
+      'auth/network-request-failed':'⚠ Network error. Please check your connection.',
+      'auth/operation-not-allowed':'⚠ Email/password sign-up is not enabled. Contact super admin.'
+    };
+    showErr(msgs[e.code]||'⚠ '+e.message);
+  }finally{
+    if(btn){btn.textContent=($('sm-role').value==='admin')?'Create Admin Account':'Create Staff Account';btn.disabled=false;}
+  }
 }
 
 async function removeStaff(id){
@@ -1623,6 +1948,377 @@ async function saveExpenses(){
 }
 
 // ═══════════════════════════════════════════
+// EXPENSES PAGE — entry-based full CRUD
+// ═══════════════════════════════════════════
+let expPageYear=new Date().getFullYear();
+let allExpEntries=[];// all entries for current year
+
+async function loadExpensesPage(){
+  expPageYear=new Date().getFullYear();
+  renderExpYearTabs();
+  await fetchExpEntries(expPageYear);
+}
+
+function renderExpYearTabs(){
+  const wrap=$('exp-year-tabs');if(!wrap)return;
+  const yr=new Date().getFullYear();
+  wrap.innerHTML='';
+  for(let y=yr-2;y<=yr+1;y++){
+    const btn=document.createElement('button');
+    btn.className='btn '+(y===expPageYear?'btn-primary':'btn-ghost');
+    btn.style.cssText='font-size:12px;padding:6px 14px';
+    btn.textContent=y;
+    btn.onclick=()=>switchExpYear(y);
+    btn.id='exp-yr-btn-'+y;
+    wrap.appendChild(btn);
+  }
+}
+
+async function switchExpYear(y){
+  expPageYear=y;
+  for(let yr=new Date().getFullYear()-2;yr<=new Date().getFullYear()+1;yr++){
+    const btn=$('exp-yr-btn-'+yr);
+    if(btn){btn.className='btn '+(yr===expPageYear?'btn-primary':'btn-ghost');btn.style.cssText='font-size:12px;padding:6px 14px';}
+  }
+  await fetchExpEntries(y);
+}
+
+async function fetchExpEntries(year){
+  const listEl=$('exp-entries-list');
+  if(listEl)listEl.innerHTML='<div style="padding:16px;color:var(--text3);font-size:12px">Loading…</div>';
+  try{
+    const snap=await db.collection('expenseEntries')
+      .where('year','==',year)
+      .orderBy('date','desc')
+      .get();
+    allExpEntries=snap.docs.map(d=>({...d.data(),id:d.id}));
+    // Populate category filter
+    const cats=[...new Set(allExpEntries.map(e=>e.category).filter(Boolean))].sort();
+    const catSel=$('exp-filter-cat');
+    if(catSel){catSel.innerHTML='<option value="all">All Categories</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');}
+    // Also update category dropdown in modal
+    updateExpModalCats(cats);
+    renderExpEntries();
+    renderExpPageKPIs();
+    renderExpPageChart();
+    renderExpCatSummary();
+  }catch(e){if(listEl)listEl.innerHTML='<div style="padding:16px;color:var(--red);font-size:12px">'+e.message+'</div>';}
+}
+
+function updateExpModalCats(cats){
+  const sel=$('eem-category');if(!sel)return;
+  const defaults=['Salaries','Software','Marketing','Rent','Utilities','Miscellaneous'];
+  const all=[...new Set([...defaults,...cats])];
+  sel.innerHTML='<option value="">Select category…</option>'+all.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+
+function renderExpEntries(){
+  const el=$('exp-entries-list');if(!el)return;
+  const q=($('exp-search')?.value||'').toLowerCase();
+  const cat=$('exp-filter-cat')?.value||'all';
+  const mon=$('exp-filter-month')?.value||'all';
+  const sort=$('exp-sort')?.value||'date-desc';
+  let filtered=[...allExpEntries];
+  if(q)filtered=filtered.filter(e=>(e.title||'').toLowerCase().includes(q)||(e.vendor||'').toLowerCase().includes(q)||(e.category||'').toLowerCase().includes(q)||(e.notes||'').toLowerCase().includes(q));
+  if(cat!=='all')filtered=filtered.filter(e=>e.category===cat);
+  if(mon!=='all')filtered=filtered.filter(e=>e.date&&new Date(e.date).getMonth()===+mon);
+  filtered.sort((a,b)=>{
+    if(sort==='date-desc')return(b.date||'').localeCompare(a.date||'');
+    if(sort==='date-asc')return(a.date||'').localeCompare(b.date||'');
+    if(sort==='amount-desc')return(+b.amount||0)-(+a.amount||0);
+    if(sort==='amount-asc')return(+a.amount||0)-(+b.amount||0);
+    return 0;
+  });
+  if(!filtered.length){el.innerHTML='<div style="padding:20px;text-align:center;color:var(--text3);font-size:12px">No expense entries found.</div>';return;}
+  const filtTotal=filtered.reduce((a,e)=>a+(+e.amount||0),0);
+  el.innerHTML=`<div style="padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:12px">
+    <span style="color:var(--text3)">${filtered.length} entr${filtered.length===1?'y':'ies'}</span>
+    <span style="font-weight:700;color:var(--red)">Subtotal: ${fmtM(filtTotal)}</span>
+  </div>`+
+  filtered.map(e=>{
+    const catColor=getCatColor2(e.category);
+    const dateStr=e.date?new Date(e.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—';
+    return`<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);transition:background .15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
+      <!-- Category dot + icon -->
+      <div style="width:36px;height:36px;border-radius:10px;background:${catColor}18;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px">${getCatEmoji(e.category)}</div>
+      <!-- Main info -->
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:2px">
+          <span style="font-weight:600;font-size:13px;color:var(--text)">${e.title||'Untitled Expense'}</span>
+          <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;background:${catColor}20;color:${catColor}">${e.category||'Uncategorized'}</span>
+          ${e.method?`<span class="tag t-blue" style="font-size:9px">${e.method}</span>`:''}
+        </div>
+        <div style="font-size:11px;color:var(--text3);display:flex;gap:10px;flex-wrap:wrap">
+          ${e.vendor?`<span>🏢 ${e.vendor}</span>`:''}
+          <span>📅 ${dateStr}</span>
+          ${e.notes?`<span>📝 ${e.notes}</span>`:''}
+        </div>
+        ${e.receiptB64?`<div style="margin-top:4px"><span style="font-size:10px;color:var(--accent);cursor:pointer;font-weight:600" onclick="viewReceipt('${e.id}')">📎 View Receipt</span></div>`:''}
+      </div>
+      <!-- Amount -->
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:15px;font-weight:800;color:var(--red)">−${fmtM(e.amount)}</div>
+      </div>
+      <!-- Actions -->
+      <div style="display:flex;gap:5px;flex-shrink:0">
+        <button onclick="openEditExpenseEntry('${e.id}')" style="width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;color:var(--text2);font-size:13px;display:flex;align-items:center;justify-content:center" title="Edit">✏</button>
+        <button onclick="delExpenseEntry('${e.id}')" style="width:30px;height:30px;border-radius:8px;border:1px solid rgba(239,68,68,.2);background:rgba(239,68,68,.05);cursor:pointer;color:var(--red);font-size:13px;display:flex;align-items:center;justify-content:center" title="Delete">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function getCatColor2(cat){
+  const map={Salaries:'#2563EB',Software:'#8b5cf6',Marketing:'#f59e0b',Rent:'#10b981',Utilities:'#06b6d4',Miscellaneous:'#94a3b8'};
+  if(map[cat])return map[cat];
+  const palette=['#ef4444','#f97316','#84cc16','#14b8a6','#ec4899','#6366f1'];
+  let h=0;for(let i=0;i<(cat||'').length;i++)h=(h<<5)-h+(cat||'').charCodeAt(i);
+  return palette[Math.abs(h)%palette.length];
+}
+
+function getCatEmoji(cat){
+  const map={Salaries:'👥',Software:'💻',Marketing:'📢',Rent:'🏠',Utilities:'⚡',Miscellaneous:'📦',Travel:'✈️',Food:'🍽️',Equipment:'🔧',Office:'🖥️',Legal:'⚖️',Subscriptions:'🔄',Training:'📚',Insurance:'🛡️'};
+  return map[cat]||'💰';
+}
+
+function getCatColor(ci){
+  const palette=['#2563EB','#10b981','#f59e0b','#8b5cf6','#ef4444','#06b6d4','#84cc16','#f97316','#ec4899','#14b8a6'];
+  return palette[ci%palette.length];
+}
+
+function renderExpPageKPIs(){
+  const curMonth=new Date().getMonth();
+  const total=allExpEntries.reduce((a,e)=>a+(+e.amount||0),0);
+  const thisMonth=allExpEntries.filter(e=>e.date&&new Date(e.date).getMonth()===curMonth).reduce((a,e)=>a+(+e.amount||0),0);
+  // Monthly totals for avg/peak
+  const byMonth=Array(12).fill(0);
+  allExpEntries.forEach(e=>{if(e.date){const m=new Date(e.date).getMonth();byMonth[m]+=+e.amount||0;}});
+  const nonZero=byMonth.filter(v=>v>0);
+  const avg=nonZero.length?Math.round(total/nonZero.length):0;
+  const peakIdx=byMonth.indexOf(Math.max(...byMonth));
+  const cats=[...new Set(allExpEntries.map(e=>e.category).filter(Boolean))];
+  const el1=$('exp-page-total');if(el1)el1.textContent=fmtM(total);
+  const el2=$('exp-page-month');if(el2)el2.textContent=fmtM(thisMonth);
+  const el3=$('exp-page-avg');if(el3)el3.textContent=fmtM(avg);
+  const el4=$('exp-page-count');if(el4)el4.textContent=allExpEntries.length;
+  const el5=$('exp-page-peak');if(el5)el5.textContent=total>0?`${MN[peakIdx]} (${fmtM(byMonth[peakIdx])})`:'—';
+  const el6=$('exp-page-cats');if(el6)el6.textContent=cats.length;
+}
+
+function renderExpPageChart(){
+  const cats=[...new Set(allExpEntries.map(e=>e.category).filter(Boolean))];
+  const byMonth=Array(12).fill(0);
+  allExpEntries.forEach(e=>{if(e.date){const m=new Date(e.date).getMonth();byMonth[m]+=+e.amount||0;}});
+  const cc=CC();
+  // Stacked by category
+  const datasets=cats.map((cat,ci)=>{
+    const data=Array(12).fill(0);
+    allExpEntries.filter(e=>e.category===cat).forEach(e=>{if(e.date){const m=new Date(e.date).getMonth();data[m]+=+e.amount||0;}});
+    return{label:cat,data,backgroundColor:getCatColor2(cat)+'cc',borderRadius:3,borderSkipped:false};
+  });
+  if(!datasets.length){datasets.push({label:'No data',data:Array(12).fill(0),backgroundColor:'rgba(148,163,184,.3)',borderRadius:3});}
+  mkChart('expPageChart',{type:'bar',data:{labels:MN,datasets},options:{responsive:true,plugins:{legend:{labels:{color:cc.tick,font:{size:10},padding:8}}},scales:{x:{stacked:true,grid:{display:false},ticks:{color:cc.tick,font:{size:9}}},y:{stacked:true,grid:{color:cc.grid},ticks:{color:cc.tick,font:{size:9},callback:v=>'₹'+(v/1000).toFixed(0)+'k'}}}}});
+}
+
+function renderExpCatSummary(){
+  const el=$('exp-cat-summary');if(!el)return;
+  const cats=[...new Set(allExpEntries.map(e=>e.category).filter(Boolean))];
+  const grandTotal=allExpEntries.reduce((a,e)=>a+(+e.amount||0),0);
+  if(!cats.length){el.innerHTML='<div style="color:var(--text3);font-size:12px">No expense data.</div>';return;}
+  const rows=cats.map(cat=>{
+    const entries=allExpEntries.filter(e=>e.category===cat);
+    const total=entries.reduce((a,e)=>a+(+e.amount||0),0);
+    const byMonth=Array(12).fill(0);
+    entries.forEach(e=>{if(e.date){const m=new Date(e.date).getMonth();byMonth[m]+=+e.amount||0;}});
+    const nonZero=byMonth.filter(v=>v>0);
+    const avg=nonZero.length?Math.round(total/nonZero.length):0;
+    const peakIdx=byMonth.indexOf(Math.max(...byMonth));
+    return{cat,total,avg,count:entries.length,peak:MN[peakIdx],peakVal:byMonth[peakIdx]||0};
+  }).sort((a,b)=>b.total-a.total);
+  el.innerHTML=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:400px">
+    <thead><tr style="background:var(--bg)">
+      <th style="padding:8px 12px;text-align:left;color:var(--text3);font-weight:600;border-bottom:1px solid var(--border)">Category</th>
+      <th style="padding:8px 12px;text-align:right;color:var(--text3);font-weight:600;border-bottom:1px solid var(--border)">Entries</th>
+      <th style="padding:8px 12px;text-align:right;color:var(--text3);font-weight:600;border-bottom:1px solid var(--border)">Total</th>
+      <th style="padding:8px 12px;text-align:right;color:var(--text3);font-weight:600;border-bottom:1px solid var(--border)">Avg/Month</th>
+      <th style="padding:8px 12px;text-align:right;color:var(--text3);font-weight:600;border-bottom:1px solid var(--border)">Peak Month</th>
+      <th style="padding:8px 12px;text-align:left;color:var(--text3);font-weight:600;border-bottom:1px solid var(--border)">Share</th>
+    </tr></thead>
+    <tbody>
+      ${rows.map(r=>{
+        const share=grandTotal?Math.round((r.total/grandTotal)*100):0;
+        const color=getCatColor2(r.cat);
+        return`<tr onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
+          <td style="padding:9px 12px;border-bottom:1px solid var(--border)">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:16px">${getCatEmoji(r.cat)}</span>
+              <span style="font-weight:600;color:var(--text)">${r.cat}</span>
+            </div>
+          </td>
+          <td style="padding:9px 12px;text-align:right;color:var(--text2);border-bottom:1px solid var(--border)">${r.count}</td>
+          <td style="padding:9px 12px;text-align:right;font-weight:700;color:var(--red);border-bottom:1px solid var(--border)">${fmtM(r.total)}</td>
+          <td style="padding:9px 12px;text-align:right;color:var(--text2);border-bottom:1px solid var(--border)">${fmtM(r.avg)}</td>
+          <td style="padding:9px 12px;text-align:right;color:var(--text2);border-bottom:1px solid var(--border)">${r.peakVal>0?`${r.peak} (${fmtM(r.peakVal)})`:'—'}</td>
+          <td style="padding:9px 12px;border-bottom:1px solid var(--border)">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="flex:1;height:6px;background:var(--border);border-radius:99px;overflow:hidden"><div style="height:100%;border-radius:99px;background:${color};width:${share}%"></div></div>
+              <span style="font-size:11px;font-weight:600;color:var(--text);min-width:30px">${share}%</span>
+            </div>
+          </td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+    <tfoot><tr style="background:var(--bg)">
+      <td style="padding:9px 12px;font-weight:700;color:var(--text)">Grand Total</td>
+      <td style="padding:9px 12px;text-align:right;font-weight:700;color:var(--text)">${allExpEntries.length}</td>
+      <td style="padding:9px 12px;text-align:right;font-weight:800;color:var(--red)">${fmtM(grandTotal)}</td>
+      <td colspan="3"></td>
+    </tr></tfoot>
+  </table></div>`;
+}
+
+// ── Add / Edit Entry ──
+function openAddExpenseEntry(){
+  $('eem-id').value='';
+  $('eem-amount').value='';
+  $('eem-date').value=today();
+  $('eem-title').value='';
+  $('eem-vendor').value='';
+  $('eem-notes').value='';
+  $('eem-receipt-b64').value='';
+  $('eem-category-custom').value='';
+  $('eem-category').value='';
+  $('eem-method').value='Cash';
+  const nm=$('eem-receipt-name');if(nm)nm.textContent='No file attached';
+  const rb=$('eem-receipt-remove');if(rb)rb.style.display='none';
+  const prev=$('eem-receipt-preview');if(prev){prev.style.display='none';prev.innerHTML='';}
+  $('exp-entry-modal-title').textContent='Add Expense';
+  showM('exp-entry-modal');
+}
+
+async function openEditExpenseEntry(id){
+  const e=allExpEntries.find(x=>x.id===id);
+  if(!e){toast('Entry not found','error');return;}
+  $('eem-id').value=id;
+  $('eem-amount').value=e.amount||'';
+  $('eem-date').value=e.date||today();
+  $('eem-title').value=e.title||'';
+  $('eem-vendor').value=e.vendor||'';
+  $('eem-notes').value=e.notes||'';
+  $('eem-category').value=e.category||'';
+  $('eem-category-custom').value='';
+  $('eem-method').value=e.method||'Cash';
+  $('eem-receipt-b64').value=e.receiptB64||'';
+  const nm=$('eem-receipt-name');
+  const rb=$('eem-receipt-remove');
+  const prev=$('eem-receipt-preview');
+  if(e.receiptB64){
+    if(nm)nm.textContent='Receipt attached';
+    if(rb)rb.style.display='inline';
+    if(prev){prev.style.display='block';prev.innerHTML=e.receiptB64.startsWith('data:image')?`<img src="${e.receiptB64}" style="max-width:100%;border-radius:8px;max-height:120px;object-fit:contain"/>`:
+    `<div style="padding:8px;background:var(--bg);border-radius:8px;font-size:12px;color:var(--text3)">📄 PDF receipt attached</div>`;}
+  }else{
+    if(nm)nm.textContent='No file attached';
+    if(rb)rb.style.display='none';
+    if(prev){prev.style.display='none';prev.innerHTML='';}
+  }
+  $('exp-entry-modal-title').textContent='Edit Expense';
+  showM('exp-entry-modal');
+}
+
+function handleReceiptUpload(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>3*1024*1024){toast('File must be under 3MB','error');input.value='';return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const b64=e.target.result;
+    $('eem-receipt-b64').value=b64;
+    const nm=$('eem-receipt-name');if(nm)nm.textContent=file.name;
+    const rb=$('eem-receipt-remove');if(rb)rb.style.display='inline';
+    const prev=$('eem-receipt-preview');
+    if(prev){prev.style.display='block';prev.innerHTML=file.type.startsWith('image/')?`<img src="${b64}" style="max-width:100%;border-radius:8px;max-height:120px;object-fit:contain"/>`:
+    `<div style="padding:8px;background:var(--bg);border-radius:8px;font-size:12px;color:var(--text3)">📄 ${file.name}</div>`;}
+  };
+  reader.readAsDataURL(file);input.value='';
+}
+
+function removeReceipt(){
+  $('eem-receipt-b64').value='';
+  const nm=$('eem-receipt-name');if(nm)nm.textContent='No file attached';
+  const rb=$('eem-receipt-remove');if(rb)rb.style.display='none';
+  const prev=$('eem-receipt-preview');if(prev){prev.style.display='none';prev.innerHTML='';}
+}
+
+function viewReceipt(id){
+  const e=allExpEntries.find(x=>x.id===id);
+  if(!e||!e.receiptB64){toast('No receipt attached','info');return;}
+  const w=window.open('','_blank');
+  if(e.receiptB64.startsWith('data:image')){w.document.write(`<!DOCTYPE html><html><body style="margin:0;background:#000;display:flex;align-items:center;justify-content:center;min-height:100vh"><img src="${e.receiptB64}" style="max-width:100%;max-height:100vh;object-fit:contain"/></body></html>`);}
+  else{w.document.write(`<!DOCTYPE html><html><body style="margin:0"><embed src="${e.receiptB64}" width="100%" height="100%" type="application/pdf"/></body></html>`);} 
+}
+
+async function saveExpenseEntry(){
+  const id=$('eem-id').value;
+  const amount=+$('eem-amount').value;
+  const date=$('eem-date').value;
+  const title=$('eem-title').value.trim();
+  if(!amount||!date){toast('Amount and date are required','error');return;}
+  const catSelect=$('eem-category').value;
+  const catCustom=$('eem-category-custom').value.trim();
+  const category=catCustom||catSelect||'Miscellaneous';
+  const data={
+    amount,date,title:title||category,
+    vendor:$('eem-vendor').value.trim(),
+    notes:$('eem-notes').value.trim(),
+    category,method:$('eem-method').value,
+    receiptB64:$('eem-receipt-b64').value||'',
+    year:new Date(date).getFullYear(),
+    month:new Date(date).getMonth(),
+    updatedAt:ts()
+  };
+  try{
+    if(id){
+      await db.collection('expenseEntries').doc(id).update(data);
+      await logAudit('Expense',`Edited expense entry`,`${title||category} — ${fmtM(amount)}`);
+      toast('Expense updated!','success');
+    }else{
+      data.createdAt=ts();data.createdBy=CU.uid;
+      await db.collection('expenseEntries').add(data);
+      await logAudit('Expense',`Added expense entry`,`${title||category} — ${fmtM(amount)}`);
+      toast('Expense added!','success');
+    }
+    hideM('exp-entry-modal');
+    await fetchExpEntries(expPageYear);
+  }catch(e){toast(e.message,'error');}
+}
+
+async function delExpenseEntry(id){
+  if(!confirm('Delete this expense entry?'))return;
+  try{
+    const snap=await db.collection('expenseEntries').doc(id).get();
+    await logAudit('Expense','Deleted expense entry',snap.data()?.title||id);
+    await db.collection('expenseEntries').doc(id).delete();
+    toast('Deleted','info');
+    await fetchExpEntries(expPageYear);
+  }catch(e){toast(e.message,'error');}
+}
+
+// Keep old modal-based expense functions working for Analytics modal
+async function saveExpenses(){
+  const year=parseInt($('exp-year')?.value||new Date().getFullYear());
+  const data={_year:year,_categories:[]};
+  document.querySelectorAll('[id^="exp-row-"]').forEach(row=>{
+    const ci=row.id.split('-')[2];
+    const catName=$(`exp-cat-${ci}`)?.value||'Category';
+    data._categories.push(catName);
+    const vals=[];for(let mi=0;mi<12;mi++)vals.push(+$(`exp-${ci}-${mi}`)?.value||0);
+    data[catName]=vals;
+  });
+  try{await db.collection('expenses').doc(String(year)).set(data);await logAudit('Expense',`Updated expenses for ${year}`);toast(`✅ Saved!`,'success');hideM('expense-modal');}
+  catch(e){toast(e.message,'error');}
+}
+
+// ═══════════════════════════════════════════
 // ANALYTICS
 // ═══════════════════════════════════════════
 async function loadAnalytics(){
@@ -1707,6 +2403,7 @@ function switchSettingsTab(tab,el){
 }
 async function loadSettings(){
   if(!CU)return;
+  window._pendingDpBase64=null;
   try{
     const snap=await db.collection('users').doc(CU.uid).get();const d=snap.data()||{};
     const fields={'set-name':'name','set-email':'email','set-phone':'phone','set-title':'jobTitle','set-bio':'bio'};
@@ -1714,13 +2411,32 @@ async function loadSettings(){
     const rd=$('set-role-display');if(rd)rd.textContent=d.role||'—';
     const since=$('set-since');if(since)since.textContent=d.createdAt?.toDate?.().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'})||'—';
     const uid=$('set-uid');if(uid)uid.textContent=CU.uid;
+    // Load DP in settings
+    const nd=$('settings-name-display');if(nd)nd.textContent=d.name||d.email||'—';
+    const rmBtn=$('settings-remove-dp-btn');
+    if(d.dp){
+      setAvatarEl('settings-avatar-wrap','settings-avatar-text',d.dp,null);
+      if(rmBtn)rmBtn.style.display='block';
+    }else{
+      setAvatarEl('settings-avatar-wrap','settings-avatar-text',null,d.name||d.email);
+      if(rmBtn)rmBtn.style.display='none';
+    }
     loadNotifPrefs(d);
   }catch(e){}
 }
 async function saveProfile(){
   const name=$('set-name')?.value.trim();if(!name){toast('Enter name','error');return;}
   const data={name,phone:$('set-phone')?.value.trim()||'',jobTitle:$('set-title')?.value.trim()||'',bio:$('set-bio')?.value.trim()||''};
-  try{await db.collection('users').doc(CU.uid).update(data);$('uname').textContent=name;$('uavatar').textContent=name.substring(0,2).toUpperCase();toast('Profile saved','success');}catch(e){toast(e.message,'error');}
+  // Handle DP
+  if(window._pendingDpBase64==='__remove__') data.dp='';
+  else if(window._pendingDpBase64) data.dp=window._pendingDpBase64;
+  try{
+    await db.collection('users').doc(CU.uid).update(data);
+    $('uname').textContent=name;
+    setTopbarAvatar(data.dp!==undefined?data.dp:(window._pendingDpBase64||null),name);
+    window._pendingDpBase64=null;
+    toast('Profile saved','success');
+  }catch(e){toast(e.message,'error');}
 }
 async function changePassword(){
   const cur=$('set-cur-pass').value,np=$('set-new-pass').value,cp=$('set-conf-pass').value,msg=$('pass-msg');
