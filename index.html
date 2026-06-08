@@ -376,19 +376,18 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
         <div id="proj-list"></div>
       </div>
       <!-- PROPOSALS -->
-      <div class="page" id="page-proposals">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <button class="btn btn-ghost prop-filter active" onclick="filterProps('all',this)">All</button>
-            <button class="btn btn-ghost prop-filter" onclick="filterProps('draft',this)">Draft</button>
-            <button class="btn btn-ghost prop-filter" onclick="filterProps('sent',this)">Sent</button>
-            <button class="btn btn-ghost prop-filter" onclick="filterProps('approved',this)">Approved</button>
-            <button class="btn btn-ghost prop-filter" onclick="filterProps('rejected',this)">Rejected</button>
-          </div>
-          <button class="btn btn-primary" onclick="openPropModal()">+ New Proposal</button>
-        </div>
-        <div id="prop-list"></div>
-      </div>
+<div class="page" id="page-proposals">
+  <div style="display:flex;justify-content:space-between;align-items:center;
+              margin-bottom:12px;flex-wrap:wrap;gap:8px">
+    <!-- Dynamic filter bar populated by renderPropFilters() -->
+    <div style="display:flex;gap:6px;flex-wrap:wrap" id="prop-filter-bar"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-ghost" onclick="openManageStages()">⚙ Stages</button>
+      <button class="btn btn-primary" onclick="openPropModal()">+ New Proposal</button>
+    </div>
+  </div>
+  <div id="prop-list"></div>
+</div>
       <!-- SALES -->
       <div class="page" id="page-sales">
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px">
@@ -413,18 +412,106 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
         </div>
       </div>
       <!-- INVOICES -->
-      <div class="page" id="page-invoices">
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px">
-          <div class="card kpi-card"><div class="kpi-label">Total Billed</div><div class="kpi-value" id="inv-total">—</div></div>
-          <div class="card kpi-card"><div class="kpi-label">Collected</div><div class="kpi-value" style="color:var(--green)" id="inv-collected">—</div></div>
-          <div class="card kpi-card"><div class="kpi-label">Outstanding</div><div class="kpi-value" style="color:var(--amber)" id="inv-outstanding">—</div></div>
-          <div class="card kpi-card"><div class="kpi-label">Overdue</div><div class="kpi-value" style="color:var(--red)" id="inv-overdue">—</div></div>
-        </div>
-        <div class="card" style="margin-bottom:16px"><div class="card-hdr"><span class="card-title">Monthly Billed vs Collected</span></div><div class="card-body"><canvas id="invChart" style="max-height:160px"></canvas></div></div>
-        <div class="card"><div class="card-hdr"><span class="card-title">Invoices</span><button class="btn btn-primary" onclick="openInvModal()">+ New Invoice</button></div>
-          <div class="table-wrap"><table><thead><tr><th>ID</th><th>Client</th><th>Amount</th><th>Paid</th><th>Balance</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead><tbody id="inv-tbody"></tbody></table></div>
-        </div>
+      <!-- ══════════════════════════════════════════════════════
+  REPLACE your entire  <div class="page" id="page-invoices">
+  block with this
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="page-invoices">
+
+  <!-- KPI strip -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+              gap:10px;margin-bottom:16px">
+    <div class="card kpi-card">
+      <div style="float:right;width:30px;height:30px;border-radius:8px;
+                  background:var(--accent-light);display:flex;align-items:center;
+                  justify-content:center">
+        <svg width="13" height="13" fill="none" stroke="var(--accent)" stroke-width="2"
+             viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/>
+          <line x1="2" y1="10" x2="22" y2="10"/></svg>
       </div>
+      <div class="kpi-label">Total Billed</div>
+      <div class="kpi-value" id="inv-total">—</div>
+    </div>
+    <div class="card kpi-card">
+      <div style="float:right;width:30px;height:30px;border-radius:8px;
+                  background:#ECFDF5;display:flex;align-items:center;justify-content:center">
+        <svg width="13" height="13" fill="none" stroke="#10b981" stroke-width="2"
+             viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="kpi-label">Collected</div>
+      <div class="kpi-value" style="color:var(--green)" id="inv-collected">—</div>
+    </div>
+    <div class="card kpi-card">
+      <div style="float:right;width:30px;height:30px;border-radius:8px;
+                  background:#FFFBEB;display:flex;align-items:center;justify-content:center">
+        <svg width="13" height="13" fill="none" stroke="#f59e0b" stroke-width="2"
+             viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div class="kpi-label">Outstanding</div>
+      <div class="kpi-value" style="color:var(--amber)" id="inv-outstanding">—</div>
+    </div>
+    <div class="card kpi-card">
+      <div style="float:right;width:30px;height:30px;border-radius:8px;
+                  background:#FEF2F2;display:flex;align-items:center;justify-content:center">
+        <svg width="13" height="13" fill="none" stroke="#ef4444" stroke-width="2"
+             viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div class="kpi-label">Overdue</div>
+      <div class="kpi-value" style="color:var(--red)" id="inv-overdue">—</div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hdr">
+      <span class="card-title">Monthly Billed vs Collected</span>
+    </div>
+    <div class="card-body">
+      <canvas id="invChart" style="max-height:160px"></canvas>
+    </div>
+  </div>
+
+  <!-- Filters + New button -->
+  <div style="display:flex;align-items:center;justify-content:space-between;
+              flex-wrap:wrap;gap:10px;margin-bottom:14px">
+    <div style="display:flex;gap:6px;flex-wrap:wrap" id="inv-filter-bar">
+      <button class="btn btn-ghost inv-filter active"
+        onclick="filterInvoices('all',this)">All</button>
+      <button class="btn btn-ghost inv-filter"
+        onclick="filterInvoices('unpaid',this)">Unpaid</button>
+      <button class="btn btn-ghost inv-filter"
+        onclick="filterInvoices('partial',this)">Partial</button>
+      <button class="btn btn-ghost inv-filter"
+        onclick="filterInvoices('paid',this)">Paid</button>
+      <button class="btn btn-ghost inv-filter"
+        onclick="filterInvoices('overdue',this)">Overdue</button>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <input id="inv-search" type="text" placeholder="🔍 Search client / ID…"
+        oninput="renderInvoiceCards()"
+        style="border:1px solid var(--border);border-radius:8px;padding:7px 12px;
+               font-size:12px;background:var(--surface);color:var(--text);
+               outline:none;width:180px"/>
+      <select id="inv-sort" onchange="renderInvoiceCards()"
+        style="border:1px solid var(--border);border-radius:8px;padding:7px 10px;
+               font-size:12px;background:var(--surface);color:var(--text)">
+        <option value="date-desc">Newest First</option>
+        <option value="date-asc">Oldest First</option>
+        <option value="amount-desc">Amount (High→Low)</option>
+        <option value="amount-asc">Amount (Low→High)</option>
+        <option value="due-asc">Due Date (Soonest)</option>
+      </select>
+      <button class="btn btn-primary" onclick="openInvModal()">+ New Invoice</button>
+    </div>
+  </div>
+
+  <!-- Cards list -->
+  <div id="inv-cards-list"></div>
+
+</div>
       <!-- EXPENSES PAGE -->
       <div class="page" id="page-expenses">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
@@ -942,28 +1029,131 @@ tr:last-child td{border:none}tr:hover td{background:var(--bg)}
   <div class="fg"><label>Note</label><input id="pay-note" type="text" placeholder="e.g. First installment"/></div>
   <div class="modal-actions"><button class="btn btn-ghost" onclick="hideM('pay-modal')">Cancel</button><button class="btn btn-primary" onclick="recordPayment()">Record</button></div>
 </div></div>
-
-<div class="modal" id="prop-modal"><div class="modal-box" style="max-width:600px">
+<!-- ══════════════════════════════════════════════════════
+  2. REPLACE your existing prop-modal with this
+     (adds Status dropdown + improved layout)
+═══════════════════════════════════════════════════════ -->
+<div class="modal" id="prop-modal"><div class="modal-box" style="max-width:620px">
   <div class="modal-title" id="prop-modal-title">New Proposal</div>
-  <div class="fg"><label>Client Name</label><input id="prm-client" type="text"/></div>
-  <div class="fg"><label>Client Email</label><input id="prm-email" type="email"/></div>
-  <div class="fg"><label>Project Type</label><select id="prm-type"><option>Web Development</option><option>Mobile App</option><option>UI/UX Design</option><option>E-Commerce</option><option>Branding</option><option>SEO / Digital Marketing</option><option>Other</option></select></div>
-  <div class="fg"><label>Validity Date</label><input id="prm-valid" type="date"/></div>
-  <div class="fg"><label>Scope / Notes</label><textarea id="prm-notes" rows="2"></textarea></div>
-  <div class="fg"><label>Items</label>
-    <div style="display:grid;grid-template-columns:1fr 60px 80px 28px;gap:6px;margin-bottom:4px">
-      <span style="font-size:10px;color:var(--text3);font-weight:600">Service</span><span style="font-size:10px;color:var(--text3);font-weight:600">Qty</span><span style="font-size:10px;color:var(--text3);font-weight:600">Price</span><span></span>
+
+  <!-- Client + Email -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="fg">
+      <label>Client Name <span style="color:var(--red)">*</span></label>
+      <input id="prm-client" type="text" placeholder="e.g. Acme Corp"/>
+    </div>
+    <div class="fg">
+      <label>Client Email</label>
+      <input id="prm-email" type="email" placeholder="client@example.com"/>
+    </div>
+  </div>
+
+  <!-- Project Type + Valid Until -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="fg">
+      <label>Project Type</label>
+      <select id="prm-type">
+        <option>Web Development</option>
+        <option>Mobile App</option>
+        <option>UI/UX Design</option>
+        <option>E-Commerce</option>
+        <option>Branding</option>
+        <option>SEO / Digital Marketing</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>Valid Until</label>
+      <input id="prm-valid" type="date"/>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="fg">
+    <label>Status</label>
+    <select id="prm-status"
+      style="width:100%;background:var(--bg);border:1px solid var(--border);
+             border-radius:8px;padding:9px 11px;font-size:13px;
+             color:var(--text);outline:none">
+      <!-- Populated dynamically -->
+    </select>
+  </div>
+
+  <!-- Scope / Notes -->
+  <div class="fg">
+    <label>Scope / Notes</label>
+    <textarea id="prm-notes" rows="2"
+      style="width:100%;background:var(--bg);border:1px solid var(--border);
+             border-radius:8px;padding:9px 11px;font-size:13px;
+             color:var(--text);outline:none;resize:vertical"></textarea>
+  </div>
+
+  <!-- Line items -->
+  <div class="fg">
+    <label>Line Items</label>
+    <div style="display:grid;grid-template-columns:1fr 60px 90px 24px;gap:6px;
+                margin-bottom:6px;padding:0 2px">
+      <span style="font-size:10px;color:var(--text3);font-weight:600">Description</span>
+      <span style="font-size:10px;color:var(--text3);font-weight:600;text-align:center">Qty</span>
+      <span style="font-size:10px;color:var(--text3);font-weight:600;text-align:right">Unit Price (₹)</span>
+      <span></span>
     </div>
     <div id="prop-li-container"></div>
-    <button class="btn btn-ghost" style="font-size:11px;margin-top:6px" onclick="addPropItem()">+ Add Item</button>
+    <button class="btn btn-ghost" style="font-size:11px;margin-top:8px;width:100%"
+      onclick="addPropItem()">+ Add Item</button>
   </div>
-  <div style="display:flex;justify-content:flex-end;padding:10px 0;border-top:1px solid var(--border);margin-top:8px">
-    <div style="text-align:right"><div style="font-size:11px;color:var(--text3)">Total</div><div style="font-size:15px;font-weight:700;color:var(--accent)" id="prm-total">₹0</div></div>
+
+  <!-- Grand total -->
+  <div style="display:flex;justify-content:flex-end;padding:10px 0;
+              border-top:1px solid var(--border);margin-top:4px">
+    <div style="text-align:right">
+      <div style="font-size:10px;color:var(--text3);font-weight:600;
+                  text-transform:uppercase;margin-bottom:3px">Grand Total</div>
+      <div style="font-size:20px;font-weight:800;color:var(--accent)"
+           id="prm-total">₹0</div>
+    </div>
   </div>
+
   <input type="hidden" id="prm-edit-id"/>
-  <div class="modal-actions"><button class="btn btn-ghost" onclick="hideM('prop-modal')">Cancel</button><button class="btn btn-primary" onclick="saveProposal()">Save</button></div>
+  <div class="modal-actions">
+    <button class="btn btn-ghost" onclick="hideM('prop-modal')">Cancel</button>
+    <button class="btn btn-primary" onclick="saveProposal()">💾 Save Proposal</button>
+  </div>
 </div></div>
 
+
+<!-- ══════════════════════════════════════════════════════
+  3. NEW — Manage Stages modal
+     Paste this anywhere near your other modals
+═══════════════════════════════════════════════════════ -->
+<div class="modal" id="prop-stages-modal"><div class="modal-box" style="max-width:480px">
+  <div class="modal-title">⚙ Manage Proposal Stages</div>
+
+  <div style="font-size:12px;color:var(--text3);margin-bottom:12px;
+              padding:8px 12px;background:var(--bg);border-radius:8px;
+              border-left:3px solid var(--accent)">
+    Default stages cannot be removed but can be renamed.
+    Add custom stages for your workflow below.
+  </div>
+
+  <!-- Stage rows rendered by renderStageManager() -->
+  <div id="prop-stages-list"></div>
+
+  <!-- Add new stage input -->
+  <div style="display:flex;gap:8px;margin-top:14px;align-items:center">
+    <input id="ps-new-stage" type="text"
+      placeholder="New stage name (e.g. negotiation)"
+      style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;
+             padding:8px 11px;font-size:13px;color:var(--text);outline:none"
+      onkeydown="if(event.key==='Enter') addPropStage()"/>
+    <button class="btn btn-primary" onclick="addPropStage()">+ Add</button>
+  </div>
+
+  <div class="modal-actions">
+    <button class="btn btn-ghost" onclick="hideM('prop-stages-modal')">Cancel</button>
+    <button class="btn btn-primary" onclick="saveAndCloseStages()">💾 Save Stages</button>
+  </div>
+</div></div>
 <!-- ADD / EDIT EXPENSE ENTRY MODAL -->
 <div class="modal" id="exp-entry-modal"><div class="modal-box" style="max-width:520px">
   <div class="modal-title" id="exp-entry-modal-title">Add Expense</div>
@@ -2769,40 +2959,376 @@ async function saveInvoice(){
     hideM('inv-modal');loadInvoices();
   }catch(e){toast(e.message,'error');}
 }
-async function loadInvoices(){
-  const el=$('inv-tbody');if(!el)return;el.innerHTML='';
-  let totalBilled=0,collected=0,outstanding=0,overdue=0;const bm=Array(12).fill(0),cm=Array(12).fill(0);
-  try{
-    const snap=await db.collection('invoices').orderBy('createdAt','desc').get();
-    if(snap.empty){el.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--text3);padding:16px">No invoices yet.</td></tr>';return;}
-    snap.docs.forEach(d=>{
-      const iv=d.data(),iid=d.id;const pays=iv.payments||[];const paid=pays.reduce((a,p)=>a+(+p.amount||0),0);const bal=Math.max(0,(+iv.amount||0)-paid);
-      totalBilled+=+iv.amount||0;collected+=paid;if(iv.status==='overdue')overdue+=bal;if(iv.status!=='paid')outstanding+=bal;
-      const cDate=iv.createdAt?.toDate?.()||new Date();bm[cDate.getMonth()]+=+iv.amount||0;cm[cDate.getMonth()]+=paid;
-      const sc=iv.status==='paid'?'t-green':iv.status==='overdue'?'t-red':'t-amber';
-      el.innerHTML+=`<tr><td style="font-weight:600">${iv.invoiceId}</td><td>${iv.clientName}</td><td>${fmtM(iv.amount)}</td><td style="color:var(--green)">${fmtM(paid)}</td><td style="color:var(--amber);font-weight:600">${fmtM(bal)}</td><td style="color:var(--text3)">${iv.dueDate||'—'}</td><td><span class="tag ${sc}">${iv.status||'unpaid'}</span></td>
-      <td style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;min-width:220px">
-        <button class="mini-btn" onclick="editInv('${iid}')">✏</button>
-        <button class="mini-btn" onclick="openInvPayModal('${iid}','${iv.linkedSaleId||''}')">💰</button>
-        <button class="mini-btn" onclick="printSaleInv('${iid}','inv')">🖨</button>
-        <button class="mini-btn" onclick="emailInv('${iid}')">✉</button>
-        <select onchange="updInvStatus('${iid}',this.value,'${iv.linkedSaleId||''}')" style="border:1px solid var(--border);border-radius:6px;padding:3px 5px;font-size:10px;background:var(--bg);color:var(--text)">
-          <option ${iv.status==='unpaid'?'selected':''} value="unpaid">Unpaid</option>
-          <option ${iv.status==='partial'?'selected':''} value="partial">Partial</option>
-          <option ${iv.status==='paid'?'selected':''} value="paid">Paid</option>
-          <option ${iv.status==='overdue'?'selected':''} value="overdue">Overdue</option>
-        </select>
-        <button onclick="delInvoice('${iid}')" style="background:none;border:none;cursor:pointer;color:var(--red)">🗑</button>
-      </td></tr>`;
-    });
-    $('inv-total').textContent=fmtM(totalBilled);$('inv-collected').textContent=fmtM(collected);$('inv-outstanding').textContent=fmtM(outstanding);$('inv-overdue').textContent=fmtM(overdue);
-    const cc=CC();mkChart('invChart',{type:'bar',data:{labels:MN,datasets:[{label:'Billed',data:bm,backgroundColor:'rgba(37,99,235,.5)',borderRadius:4},{label:'Collected',data:cm,backgroundColor:'rgba(16,185,129,.6)',borderRadius:4}]},options:{responsive:true,plugins:{legend:{labels:{color:cc.tick,font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{color:cc.tick,font:{size:9}}},y:{grid:{color:cc.grid},ticks:{color:cc.tick,font:{size:9},callback:v=>'₹'+(v/1000).toFixed(0)+'k'}}}}});
-  }catch(e){toast('Invoices error','error');}
-}
-function openInvPayModal(iid,linkedSaleId=''){$('pay-inv-id').value=iid;$('pay-sale-id').value=linkedSaleId;$('pay-modal-title').textContent='Record Payment';$('pay-amount').value='';$('pay-date').value=today();$('pay-note').value='';showM('pay-modal');}
-async function updInvStatus(id,s,linkedSaleId=''){try{await db.collection('invoices').doc(id).update({status:s});await logAudit('Invoice',`Status → "${s}"`);if(linkedSaleId){const ss=s==='paid'?'paid':s==='overdue'?'overdue':s==='partial'?'partial':'pending';await db.collection('sales').doc(linkedSaleId).update({paymentStatus:ss});}toast('Updated!','success');loadInvoices();}catch(e){toast(e.message,'error');}}
-async function delInvoice(id){if(!confirm('Delete invoice?'))return;try{const d=await db.collection('invoices').doc(id).get();const iv=d.data();if(iv.linkedSaleId)await db.collection('sales').doc(iv.linkedSaleId).update({linkedInvoiceId:'',linkedInvoiceFirestoreId:''}).catch(()=>{});await logAudit('Invoice','Deleted',iv?.invoiceId||id);await db.collection('invoices').doc(id).delete();toast('Deleted','info');loadInvoices();}catch(e){toast(e.message,'error');}}
+// ═══════════════════════════════════════════
+// INVOICES — card-based
+// ═══════════════════════════════════════════
+let allInvoicesCache = [], invFilterStatus = 'all';
 
+async function loadInvoices() {
+  const el = $('inv-cards-list');
+  if (!el) return;
+  el.innerHTML = '<div style="color:var(--text3);padding:16px">Loading…</div>';
+
+  let totalBilled = 0, collected = 0, outstanding = 0, overdue = 0;
+  const bm = Array(12).fill(0), cm = Array(12).fill(0);
+
+  try {
+    const snap = await db.collection('invoices').orderBy('createdAt','desc').get();
+    allInvoicesCache = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
+
+    allInvoicesCache.forEach(iv => {
+      const pays  = iv.payments || [];
+      const paid  = pays.reduce((a, p) => a + (+p.amount || 0), 0);
+      const bal   = Math.max(0, (+iv.amount || 0) - paid);
+      totalBilled += +iv.amount || 0;
+      collected   += paid;
+      if (iv.status !== 'paid') outstanding += bal;
+      if (iv.status === 'overdue') overdue += bal;
+      const d = iv.createdAt?.toDate?.() || new Date();
+      bm[d.getMonth()] += +iv.amount || 0;
+      cm[d.getMonth()] += paid;
+    });
+
+    // KPIs
+    $('inv-total').textContent       = fmtM(totalBilled);
+    $('inv-collected').textContent   = fmtM(collected);
+    $('inv-outstanding').textContent = fmtM(outstanding);
+    $('inv-overdue').textContent     = fmtM(overdue);
+
+    // Update filter button counts
+    updateInvFilterCounts();
+
+    // Chart
+    const cc = CC();
+    mkChart('invChart', {
+      type: 'bar',
+      data: {
+        labels: MN,
+        datasets: [
+          { label:'Billed',    data:bm, backgroundColor:'rgba(37,99,235,.5)',  borderRadius:4 },
+          { label:'Collected', data:cm, backgroundColor:'rgba(16,185,129,.6)', borderRadius:4 }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color:cc.tick, font:{size:10} } } },
+        scales: {
+          x: { grid:{display:false}, ticks:{color:cc.tick,font:{size:9}} },
+          y: { grid:{color:cc.grid}, ticks:{color:cc.tick,font:{size:9},
+               callback: v => '₹'+(v/1000).toFixed(0)+'k'} }
+        }
+      }
+    });
+
+    renderInvoiceCards();
+  } catch(e) {
+    if (el) el.innerHTML = '<div style="color:var(--red);padding:16px">'+e.message+'</div>';
+  }
+}
+
+function updateInvFilterCounts() {
+  const counts = { all: allInvoicesCache.length };
+  ['unpaid','partial','paid','overdue'].forEach(s => {
+    counts[s] = allInvoicesCache.filter(iv => iv.status === s).length;
+  });
+  document.querySelectorAll('.inv-filter').forEach(btn => {
+    const f = btn.getAttribute('onclick').match(/'(\w+)'/)?.[1];
+    if (f && counts[f] !== undefined)
+      btn.textContent = f.charAt(0).toUpperCase()+f.slice(1) + ` (${counts[f]})`;
+  });
+}
+
+function filterInvoices(status, btn) {
+  invFilterStatus = status;
+  document.querySelectorAll('.inv-filter').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderInvoiceCards();
+}
+
+function renderInvoiceCards() {
+  const el = $('inv-cards-list');
+  if (!el) return;
+
+  const q    = ($('inv-search')?.value || '').toLowerCase();
+  const sort = $('inv-sort')?.value || 'date-desc';
+
+  let items = allInvoicesCache.filter(iv => {
+    const matchStatus = invFilterStatus === 'all' || iv.status === invFilterStatus;
+    const matchQ = !q ||
+      (iv.clientName || '').toLowerCase().includes(q) ||
+      (iv.invoiceId  || '').toLowerCase().includes(q);
+    return matchStatus && matchQ;
+  });
+
+  items.sort((a, b) => {
+    if (sort === 'date-desc')   return (b.createdAt?.toDate?.()?.getTime()||0) - (a.createdAt?.toDate?.()?.getTime()||0);
+    if (sort === 'date-asc')    return (a.createdAt?.toDate?.()?.getTime()||0) - (b.createdAt?.toDate?.()?.getTime()||0);
+    if (sort === 'amount-desc') return (+b.amount||0) - (+a.amount||0);
+    if (sort === 'amount-asc')  return (+a.amount||0) - (+b.amount||0);
+    if (sort === 'due-asc')     return (a.dueDate||'9999').localeCompare(b.dueDate||'9999');
+    return 0;
+  });
+
+  if (!items.length) {
+    el.innerHTML = '<div style="color:var(--text3);padding:24px;text-align:center;'+
+      'background:var(--surface);border-radius:14px;border:1px solid var(--border)">'+
+      'No invoices found.</div>';
+    return;
+  }
+
+  el.innerHTML = items.map(iv => {
+    const iid   = iv._id;
+    const pays  = iv.payments || [];
+    const paid  = pays.reduce((a, p) => a + (+p.amount||0), 0);
+    const bal   = Math.max(0, (+iv.amount||0) - paid);
+    const pct   = iv.amount > 0 ? Math.min(100, Math.round(paid / iv.amount * 100)) : 0;
+
+    const statusMeta = {
+      paid    : { cls:'t-green',  label:'Paid',     accent:'#10b981', bg:'#ECFDF5' },
+      partial : { cls:'t-blue',   label:'Partial',  accent:'#2563EB', bg:'#EFF6FF' },
+      overdue : { cls:'t-red',    label:'Overdue',  accent:'#ef4444', bg:'#FEF2F2' },
+      unpaid  : { cls:'t-amber',  label:'Unpaid',   accent:'#f59e0b', bg:'#FFFBEB' }
+    };
+    const sm = statusMeta[iv.status] || statusMeta.unpaid;
+
+    const createdStr = iv.createdAt?.toDate?.().toLocaleDateString('en-IN',
+      {day:'2-digit',month:'short',year:'numeric'}) || '—';
+
+    // Due date colouring
+    const todayStr = today();
+    let dueColor = 'var(--text3)';
+    if (iv.dueDate && iv.status !== 'paid') {
+      dueColor = iv.dueDate < todayStr ? 'var(--red)' : iv.dueDate === todayStr ? 'var(--amber)' : 'var(--text3)';
+    }
+
+    // Payment history rows
+    const payRows = pays.map(p => `
+      <div style="display:flex;justify-content:space-between;align-items:center;
+                  padding:6px 0;border-bottom:1px solid var(--border);font-size:11px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="width:22px;height:22px;border-radius:6px;background:#ECFDF5;
+                       display:inline-flex;align-items:center;justify-content:center;
+                       font-size:11px">💳</span>
+          <div>
+            <span style="color:var(--text2);font-weight:500">${p.method}</span>
+            ${p.note ? `<span style="color:var(--text3)"> · ${p.note}</span>` : ''}
+            <div style="color:var(--text3);font-size:10px">📅 ${p.date}</div>
+          </div>
+        </div>
+        <span style="color:var(--green);font-weight:700">+${fmtM(p.amount)}</span>
+      </div>`).join('');
+
+    // Section summary
+    const secs = iv.sections || (iv.lineItems ? [{projectName:'Services', items:iv.lineItems}] : []);
+    const secRows = secs.map(sec => `
+      <div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--text3);
+                    text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px">
+          📁 ${sec.projectName}
+        </div>
+        ${(sec.items||[]).map(it => `
+          <div style="display:flex;justify-content:space-between;font-size:11px;
+                      color:var(--text2);padding:3px 6px;border-bottom:1px solid var(--border)">
+            <span>${it.desc}</span>
+            <span style="font-weight:600">${it.qty} × ${fmtM(it.price)}
+              = ${fmtM((+it.qty||0)*(+it.price||0))}</span>
+          </div>`).join('')}
+      </div>`).join('');
+
+    return `
+    <div class="card" style="margin-bottom:14px;overflow:hidden">
+
+      <!-- Coloured left border strip -->
+      <div style="display:flex">
+        <div style="width:4px;background:${sm.accent};flex-shrink:0;border-radius:14px 0 0 14px"></div>
+
+        <div style="flex:1;padding:0">
+
+          <!-- ── Header ── -->
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;
+                      flex-wrap:wrap;gap:10px;padding:14px 16px 10px">
+            <div>
+              <!-- Invoice ID + status badge -->
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px">
+                <span style="font-size:15px;font-weight:800;color:var(--text);
+                             letter-spacing:.02em">${iv.invoiceId}</span>
+                <span class="tag ${sm.cls}">${sm.label}</span>
+                ${iv.linkedSaleId ? `<span class="tag t-purple" style="font-size:9px">🔗 Linked Sale</span>` : ''}
+              </div>
+              <!-- Client + meta -->
+              <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:3px">
+                👤 ${iv.clientName}
+              </div>
+              <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--text3)">
+                <span>📅 Issued: ${createdStr}</span>
+                <span style="color:${dueColor};font-weight:${iv.dueDate&&iv.dueDate<=todayStr&&iv.status!=='paid'?'700':'400'}">
+                  ⏰ Due: ${iv.dueDate || '—'}
+                  ${iv.dueDate&&iv.dueDate<todayStr&&iv.status!=='paid'?' ⚠':''}
+                </span>
+              </div>
+            </div>
+
+            <!-- Amount block -->
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-size:22px;font-weight:800;color:var(--text)">${fmtM(iv.amount)}</div>
+              <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:3px;flex-wrap:wrap">
+                <span style="font-size:11px;color:var(--green);font-weight:600">
+                  ✓ Paid ${fmtM(paid)}
+                </span>
+                ${bal > 0 ? `<span style="font-size:11px;color:var(--red);font-weight:600">
+                  ⬡ Bal ${fmtM(bal)}
+                </span>` : ''}
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Progress bar ── -->
+          <div style="padding:0 16px 12px">
+            <div style="display:flex;justify-content:space-between;
+                        font-size:10px;color:var(--text3);margin-bottom:4px">
+              <span>Payment progress</span>
+              <span style="font-weight:700;color:var(--text)">${pct}%</span>
+            </div>
+            <div style="height:6px;background:var(--border);border-radius:99px;overflow:hidden">
+              <div style="height:100%;border-radius:99px;background:${sm.accent};
+                          width:${pct}%;transition:width .4s"></div>
+            </div>
+          </div>
+
+          <!-- ── Action bar ── -->
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+                      padding:10px 16px;border-top:1px solid var(--border);
+                      background:var(--bg)">
+            <!-- Status change -->
+            <select onchange="updInvStatus('${iid}',this.value,'${iv.linkedSaleId||''}')"
+              style="border:1px solid var(--border);border-radius:7px;padding:5px 8px;
+                     font-size:11px;background:var(--surface);color:var(--text);cursor:pointer">
+              <option value="unpaid"  ${iv.status==='unpaid' ?'selected':''}>Unpaid</option>
+              <option value="partial" ${iv.status==='partial'?'selected':''}>Partial</option>
+              <option value="paid"    ${iv.status==='paid'   ?'selected':''}>Paid</option>
+              <option value="overdue" ${iv.status==='overdue'?'selected':''}>Overdue</option>
+            </select>
+            <button class="btn btn-primary" style="font-size:11px;padding:5px 10px"
+              onclick="openInvPayModal('${iid}','${iv.linkedSaleId||''}')">💰 Record Payment</button>
+            <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px"
+              onclick="editInv('${iid}')">✏ Edit</button>
+            <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px"
+              onclick="printSaleInv('${iid}','inv')">🖨 PDF</button>
+            <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px"
+              onclick="emailInv('${iid}')">✉ Email</button>
+            <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px;margin-left:auto"
+              onclick="toggleInvDetails('${iid}')">
+              <span id="inv-chevron-${iid}">▼ Details</span>
+            </button>
+            <button onclick="delInvoice('${iid}')"
+              style="background:none;border:1px solid rgba(239,68,68,.2);border-radius:7px;
+                     padding:5px 10px;cursor:pointer;color:var(--red);font-size:11px">🗑</button>
+          </div>
+
+          <!-- ── Expandable details ── -->
+          <div id="inv-details-${iid}" style="display:none;padding:14px 16px;
+               border-top:1px solid var(--border)">
+
+            <!-- Line items -->
+            ${secs.length ? `
+            <div style="margin-bottom:14px">
+              <div style="font-size:11px;font-weight:700;color:var(--text3);
+                          text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">
+                📋 Line Items
+              </div>
+              ${secRows}
+              <div style="display:flex;justify-content:flex-end;gap:16px;
+                          padding:8px;background:var(--bg);border-radius:8px;
+                          margin-top:6px;flex-wrap:wrap">
+                ${iv.discount ? `<span style="font-size:12px;color:var(--text2)">
+                  Discount: −${fmtM(iv.discount)}</span>` : ''}
+                <span style="font-size:13px;font-weight:800;color:var(--accent)">
+                  Total: ${fmtM(iv.amount)}
+                </span>
+              </div>
+            </div>` : ''}
+
+            <!-- Payment history -->
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--text3);
+                          text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">
+                💳 Payment History
+              </div>
+              ${payRows || `<div style="font-size:12px;color:var(--text3);
+                padding:8px;background:var(--bg);border-radius:8px">
+                No payments recorded yet.</div>`}
+              ${pays.length ? `
+              <div style="display:flex;justify-content:space-between;
+                          padding:8px;font-size:12px;font-weight:700;
+                          border-top:2px solid var(--border);margin-top:4px">
+                <span>Balance Due</span>
+                <span style="color:${bal>0?'var(--red)':'var(--green)'}">${fmtM(bal)}</span>
+              </div>` : ''}
+            </div>
+
+            <!-- Notes -->
+            ${iv.notes ? `
+            <div style="margin-top:10px;padding:8px 12px;background:var(--bg);
+                        border-radius:8px;font-size:12px;color:var(--text2);
+                        line-height:1.6;border-left:3px solid var(--accent)">
+              📝 ${iv.notes}
+            </div>` : ''}
+
+          </div><!-- end details -->
+
+        </div><!-- end flex:1 -->
+      </div><!-- end flex row -->
+    </div>`;
+  }).join('');
+}
+
+function toggleInvDetails(iid) {
+  const el  = $('inv-details-' + iid);
+  const chv = $('inv-chevron-'  + iid);
+  if (!el) return;
+  const open = el.style.display === 'none';
+  el.style.display = open ? 'block' : 'none';
+  if (chv) chv.textContent = open ? '▲ Details' : '▼ Details';
+}
+
+// Keep these unchanged — they still work with the new layout
+function openInvPayModal(iid, linkedSaleId='') {
+  $('pay-inv-id').value  = iid;
+  $('pay-sale-id').value = linkedSaleId;
+  $('pay-modal-title').textContent = 'Record Payment';
+  $('pay-amount').value = '';
+  $('pay-date').value   = today();
+  $('pay-note').value   = '';
+  showM('pay-modal');
+}
+
+async function updInvStatus(id, s, linkedSaleId='') {
+  try {
+    await db.collection('invoices').doc(id).update({ status: s });
+    await logAudit('Invoice', `Status → "${s}"`);
+    if (linkedSaleId) {
+      const ss = s==='paid'?'paid':s==='overdue'?'overdue':s==='partial'?'partial':'pending';
+      await db.collection('sales').doc(linkedSaleId).update({ paymentStatus: ss });
+    }
+    toast('Updated!', 'success');
+    loadInvoices();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function delInvoice(id) {
+  if (!confirm('Delete this invoice?')) return;
+  try {
+    const d  = await db.collection('invoices').doc(id).get();
+    const iv = d.data();
+    if (iv.linkedSaleId)
+      await db.collection('sales').doc(iv.linkedSaleId)
+        .update({ linkedInvoiceId:'', linkedInvoiceFirestoreId:'' }).catch(()=>{});
+    await logAudit('Invoice', 'Deleted', iv?.invoiceId || id);
+    await db.collection('invoices').doc(id).delete();
+    toast('Deleted', 'info');
+    loadInvoices();
+  } catch(e) { toast(e.message, 'error'); }
+}
 // ═══════════════════════════════════════════
 // FEEDBACK
 // ═══════════════════════════════════════════
@@ -2813,40 +3339,443 @@ async function addFeedback(){const clientName=$('fbm-client').value.trim(),ratin
 // ═══════════════════════════════════════════
 // PROPOSALS
 // ═══════════════════════════════════════════
-let propLineItems=[],allProposals=[];
-function openPropModal(editId=null){propLineItems=[];$('prop-li-container').innerHTML='';['prm-client','prm-email','prm-notes'].forEach(id=>{const e=$(id);if(e)e.value='';});$('prm-valid').value='';$('prm-total').textContent='₹0';$('prm-edit-id').value=editId||'';$('prop-modal-title').textContent=editId?'Edit Proposal':'New Proposal';addPropItem();showM('prop-modal');}
-function calcPropTotal(){$('prm-total').textContent=fmtM(propLineItems.filter(Boolean).reduce((a,i)=>a+(+i.qty||0)*(+i.price||0),0));}
-function addPropItem(desc='',qty=1,price=0){const idx=propLineItems.length;propLineItems.push({desc,qty,price});const row=document.createElement('div');row.className='li-row';row.id='pri-row-'+idx;row.innerHTML=`<input type="text" placeholder="Service" value="${desc}" oninput="updPI(${idx},'desc',this.value)"/><input type="number" value="${qty}" min="1" oninput="updPI(${idx},'qty',+this.value)"/><input type="number" value="${price}" min="0" oninput="updPI(${idx},'price',+this.value)"/><button onclick="rmPI(${idx})" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:14px;padding:0">✕</button>`;$('prop-li-container').appendChild(row);calcPropTotal();}
-function updPI(idx,field,val){if(propLineItems[idx])propLineItems[idx][field]=val;calcPropTotal();}
-function rmPI(idx){const r=$('pri-row-'+idx);if(r)r.remove();propLineItems[idx]=null;calcPropTotal();}
-async function saveProposal(){const clientName=$('prm-client').value.trim();if(!clientName){toast('Enter client name','error');return;}const items=propLineItems.filter(Boolean).filter(i=>i.desc);if(!items.length){toast('Add at least one item','error');return;}const total=items.reduce((a,i)=>a+(+i.qty||0)*(+i.price||0),0);const data={clientName,clientEmail:$('prm-email').value.trim(),projectType:$('prm-type').value,validUntil:$('prm-valid').value,notes:$('prm-notes').value.trim(),lineItems:items,total,status:'draft'};const editId=$('prm-edit-id').value;try{if(editId){await db.collection('proposals').doc(editId).update(data);await logAudit('Proposal','Edited',clientName);toast('Updated','success');}else{const pid=genPropId();await db.collection('proposals').add({...data,proposalId:pid,createdAt:ts(),createdBy:CU.uid});await logAudit('Proposal','Created',`${pid} — ${clientName}`);toast('Created','success');}hideM('prop-modal');loadProposals();}catch(e){toast(e.message,'error');}}
-async function updPropStatus(id,status){try{await db.collection('proposals').doc(id).update({status});await logAudit('Proposal',`Status → "${status}"`);if(status==='approved')await pushNotif(CU.uid,'proposal','✅ Proposal approved! Convert to invoice when ready.');toast('Updated','success');loadProposals();}catch(e){toast(e.message,'error');}}
-async function convertToInvoice(id){if(!confirm('Convert to invoice?'))return;try{const snap=await db.collection('proposals').doc(id).get();const p=snap.data();const invId=genId();await db.collection('invoices').add({invoiceId:invId,clientName:p.clientName,sections:[{projectName:p.projectType||'Services',items:p.lineItems}],amount:p.total,discount:0,status:'unpaid',payments:[],dueDate:'',notes:`From proposal ${p.proposalId}`,linkedSaleId:'',createdAt:ts()});await db.collection('proposals').doc(id).update({status:'converted'});await logAudit('Proposal','Converted to invoice',`${p.proposalId} → ${invId}`);toast(`✅ Invoice ${invId} created!`,'success');loadProposals();}catch(e){toast(e.message,'error');}}
-async function delProposal(id){if(!confirm('Delete?'))return;try{const d=await db.collection('proposals').doc(id).get();await logAudit('Proposal','Deleted',d.data()?.proposalId||id);await db.collection('proposals').doc(id).delete();toast('Deleted','info');loadProposals();}catch(e){toast(e.message,'error');}}
-async function loadProposals(){const el=$('prop-list');if(!el)return;el.innerHTML='<div style="color:var(--text3);padding:16px">Loading…</div>';try{const snap=await db.collection('proposals').orderBy('createdAt','desc').get();allProposals=snap.docs.map(d=>({...d.data(),id:d.id}));renderProposals(allProposals);}catch(e){el.innerHTML='<div style="color:var(--red);padding:16px">'+e.message+'</div>';}}
-function filterProps(f,btn){document.querySelectorAll('.prop-filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderProposals(f==='all'?allProposals:allProposals.filter(p=>p.status===f));}
-function renderProposals(items){
-  const el=$('prop-list');if(!el)return;
-  if(!items.length){el.innerHTML='<div style="color:var(--text3);padding:16px">No proposals found.</div>';return;}
-  const sc={draft:'t-blue',sent:'t-purple',approved:'t-green',rejected:'t-red',converted:'t-amber'};
-  el.innerHTML=items.map(p=>`<div class="card" style="padding:16px;margin-bottom:14px">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px">
-      <div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px"><span style="font-weight:700;font-size:14px;color:var(--text)">${p.proposalId}</span><span class="tag ${sc[p.status]||'t-blue'}">${p.status}</span></div>
-      <div style="font-size:12px;color:var(--text2)">👤 ${p.clientName}${p.clientEmail?' · '+p.clientEmail:''} &nbsp;|&nbsp; 💼 ${p.projectType||'—'}</div>
-      <div style="font-size:11px;color:var(--text3);margin-top:2px">Valid: ${p.validUntil||'—'} &nbsp;|&nbsp; Total: <strong style="color:var(--accent)">${fmtM(p.total)}</strong></div></div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <select onchange="updPropStatus('${p.id}',this.value)" style="border:1px solid var(--border);border-radius:8px;padding:5px 8px;font-size:11px;background:var(--bg);color:var(--text)">
-          ${['draft','sent','approved','rejected','converted'].map(s=>`<option value="${s}" ${p.status===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}
-        </select>
-        ${p.status==='approved'?`<button class="btn btn-primary" style="font-size:11px;padding:5px 10px" onclick="convertToInvoice('${p.id}')">→ Invoice</button>`:''}
-        <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px" onclick="printProposal('${p.id}')">🖨 PDF</button>
-        <button class="btn btn-danger" style="font-size:11px;padding:5px 10px" onclick="delProposal('${p.id}')">🗑</button>
-      </div>
-    </div>
-    ${p.notes?`<div style="font-size:12px;color:var(--text2);padding:8px;background:var(--bg);border-radius:8px;margin-bottom:10px;line-height:1.6">${p.notes}</div>`:''}
-    <div style="border-top:1px solid var(--border);padding-top:10px">${(p.lineItems||[]).map(it=>`<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:3px 0;border-bottom:1px solid var(--border)"><span>${it.desc}</span><span>${it.qty} × ${fmtM(it.price)} = <strong>${fmtM((it.qty||0)*(it.price||0))}</strong></span></div>`).join('')}<div style="text-align:right;font-size:13px;font-weight:700;color:var(--accent);margin-top:6px">Total: ${fmtM(p.total)}</div></div>
-  </div>`).join('');
+let propLineItems = [], allProposals = [];
+
+const DEFAULT_PROP_STAGES = ['draft','sent','approved','rejected','converted'];
+let propStages = [...DEFAULT_PROP_STAGES];
+
+async function loadPropStages() {
+  try {
+    const snap = await db.collection('settings').doc('proposalStages').get();
+    if (snap.exists && Array.isArray(snap.data().stages) && snap.data().stages.length) {
+      propStages = snap.data().stages;
+    } else {
+      propStages = [...DEFAULT_PROP_STAGES];
+    }
+  } catch (e) {
+    propStages = [...DEFAULT_PROP_STAGES];
+  }
 }
+
+async function savePropStages() {
+  try {
+    await db.collection('settings').doc('proposalStages').set({ stages: propStages });
+  } catch (e) { toast('Failed to save stages: ' + e.message, 'error'); }
+}
+
+const STAGE_COLORS = {
+  draft:'t-blue', sent:'t-purple', approved:'t-green',
+  rejected:'t-red', converted:'t-amber'
+};
+const EXTRA_COLORS = ['t-blue','t-purple','t-green','t-amber','t-red'];
+function stageClass(s) {
+  if (STAGE_COLORS[s]) return STAGE_COLORS[s];
+  const idx = propStages.indexOf(s);
+  return EXTRA_COLORS[Math.abs(idx) % EXTRA_COLORS.length];
+}
+
+function openManageStages() {
+  renderStageManager();
+  showM('prop-stages-modal');
+}
+
+function renderStageManager() {
+  const el = $('prop-stages-list');
+  if (!el) return;
+  el.innerHTML = propStages.map((s, i) => `
+    <div id="ps-row-${i}" style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">
+      <span class="tag ${stageClass(s)}" style="min-width:80px;text-align:center;flex-shrink:0">${s}</span>
+      <input value="${s}" id="ps-inp-${i}"
+        style="flex:1;border:1px solid var(--border);border-radius:7px;padding:6px 10px;
+               font-size:12px;background:var(--bg);color:var(--text);outline:none"
+        onchange="propStages[${i}]=this.value.trim().toLowerCase().replace(/\\s+/g,'-');renderStageManager()"/>
+      ${DEFAULT_PROP_STAGES.includes(s)
+        ? `<span style="font-size:10px;color:var(--text3);padding:3px 8px;
+                        background:var(--bg);border-radius:6px;flex-shrink:0">default</span>`
+        : `<button onclick="deletePropStage(${i})"
+             style="background:none;border:1px solid rgba(239,68,68,.3);border-radius:6px;
+                    padding:3px 10px;font-size:11px;color:var(--red);cursor:pointer;
+                    flex-shrink:0">✕ Remove</button>`}
+    </div>`).join('');
+}
+
+function addPropStage() {
+  const inp = $('ps-new-stage');
+  if (!inp) return;
+  const val = inp.value.trim().toLowerCase().replace(/\s+/g, '-');
+  if (!val) { toast('Enter a stage name', 'error'); return; }
+  if (propStages.includes(val)) { toast('Stage already exists', 'error'); return; }
+  propStages.push(val);
+  inp.value = '';
+  renderStageManager();
+}
+
+function deletePropStage(i) {
+  const stage = propStages[i];
+  const inUse = allProposals.some(p => p.status === stage);
+  if (inUse && !confirm(`"${stage}" is used by some proposals. Remove anyway?`)) return;
+  propStages.splice(i, 1);
+  renderStageManager();
+}
+
+async function saveAndCloseStages() {
+  await savePropStages();
+  toast('Stages saved!', 'success');
+  hideM('prop-stages-modal');
+  loadProposals();
+}
+
+// ── Open create modal ──────────────────────────────────────────
+function openPropModal() {
+  propLineItems = [];
+  $('prop-li-container').innerHTML = '';
+  ['prm-client','prm-email','prm-notes'].forEach(id => { const e = $(id); if (e) e.value = ''; });
+  $('prm-valid').value = '';
+  $('prm-total').textContent = '₹0';
+  $('prm-edit-id').value = '';
+  $('prop-modal-title').textContent = 'New Proposal';
+  const sel = $('prm-status');
+  if (sel) {
+    sel.innerHTML = propStages.map(s =>
+      `<option value="${s}">${s.charAt(0).toUpperCase() + s.slice(1)}</option>`
+    ).join('');
+    sel.value = 'draft';
+  }
+  addPropItem();
+  showM('prop-modal');
+}
+
+// ── Open edit modal — loads existing data ──────────────────────
+async function openEditPropModal(id) {
+  propLineItems = [];
+  $('prop-li-container').innerHTML = '';
+  try {
+    const snap = await db.collection('proposals').doc(id).get();
+    if (!snap.exists) { toast('Proposal not found', 'error'); return; }
+    const p = snap.data();
+    $('prm-client').value  = p.clientName    || '';
+    $('prm-email').value   = p.clientEmail   || '';
+    $('prm-type').value    = p.projectType   || 'Web Development';
+    $('prm-valid').value   = p.validUntil    || '';
+    $('prm-notes').value   = p.notes         || '';
+    $('prm-edit-id').value = id;
+    $('prop-modal-title').textContent = 'Edit Proposal';
+    const sel = $('prm-status');
+    if (sel) {
+      sel.innerHTML = propStages.map(s =>
+        `<option value="${s}">${s.charAt(0).toUpperCase() + s.slice(1)}</option>`
+      ).join('');
+      sel.value = p.status || 'draft';
+    }
+    (p.lineItems || []).forEach(it => addPropItem(it.desc || '', it.qty || 1, it.price || 0));
+    if (!(p.lineItems || []).length) addPropItem();
+    calcPropTotal();
+    showM('prop-modal');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ── Line item helpers ──────────────────────────────────────────
+function calcPropTotal() {
+  $('prm-total').textContent = fmtM(
+    propLineItems.filter(Boolean).reduce((a, i) => a + (+i.qty || 0) * (+i.price || 0), 0)
+  );
+}
+
+function addPropItem(desc = '', qty = 1, price = 0) {
+  const idx = propLineItems.length;
+  propLineItems.push({ desc, qty, price });
+  const row = document.createElement('div');
+  row.className = 'li-row';
+  row.id = 'pri-row-' + idx;
+  row.innerHTML = `
+    <input type="text" placeholder="Service / Description" value="${desc}"
+      oninput="updPI(${idx},'desc',this.value)"
+      style="border:1px solid var(--border);border-radius:7px;padding:7px 9px;font-size:12px;
+             background:var(--bg);color:var(--text);outline:none;width:100%"/>
+    <input type="number" placeholder="1" value="${qty}" min="1"
+      oninput="updPI(${idx},'qty',+this.value)"
+      style="border:1px solid var(--border);border-radius:7px;padding:7px 6px;font-size:12px;
+             background:var(--bg);color:var(--text);outline:none;text-align:center;width:100%"/>
+    <input type="number" placeholder="0" value="${price}" min="0"
+      oninput="updPI(${idx},'price',+this.value)"
+      style="border:1px solid var(--border);border-radius:7px;padding:7px 6px;font-size:12px;
+             background:var(--bg);color:var(--text);outline:none;text-align:right;width:100%"/>
+    <button onclick="rmPI(${idx})"
+      style="background:none;border:none;cursor:pointer;color:var(--red);font-size:16px;
+             padding:0;line-height:1;display:flex;align-items:center;justify-content:center">✕</button>`;
+  $('prop-li-container').appendChild(row);
+  calcPropTotal();
+}
+
+function updPI(idx, field, val) {
+  if (propLineItems[idx]) propLineItems[idx][field] = val;
+  calcPropTotal();
+}
+
+function rmPI(idx) {
+  propLineItems[idx] = null;
+  const r = $('pri-row-' + idx);
+  if (r) r.remove();
+  calcPropTotal();
+}
+
+// ── Save (create or update) ────────────────────────────────────
+async function saveProposal() {
+  const clientName = $('prm-client').value.trim();
+  if (!clientName) { toast('Enter client name', 'error'); return; }
+  const items = propLineItems.filter(Boolean).filter(i => i.desc);
+  if (!items.length) { toast('Add at least one item', 'error'); return; }
+  const total  = items.reduce((a, i) => a + (+i.qty || 0) * (+i.price || 0), 0);
+  const status = $('prm-status')?.value || 'draft';
+  const data   = {
+    clientName,
+    clientEmail : $('prm-email').value.trim(),
+    projectType : $('prm-type').value,
+    validUntil  : $('prm-valid').value,
+    notes       : $('prm-notes').value.trim(),
+    lineItems   : items,
+    total,
+    status
+  };
+  const editId = $('prm-edit-id').value;
+  try {
+    if (editId) {
+      await db.collection('proposals').doc(editId).update({ ...data, updatedAt: ts() });
+      await logAudit('Proposal', 'Edited', clientName);
+      toast('Proposal updated ✅', 'success');
+    } else {
+      const pid = genPropId();
+      await db.collection('proposals').add({
+        ...data, proposalId: pid,
+        createdAt: ts(), createdBy: CU.uid
+      });
+      await logAudit('Proposal', 'Created', `${pid} — ${clientName}`);
+      toast('Proposal created ✅', 'success');
+    }
+    hideM('prop-modal');
+    loadProposals();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ── Update status inline ───────────────────────────────────────
+async function updPropStatus(id, status) {
+  try {
+    await db.collection('proposals').doc(id).update({ status });
+    await logAudit('Proposal', `Status → "${status}"`);
+    if (status === 'approved')
+      await pushNotif(CU.uid, 'proposal', '✅ Proposal approved! Convert to invoice when ready.');
+    toast('Status updated', 'success');
+    loadProposals();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ── Convert approved proposal → invoice ───────────────────────
+async function convertToInvoice(id) {
+  if (!confirm('Convert this proposal to an invoice?')) return;
+  try {
+    const snap = await db.collection('proposals').doc(id).get();
+    const p = snap.data();
+    const invId = genId();
+    await db.collection('invoices').add({
+      invoiceId   : invId,
+      clientName  : p.clientName,
+      sections    : [{ projectName: p.projectType || 'Services', items: p.lineItems }],
+      amount      : p.total,
+      discount    : 0,
+      status      : 'unpaid',
+      payments    : [],
+      dueDate     : '',
+      notes       : `Converted from proposal ${p.proposalId}`,
+      linkedSaleId: '',
+      createdAt   : ts()
+    });
+    await db.collection('proposals').doc(id).update({ status: 'converted' });
+    await logAudit('Proposal', 'Converted to invoice', `${p.proposalId} → ${invId}`);
+    toast(`✅ Invoice ${invId} created!`, 'success');
+    loadProposals();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ── Delete ─────────────────────────────────────────────────────
+async function delProposal(id) {
+  if (!confirm('Permanently delete this proposal?')) return;
+  try {
+    const d = await db.collection('proposals').doc(id).get();
+    await logAudit('Proposal', 'Deleted', d.data()?.proposalId || id);
+    await db.collection('proposals').doc(id).delete();
+    toast('Deleted', 'info');
+    loadProposals();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ── Load & render ──────────────────────────────────────────────
+async function loadProposals() {
+  await loadPropStages();
+  const el = $('prop-list');
+  if (!el) return;
+  el.innerHTML = '<div style="color:var(--text3);padding:16px">Loading…</div>';
+  try {
+    const snap = await db.collection('proposals').orderBy('createdAt', 'desc').get();
+    allProposals = snap.docs.map(d => ({ ...d.data(), id: d.id }));
+    renderPropFilters();
+    renderProposals(allProposals);
+  } catch (e) {
+    el.innerHTML = '<div style="color:var(--red);padding:16px">' + e.message + '</div>';
+  }
+}
+
+function renderPropFilters() {
+  const bar = $('prop-filter-bar');
+  if (!bar) return;
+  bar.innerHTML = `
+    <button class="btn btn-ghost prop-filter active" onclick="filterProps('all',this)">
+      All (${allProposals.length})
+    </button>
+    ${propStages.map(s => {
+      const count = allProposals.filter(p => p.status === s).length;
+      return `<button class="btn btn-ghost prop-filter" onclick="filterProps('${s}',this)">
+        ${s.charAt(0).toUpperCase() + s.slice(1)} (${count})
+      </button>`;
+    }).join('')}`;
+}
+
+function filterProps(f, btn) {
+  document.querySelectorAll('.prop-filter').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderProposals(f === 'all' ? allProposals : allProposals.filter(p => p.status === f));
+}
+
+function renderProposals(items) {
+  const el = $('prop-list');
+  if (!el) return;
+  if (!items.length) {
+    el.innerHTML = '<div style="color:var(--text3);padding:16px;text-align:center">No proposals found.</div>';
+    return;
+  }
+  el.innerHTML = items.map(p => {
+    const sc = stageClass(p.status);
+    const isApproved  = p.status === 'approved';
+    const isConverted = p.status === 'converted';
+    const accentColor = {
+      't-blue':'#2563EB','t-purple':'#8b5cf6','t-green':'#10b981',
+      't-red':'#ef4444','t-amber':'#f59e0b'
+    }[sc] || '#2563EB';
+    return `
+    <div class="card" style="padding:0;margin-bottom:14px;overflow:hidden">
+      <div style="height:3px;background:${accentColor}"></div>
+      <div style="padding:16px">
+
+        <!-- Header -->
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;
+                    flex-wrap:wrap;gap:10px;margin-bottom:10px">
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+              <span style="font-weight:700;font-size:14px;color:var(--text)">${p.proposalId}</span>
+              <span class="tag ${sc}">${p.status}</span>
+              ${isConverted ? `<span class="tag t-green" style="font-size:9px">✅ Invoiced</span>` : ''}
+            </div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.8">
+              👤 <strong>${p.clientName}</strong>
+              ${p.clientEmail ? ` &nbsp;·&nbsp; ✉ ${p.clientEmail}` : ''}
+              &nbsp;|&nbsp; 💼 ${p.projectType || '—'}
+            </div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">
+              📅 Valid until: ${p.validUntil || '—'}
+              &nbsp;|&nbsp; 💰 Total:
+              <strong style="color:var(--accent)">${fmtM(p.total)}</strong>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+            <select onchange="updPropStatus('${p.id}', this.value)"
+              style="border:1px solid var(--border);border-radius:8px;padding:5px 8px;
+                     font-size:11px;background:var(--bg);color:var(--text);cursor:pointer">
+              ${propStages.map(s =>
+                `<option value="${s}" ${p.status === s ? 'selected' : ''}>
+                  ${s.charAt(0).toUpperCase() + s.slice(1)}
+                </option>`
+              ).join('')}
+            </select>
+            ${isApproved && !isConverted
+              ? `<button class="btn btn-primary" style="font-size:11px;padding:5px 10px"
+                   onclick="convertToInvoice('${p.id}')">→ Invoice</button>` : ''}
+            <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px"
+              onclick="openEditPropModal('${p.id}')">✏ Edit</button>
+            <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px"
+              onclick="printProposal('${p.id}')">🖨 PDF</button>
+            <button class="btn btn-danger" style="font-size:11px;padding:5px 10px"
+              onclick="delProposal('${p.id}')">🗑 Delete</button>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        ${p.notes
+          ? `<div style="font-size:12px;color:var(--text2);padding:8px 12px;
+                        background:var(--bg);border-radius:8px;margin-bottom:10px;
+                        border-left:3px solid ${accentColor};line-height:1.6">
+               📝 ${p.notes}
+             </div>` : ''}
+
+        <!-- Line items collapsible -->
+        <div style="border-top:1px solid var(--border);padding-top:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;
+                      cursor:pointer;user-select:none"
+               onclick="togglePropItems('${p.id}')">
+            <span style="font-size:11px;font-weight:700;color:var(--text3);
+                         text-transform:uppercase;letter-spacing:.05em">
+              📋 ${(p.lineItems || []).length} Line Item${(p.lineItems||[]).length===1?'':'s'}
+            </span>
+            <span id="prop-chevron-${p.id}"
+              style="font-size:12px;color:var(--text3);transition:transform .2s">▼</span>
+          </div>
+          <div id="prop-items-${p.id}" style="display:none;margin-top:8px">
+            <!-- Column headers -->
+            <div style="display:grid;grid-template-columns:1fr 50px 90px 90px;
+                        gap:8px;padding:6px 8px;background:var(--bg);border-radius:6px;
+                        margin-bottom:4px">
+              <span style="font-size:10px;color:var(--text3);font-weight:600">Description</span>
+              <span style="font-size:10px;color:var(--text3);font-weight:600;text-align:center">Qty</span>
+              <span style="font-size:10px;color:var(--text3);font-weight:600;text-align:right">Unit Price</span>
+              <span style="font-size:10px;color:var(--text3);font-weight:600;text-align:right">Amount</span>
+            </div>
+            ${(p.lineItems || []).map(it => `
+              <div style="display:grid;grid-template-columns:1fr 50px 90px 90px;
+                          gap:8px;padding:7px 8px;border-bottom:1px solid var(--border);
+                          font-size:12px;color:var(--text2)">
+                <span>${it.desc}</span>
+                <span style="text-align:center">${it.qty}</span>
+                <span style="text-align:right">${fmtM(it.price)}</span>
+                <span style="text-align:right;font-weight:600;color:var(--text)">
+                  ${fmtM((+it.qty || 0) * (+it.price || 0))}
+                </span>
+              </div>`).join('')}
+            <div style="display:flex;justify-content:flex-end;gap:20px;padding:10px 8px;
+                        background:var(--bg);border-radius:6px;margin-top:4px;flex-wrap:wrap">
+              <span style="font-size:13px;font-weight:800;color:var(--accent)">
+                Total: ${fmtM(p.total)}
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function togglePropItems(id) {
+  const el  = $('prop-items-' + id);
+  const chv = $('prop-chevron-' + id);
+  if (!el) return;
+  const open = el.style.display === 'none';
+  el.style.display = open ? 'block' : 'none';
+  if (chv) chv.style.transform = open ? 'rotate(180deg)' : '';
+}
+
+// ═══════════════════════════════════════════
+// END OF FILE — close </script> and </body> below
+// ═══════════════════════════════════════════
 </script>
 </body>
 </html>
